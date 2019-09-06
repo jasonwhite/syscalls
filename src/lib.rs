@@ -4,11 +4,12 @@
 
 pub mod helper;
 pub mod macros;
-#[rustfmt::skip]
-pub mod nr;
 pub mod raw;
 
+// Include the generated system calls.
+include!(concat!(env!("OUT_DIR"), "/nr.rs"));
+
 pub use self::helper::*;
-pub use self::nr::SyscallNo::*;
-pub use self::nr::*;
 pub use self::raw::*;
+
+pub use SyscallNo::*;

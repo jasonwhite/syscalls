@@ -1,20 +1,20 @@
 #[macro_export]
 macro_rules! syscall {
     ($nr:ident) => {
-        $crate::helper::syscall0($crate::nr::$nr)
+        $crate::helper::syscall0($crate::$nr)
     };
 
     ($nr:ident, $a1:expr) => {
-        $crate::helper::syscall1($crate::nr::$nr, $a1 as i64)
+        $crate::helper::syscall1($crate::$nr, $a1 as i64)
     };
 
     ($nr:ident, $a1:expr, $a2:expr) => {
-        $crate::helper::syscall2($crate::nr::$nr, $a1 as i64, $a2 as i64)
+        $crate::helper::syscall2($crate::$nr, $a1 as i64, $a2 as i64)
     };
 
     ($nr:ident, $a1:expr, $a2:expr, $a3:expr) => {
         $crate::helper::syscall3(
-            $crate::nr::$nr,
+            $crate::$nr,
             $a1 as i64,
             $a2 as i64,
             $a3 as i64,
@@ -23,7 +23,7 @@ macro_rules! syscall {
 
     ($nr:ident, $a1:expr, $a2:expr, $a3:expr, $a4:expr) => {
         $crate::helper::syscall4(
-            $crate::nr::$nr,
+            $crate::$nr,
             $a1 as i64,
             $a2 as i64,
             $a3 as i64,
@@ -33,7 +33,7 @@ macro_rules! syscall {
 
     ($nr:ident, $a1:expr, $a2:expr, $a3:expr, $a4:expr, $a5:expr) => {
         $crate::helper::syscall5(
-            $crate::nr::$nr,
+            $crate::$nr,
             $a1 as i64,
             $a2 as i64,
             $a3 as i64,
@@ -44,7 +44,7 @@ macro_rules! syscall {
 
     ($nr:ident, $a1:expr, $a2:expr, $a3:expr, $a4:expr, $a5:expr, $a6:expr) => {
         $crate::helper::syscall6(
-            $crate::nr::$nr,
+            $crate::$nr,
             $a1 as i64,
             $a2 as i64,
             $a3 as i64,

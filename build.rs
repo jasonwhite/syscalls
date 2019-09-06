@@ -1,8 +1,84 @@
 use std::env;
 use std::fs::File;
-use std::io::{Result, Write};
+use std::io::{Error, ErrorKind, Read, Result, Write};
 use std::path::{Path, PathBuf};
-use sysnum::gen_syscalls;
+use std::process::{Command, Stdio};
+
+use tempfile::NamedTempFile;
+
+static CPP: &str = "cpp";
+
+#[cfg(not(target_os = "linux"))]
+compile_error!("syscalls only supports Linux");
+
+#[cfg(not(any(target_arch = "x86_64", target_arch = "x86")))]
+compile_error!("syscalls only supports x86_64");
+
+#[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
+static UNISTD_H: &str = "asm/unistd_x32.h";
+#[cfg(all(target_arch = "x86_64", target_pointer_width = "64"))]
+static UNISTD_H: &str = "asm/unistd_64.h";
+#[cfg(target_arch = "x86")]
+static UNISTD_H: &str = "asm/unistd_32.h";
+
+fn get_asm_unistd_h() -> Result<String> {
+    let mut file = NamedTempFile::new()?;
+    writeln!(file.as_file_mut(), "#include <sys/syscall.h>")?;
+    let subp = Command::new(CPP)
+        .arg("-xc")
+        .arg(file.path())
+        .stdout(Stdio::piped())
+        .spawn()?;
+    let output = subp.wait_with_output()?;
+    let cpp_out: String = unsafe { String::from_utf8_unchecked(output.stdout) };
+    let asm_unistd: Option<&str> = cpp_out
+        .lines()
+        .filter(|x| x.contains(UNISTD_H))
+        .next()
+        .map(|line| {
+            line.split_whitespace()
+                .filter(|x| x.contains(UNISTD_H))
+                .next()
+        })
+        .unwrap_or(None);
+    if let Some(unistd) = asm_unistd {
+        Ok(unistd.chars().filter(|x| *x != '"').collect())
+    } else {
+        Err(Error::new(
+            ErrorKind::Other,
+            "cpp returned expected result.",
+        ))
+    }
+}
+
+fn gen_syscalls_from(unistd: String) -> Result<Vec<(String, i32)>> {
+    let mut file = File::open(unistd)?;
+    let mut buff = String::new();
+    let mut ret: Vec<(String, i32)> = Vec::new();
+    file.read_to_string(&mut buff)?;
+    for candidate in buff
+        .lines()
+        .filter(|x| x.starts_with("#define") && x.contains("__NR_"))
+    {
+        let words = candidate.split_whitespace();
+        let mut it = words.skip_while(|x| !x.starts_with("__NR_"));
+        let name_ = it.next();
+        let nr_ = it.filter(|x| x.parse::<i32>().is_ok()).next();
+        if let Some((name, nr)) = name_.and_then(|x| {
+            nr_.and_then(|y| {
+                y.parse::<i32>().ok().and_then(|z| Some((x.to_string(), z)))
+            })
+        }) {
+            ret.push((name, nr));
+        }
+    }
+
+    Ok(ret)
+}
+
+fn gen_syscalls() -> Result<Vec<(String, i32)>> {
+    get_asm_unistd_h().and_then(|x| gen_syscalls_from(x))
+}
 
 fn gen_syscall_nrs(dest: &Path) -> Result<()> {
     let mut f = File::create(dest)?;
@@ -16,8 +92,14 @@ fn gen_syscall_nrs(dest: &Path) -> Result<()> {
     )?;
     writeln!(f, "#[derive(PartialEq, Eq, Clone, Copy)]")?;
     writeln!(f, "pub enum SyscallNo {{")?;
-    let syscalls = gen_syscalls().unwrap();
-    for (name, nr) in &syscalls {
+
+    let syscalls = gen_syscalls()?;
+    assert!(syscalls.len() > 100);
+
+    for (i, (name, nr)) in syscalls.iter().enumerate() {
+        // Check that the syscalls are sequential as we iterate through.
+        assert_eq!(i, *nr as usize, "generated syscalls are not sequential");
+
         writeln!(
             f,
             "    SYS{} = {},",

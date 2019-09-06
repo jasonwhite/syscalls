@@ -14,4 +14,4 @@ homepage = "https://github.com/wangbj/syscalls"
 documentation = "https://docs.rs/syscalls"
 
 [build-dependencies]
-sysnum = { version = "0.1.0", path = "sysnum" }
+tempfile = "3.0"

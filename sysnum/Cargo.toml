@@ -1,8 +1,0 @@
-[package]
-name = "sysnum"
-version = "0.1.0"
-authors = ["Baojun Wang <wangbj@gmail.com>"]
-edition = "2018"
-
-[dependencies]
-tempfile = "3.0"

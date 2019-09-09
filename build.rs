@@ -97,9 +97,6 @@ fn gen_syscall_nrs(dest: &Path) -> Result<()> {
     assert!(syscalls.len() > 100);
 
     for (i, (name, nr)) in syscalls.iter().enumerate() {
-        // Check that the syscalls are sequential as we iterate through.
-        assert_eq!(i, *nr as usize, "generated syscalls are not sequential");
-
         writeln!(
             f,
             "    SYS{} = {},",

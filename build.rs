@@ -96,7 +96,7 @@ fn gen_syscall_nrs(dest: &Path) -> Result<()> {
     let syscalls = gen_syscalls()?;
     assert!(syscalls.len() > 100);
 
-    for (i, (name, nr)) in syscalls.iter().enumerate() {
+    for (name, nr) in &syscalls {
         writeln!(
             f,
             "    SYS{} = {},",

@@ -1,6 +1,6 @@
-use crate::raw::*;
-use crate::*;
+use crate::SyscallNo;
 
+#[inline(always)]
 fn syscall_ret(ret: i64) -> Result<i64, i64> {
     if ret as u64 >= -4096i64 as u64 {
         Err(-ret)
@@ -9,66 +9,101 @@ fn syscall_ret(ret: i64) -> Result<i64, i64> {
     }
 }
 
-#[inline]
-pub fn syscall0(no: SyscallNo) -> Result<i64, i64> {
-    let r = unsafe { untraced_syscall(no as i32, 0, 0, 0, 0, 0, 0) };
-    syscall_ret(r)
+#[inline(always)]
+pub unsafe fn syscall0(nr: SyscallNo) -> Result<i64, i64> {
+    let ret: i64;
+    asm!("syscall" : "={rax}"(ret)
+                   : "{eax}"(nr as i32)
+                   : "rcx", "r11", "memory"
+                   : "volatile");
+    syscall_ret(ret)
 }
 
-#[inline]
-pub fn syscall1(no: SyscallNo, a0: i64) -> Result<i64, i64> {
-    let r = unsafe { untraced_syscall(no as i32, a0, 0, 0, 0, 0, 0) };
-    syscall_ret(r)
+#[inline(always)]
+pub unsafe fn syscall1(nr: SyscallNo, a1: u64) -> Result<i64, i64> {
+    let ret: i64;
+    asm!("syscall" : "={rax}"(ret)
+                   : "{eax}"(nr as i32), "{rdi}"(a1)
+                   : "rcx", "r11", "memory"
+                   : "volatile");
+    syscall_ret(ret)
 }
 
-#[inline]
-pub fn syscall2(no: SyscallNo, a0: i64, a1: i64) -> Result<i64, i64> {
-    let r = unsafe { untraced_syscall(no as i32, a0, a1, 0, 0, 0, 0) };
-    syscall_ret(r)
+#[inline(always)]
+pub unsafe fn syscall2(nr: SyscallNo, a1: u64, a2: u64) -> Result<i64, i64> {
+    let ret: i64;
+    asm!("syscall" : "={rax}"(ret)
+                   : "{eax}"(nr as i32), "{rdi}"(a1), "{rsi}"(a2)
+                   : "rcx", "r11", "memory"
+                   : "volatile");
+    syscall_ret(ret)
 }
 
-#[inline]
-pub fn syscall3(no: SyscallNo, a0: i64, a1: i64, a2: i64) -> Result<i64, i64> {
-    let r = unsafe { untraced_syscall(no as i32, a0, a1, a2, 0, 0, 0) };
-    syscall_ret(r)
-}
-
-#[inline]
-pub fn syscall4(
-    no: SyscallNo,
-    a0: i64,
-    a1: i64,
-    a2: i64,
-    a3: i64,
+#[inline(always)]
+pub unsafe fn syscall3(
+    nr: SyscallNo,
+    a1: u64,
+    a2: u64,
+    a3: u64,
 ) -> Result<i64, i64> {
-    let r = unsafe { untraced_syscall(no as i32, a0, a1, a2, a3, 0, 0) };
-    syscall_ret(r)
+    let ret: i64;
+    asm!("syscall" : "={rax}"(ret)
+                   : "{eax}"(nr as i32), "{rdi}"(a1), "{rsi}"(a2), "{rdx}"(a3)
+                   : "rcx", "r11", "memory"
+                   : "volatile");
+    syscall_ret(ret)
 }
 
-#[inline]
-pub fn syscall5(
-    no: SyscallNo,
-    a0: i64,
-    a1: i64,
-    a2: i64,
-    a3: i64,
-    a4: i64,
+#[inline(always)]
+pub unsafe fn syscall4(
+    nr: SyscallNo,
+    a1: u64,
+    a2: u64,
+    a3: u64,
+    a4: u64,
 ) -> Result<i64, i64> {
-    let r = unsafe { untraced_syscall(no as i32, a0, a1, a2, a3, a4, 0) };
-    syscall_ret(r)
+    let ret: i64;
+    asm!("syscall" : "={rax}"(ret)
+                   : "{eax}"(nr as i32), "{rdi}"(a1), "{rsi}"(a2), "{rdx}"(a3),
+                     "{r10}"(a4)
+                   : "rcx", "r11", "memory"
+                   : "volatile");
+    syscall_ret(ret)
 }
 
-#[inline]
-pub fn syscall6(
-    no: SyscallNo,
-    a0: i64,
-    a1: i64,
-    a2: i64,
-    a3: i64,
-    a4: i64,
-    a5: i64,
+#[inline(always)]
+pub unsafe fn syscall5(
+    n: u64,
+    a1: u64,
+    a2: u64,
+    a3: u64,
+    a4: u64,
+    a5: u64,
 ) -> Result<i64, i64> {
-    let r = unsafe { untraced_syscall(no as i32, a0, a1, a2, a3, a4, a5) };
-    syscall_ret(r)
+    let ret: i64;
+    asm!("syscall" : "={rax}"(ret)
+                   : "{rax}"(n), "{rdi}"(a1), "{rsi}"(a2), "{rdx}"(a3),
+                     "{r10}"(a4), "{r8}"(a5)
+                   : "rcx", "r11", "memory"
+                   : "volatile");
+    syscall_ret(ret)
 }
 
+#[inline(always)]
+pub unsafe fn syscall6(
+    nr: SyscallNo,
+    a1: u64,
+    a2: u64,
+    a3: u64,
+    a4: u64,
+    a5: u64,
+    a6: u64,
+) -> Result<i64, i64> {
+    let ret: i64;
+    asm!("syscall" : "={rax}"(ret)
+                   : "{eax}"(nr as i32), "{rdi}"(a1), "{rsi}"(a2), "{rdx}"(a3),
+                     "{r10}"(a4), "{r8}"(a5), "{r9}"(a6)
+                   : "rcx", "r11", "memory"
+                   : "volatile");
+    syscall_ret(ret)
+}

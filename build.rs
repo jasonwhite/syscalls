@@ -150,4 +150,5 @@ fn gen_syscall_nrs(dest: &Path) -> Result<()> {
 fn main() {
     let out_path = PathBuf::from(env::var("OUT_DIR").unwrap());
     gen_syscall_nrs(&out_path.join("nr.rs")).unwrap();
+    cc::Build::new().file("src/syscall.c").compile("syscall");
 }

@@ -1,6 +1,6 @@
 [package]
 name = "syscalls"
-version = "0.1.4"
+version = "0.2.0"
 authors = ["Baojun Wang <wangbj@gmail.com>"]
 edition = "2018"
 license = "BSD-2-Clause"
@@ -13,5 +13,18 @@ repository = "https://github.com/wangbj/syscalls"
 homepage = "https://github.com/wangbj/syscalls"
 documentation = "https://docs.rs/syscalls"
 
+[features]
+default = ["use_std"]
+# The 'use_std' feature permits the regex crate to use the standard library.
+# This is intended to support future use cases where the regex crate may be
+# able to compile without std, and instead just rely on 'core' and 'alloc'
+# (for example). Currently, this isn't supported, and removing the 'use_std'
+# feature will prevent regex from compiling.
+use_std = []
+
 [build-dependencies]
 tempfile = "3.0"
+cc = "1.0"
+
+[dev-dependencies]
+libc = "0.2"

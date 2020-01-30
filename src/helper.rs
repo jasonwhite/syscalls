@@ -1,5 +1,36 @@
 use crate::SyscallNo;
 
+extern "C" {
+    fn internal_syscall0(nr: i64) -> i64;
+    fn internal_syscall1(nr: i64, arg1: u64) -> i64;
+    fn internal_syscall2(nr: i64, arg1: u64, arg2: u64) -> i64;
+    fn internal_syscall3(nr: i64, arg1: u64, arg2: u64, arg3: u64) -> i64;
+    fn internal_syscall4(
+        nr: i64,
+        arg1: u64,
+        arg2: u64,
+        arg3: u64,
+        arg4: u64,
+    ) -> i64;
+    fn internal_syscall5(
+        nr: i64,
+        arg1: u64,
+        arg2: u64,
+        arg3: u64,
+        arg4: u64,
+        arg5: u64,
+    ) -> i64;
+    fn internal_syscall6(
+        nr: i64,
+        arg1: u64,
+        arg2: u64,
+        arg3: u64,
+        arg4: u64,
+        arg5: u64,
+        arg6: u64,
+    ) -> i64;
+}
+
 #[inline(always)]
 fn syscall_ret(ret: i64) -> Result<i64, i64> {
     if ret as u64 >= -4096i64 as u64 {
@@ -11,32 +42,17 @@ fn syscall_ret(ret: i64) -> Result<i64, i64> {
 
 #[inline(always)]
 pub unsafe fn syscall0(nr: SyscallNo) -> Result<i64, i64> {
-    let ret: i64;
-    asm!("syscall" : "={rax}"(ret)
-                   : "{eax}"(nr as i32)
-                   : "rcx", "r11", "memory"
-                   : "volatile");
-    syscall_ret(ret)
+    syscall_ret(internal_syscall0(nr as i64))
 }
 
 #[inline(always)]
 pub unsafe fn syscall1(nr: SyscallNo, a1: u64) -> Result<i64, i64> {
-    let ret: i64;
-    asm!("syscall" : "={rax}"(ret)
-                   : "{eax}"(nr as i32), "{rdi}"(a1)
-                   : "rcx", "r11", "memory"
-                   : "volatile");
-    syscall_ret(ret)
+    syscall_ret(internal_syscall1(nr as i64, a1))
 }
 
 #[inline(always)]
 pub unsafe fn syscall2(nr: SyscallNo, a1: u64, a2: u64) -> Result<i64, i64> {
-    let ret: i64;
-    asm!("syscall" : "={rax}"(ret)
-                   : "{eax}"(nr as i32), "{rdi}"(a1), "{rsi}"(a2)
-                   : "rcx", "r11", "memory"
-                   : "volatile");
-    syscall_ret(ret)
+    syscall_ret(internal_syscall2(nr as i64, a1, a2))
 }
 
 #[inline(always)]
@@ -46,12 +62,7 @@ pub unsafe fn syscall3(
     a2: u64,
     a3: u64,
 ) -> Result<i64, i64> {
-    let ret: i64;
-    asm!("syscall" : "={rax}"(ret)
-                   : "{eax}"(nr as i32), "{rdi}"(a1), "{rsi}"(a2), "{rdx}"(a3)
-                   : "rcx", "r11", "memory"
-                   : "volatile");
-    syscall_ret(ret)
+    syscall_ret(internal_syscall3(nr as i64, a1, a2, a3))
 }
 
 #[inline(always)]
@@ -62,31 +73,19 @@ pub unsafe fn syscall4(
     a3: u64,
     a4: u64,
 ) -> Result<i64, i64> {
-    let ret: i64;
-    asm!("syscall" : "={rax}"(ret)
-                   : "{eax}"(nr as i32), "{rdi}"(a1), "{rsi}"(a2), "{rdx}"(a3),
-                     "{r10}"(a4)
-                   : "rcx", "r11", "memory"
-                   : "volatile");
-    syscall_ret(ret)
+    syscall_ret(internal_syscall4(nr as i64, a1, a2, a3, a4))
 }
 
 #[inline(always)]
 pub unsafe fn syscall5(
-    n: u64,
+    nr: u64,
     a1: u64,
     a2: u64,
     a3: u64,
     a4: u64,
     a5: u64,
 ) -> Result<i64, i64> {
-    let ret: i64;
-    asm!("syscall" : "={rax}"(ret)
-                   : "{rax}"(n), "{rdi}"(a1), "{rsi}"(a2), "{rdx}"(a3),
-                     "{r10}"(a4), "{r8}"(a5)
-                   : "rcx", "r11", "memory"
-                   : "volatile");
-    syscall_ret(ret)
+    syscall_ret(internal_syscall5(nr as i64, a1, a2, a3, a4, a5))
 }
 
 #[inline(always)]
@@ -99,11 +98,5 @@ pub unsafe fn syscall6(
     a5: u64,
     a6: u64,
 ) -> Result<i64, i64> {
-    let ret: i64;
-    asm!("syscall" : "={rax}"(ret)
-                   : "{eax}"(nr as i32), "{rdi}"(a1), "{rsi}"(a2), "{rdx}"(a3),
-                     "{r10}"(a4), "{r8}"(a5), "{r9}"(a6)
-                   : "rcx", "r11", "memory"
-                   : "volatile");
-    syscall_ret(ret)
+    syscall_ret(internal_syscall6(nr as i64, a1, a2, a3, a4, a5, a6))
 }

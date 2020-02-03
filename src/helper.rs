@@ -1,4 +1,4 @@
-use crate::SyscallNo;
+use crate::nr::SyscallNo;
 
 extern "C" {
     fn internal_syscall0(nr: i64) -> i64;

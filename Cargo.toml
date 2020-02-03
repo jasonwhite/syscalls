@@ -23,8 +23,12 @@ default = ["use_std"]
 use_std = []
 
 [build-dependencies]
-tempfile = "3.0"
 cc = "1.0"
 
 [dev-dependencies]
 libc = "0.2"
+
+[workspace]
+members = [
+    "syscalls-gen",
+]

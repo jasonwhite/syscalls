@@ -1,11 +1,11 @@
 [package]
 name = "syscalls"
-version = "0.2.0"
+version = "0.2.1"
 authors = ["Baojun Wang <wangbj@gmail.com>"]
 edition = "2018"
 license = "BSD-2-Clause"
 description = """
-An automatically generated list of Linux system calls.
+A list of Linux system calls.
 """
 keywords = ["syscall", "linux"]
 readme = "README.md"

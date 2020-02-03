@@ -1,0 +1,18 @@
+[package]
+name = "syscalls-gen"
+version = "0.2.0"
+authors = ["Baojun Wang <wangbj@gmail.com>", "Jason White <rust@jasonwhite.io>"]
+edition = "2018"
+license = "BSD-2-Clause"
+description = """
+Generates a syscalls table from Linux header files.
+"""
+keywords = ["syscall", "linux"]
+readme = "README.md"
+repository = "https://github.com/wangbj/syscalls"
+homepage = "https://github.com/wangbj/syscalls"
+documentation = "https://docs.rs/syscalls-gen"
+
+[dependencies]
+tempfile = "3.0"
+structopt = "0.3"

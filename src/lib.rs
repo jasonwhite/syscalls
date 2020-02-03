@@ -2,14 +2,12 @@
 
 #[macro_use]
 
+mod nr;
 pub mod helper;
 pub mod macros;
 
-// Include the generated system calls.
-include!(concat!(env!("OUT_DIR"), "/nr.rs"));
-
 pub use self::helper::*;
-pub use SyscallNo::*;
+pub use self::nr::SyscallNo::*;
 
 #[cfg(test)]
 mod tests {

@@ -78,7 +78,7 @@ pub unsafe fn syscall4(
 
 #[inline(always)]
 pub unsafe fn syscall5(
-    nr: u64,
+    nr: SyscallNo,
     a1: u64,
     a2: u64,
     a3: u64,

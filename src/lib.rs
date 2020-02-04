@@ -6,8 +6,8 @@ mod nr;
 pub mod helper;
 pub mod macros;
 
-pub use self::helper::*;
-pub use self::nr::SyscallNo::*;
+pub use helper::*;
+pub use nr::{SyscallNo, SyscallNo::*};
 
 #[cfg(test)]
 mod tests {

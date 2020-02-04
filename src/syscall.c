@@ -1,5 +1,5 @@
 
-inline long internal_syscall0(long nr) {
+long internal_syscall0(long nr) {
   unsigned long int resultvar;
   asm volatile (
       "syscall\n\t"
@@ -10,7 +10,7 @@ inline long internal_syscall0(long nr) {
 }
 
 
-inline long internal_syscall1(long nr, unsigned long a1) {
+long internal_syscall1(long nr, unsigned long a1) {
   unsigned long int resultvar;
   register unsigned long _a1 asm ("rdi") = a1;
   asm volatile (
@@ -21,7 +21,7 @@ inline long internal_syscall1(long nr, unsigned long a1) {
   return (long) resultvar;
 }
 
-inline long internal_syscall2(long nr, unsigned long a1, unsigned long a2) {
+long internal_syscall2(long nr, unsigned long a1, unsigned long a2) {
   unsigned long int resultvar;
     register unsigned long _a1 asm ("rdi") = a1;
     register unsigned long _a2 asm ("rsi") = a2;
@@ -33,7 +33,7 @@ inline long internal_syscall2(long nr, unsigned long a1, unsigned long a2) {
     return (long) resultvar;
 }
 
-inline long internal_syscall3(long nr, unsigned long a1, unsigned long a2, unsigned long a3) {
+long internal_syscall3(long nr, unsigned long a1, unsigned long a2, unsigned long a3) {
   unsigned long int resultvar;
     register unsigned long _a1 asm ("rdi") = a1;
     register unsigned long _a2 asm ("rsi") = a2;
@@ -46,7 +46,7 @@ inline long internal_syscall3(long nr, unsigned long a1, unsigned long a2, unsig
     return (long) resultvar;
 }
 
-inline long internal_syscall4(long nr, unsigned long a1, unsigned long a2, unsigned long a3, unsigned long a4) {
+long internal_syscall4(long nr, unsigned long a1, unsigned long a2, unsigned long a3, unsigned long a4) {
   unsigned long int resultvar;
     register unsigned long _a1 asm ("rdi") = a1;
     register unsigned long _a2 asm ("rsi") = a2;
@@ -60,7 +60,7 @@ inline long internal_syscall4(long nr, unsigned long a1, unsigned long a2, unsig
     return (long) resultvar;
 }
 
-inline long internal_syscall5(long nr, unsigned long a1, unsigned long a2, unsigned long a3, unsigned long a4, unsigned long a5) {
+long internal_syscall5(long nr, unsigned long a1, unsigned long a2, unsigned long a3, unsigned long a4, unsigned long a5) {
   unsigned long int resultvar;
     register unsigned long _a1 asm ("rdi") = a1;
     register unsigned long _a2 asm ("rsi") = a2;
@@ -75,7 +75,7 @@ inline long internal_syscall5(long nr, unsigned long a1, unsigned long a2, unsig
     return (long) resultvar;
 }
 
-inline long internal_syscall6(long nr, unsigned long a1, unsigned long a2, unsigned long a3, unsigned long a4, unsigned long a5, unsigned long a6) {
+long internal_syscall6(long nr, unsigned long a1, unsigned long a2, unsigned long a3, unsigned long a4, unsigned long a5, unsigned long a6) {
   unsigned long int resultvar;
     register unsigned long _a1 asm ("rdi") = a1;
     register unsigned long _a2 asm ("rsi") = a2;

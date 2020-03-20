@@ -3,8 +3,8 @@ use std::io::{Error, ErrorKind, Read, Result, Write};
 use std::path::{Path, PathBuf};
 use std::process::{Command, Stdio};
 
-use tempfile::NamedTempFile;
 use structopt::StructOpt;
+use tempfile::NamedTempFile;
 
 #[derive(Debug, StructOpt)]
 struct Opts {

@@ -1,3 +1,6 @@
+/// syscall macro
+/// accept a syscall nr and variadic arguments (0 to 6).
+/// returns Ok on success, or Err(errno) on failure
 #[macro_export]
 macro_rules! syscall {
     ($nr:ident) => {

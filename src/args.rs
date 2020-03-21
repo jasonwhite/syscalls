@@ -125,25 +125,25 @@ impl From<&[u64; 0]> for SyscallArgs {
 #[macro_export]
 macro_rules! syscall_args {
     ($a:expr, $b:expr, $c:expr, $d:expr, $e:expr, $f:expr) => {
-        $crate::args::SyscallArgs::new($a, $b, $c, $d, $e, $f)
+        $crate::SyscallArgs::new($a, $b, $c, $d, $e, $f)
     };
     ($a:expr, $b:expr, $c:expr, $d:expr, $e:expr) => {
-        $crate::args::SyscallArgs::new($a, $b, $c, $d, $e, 0)
+        $crate::SyscallArgs::new($a, $b, $c, $d, $e, 0)
     };
     ($a:expr, $b:expr, $c:expr, $d:expr) => {
-        $crate::args::SyscallArgs::new($a, $b, $c, $d, 0, 0)
+        $crate::SyscallArgs::new($a, $b, $c, $d, 0, 0)
     };
     ($a:expr, $b:expr, $c:expr) => {
-        $crate::args::SyscallArgs::new($a, $b, $c, 0, 0, 0)
+        $crate::SyscallArgs::new($a, $b, $c, 0, 0, 0)
     };
     ($a:expr, $b:expr) => {
-        $crate::args::SyscallArgs::new($a, $b, 0, 0, 0, 0)
+        $crate::SyscallArgs::new($a, $b, 0, 0, 0, 0)
     };
     ($a:expr) => {
-        $crate::args::SyscallArgs::new($a, 0, 0, 0, 0, 0)
+        $crate::SyscallArgs::new($a, 0, 0, 0, 0, 0)
     };
     () => {
-        $crate::args::SyscallArgs::new(0, 0, 0, 0, 0, 0)
+        $crate::SyscallArgs::new(0, 0, 0, 0, 0, 0)
     };
 }
 

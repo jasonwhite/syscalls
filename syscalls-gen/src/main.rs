@@ -92,12 +92,13 @@ fn gen_syscall_nrs(dest: &Path) -> Result<()> {
     writeln!(f, "// AUTOMATICALLY GENERATED. DO NOT EDIT.\n")?;
     writeln!(f, "pub use self::SyscallNo::*;")?;
     writeln!(f, "use core::fmt;")?;
+    writeln!(f, "use serde::{Serialize, Deserialize};\n")?;
 
     writeln!(
         f,
         "#[allow(non_snake_case, non_camel_case_types, non_upper_case_globals)]"
     )?;
-    writeln!(f, "#[derive(PartialEq, Eq, Clone, Copy)]")?;
+    writeln!(f, "#[derive(PartialEq, Eq, Clone, Copy, Serialize, Deserialize)]")?;
     writeln!(f, "pub enum SyscallNo {{")?;
 
     let syscalls = gen_syscalls()?;

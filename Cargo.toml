@@ -1,6 +1,6 @@
 [package]
 name = "syscalls"
-version = "0.2.4"
+version = "0.2.5"
 authors = ["Baojun Wang <wangbj@gmail.com>"]
 edition = "2018"
 license = "BSD-2-Clause"
@@ -21,6 +21,9 @@ default = ["use_std"]
 # (for example). Currently, this isn't supported, and removing the 'use_std'
 # feature will prevent regex from compiling.
 use_std = []
+
+[dependencies]
+serde = { version = "1.0", features = ["derive"] }
 
 [build-dependencies]
 cc = "1.0"

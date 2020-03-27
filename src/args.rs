@@ -4,11 +4,12 @@
 //! io:Error is not implemented for better no_std support.
 
 use core::result::Result;
+use serde::{Serialize, Deserialize};
 
 /// The 6 arguments of a syscall, raw untyped version.
 ///
 /// TODO: Use a helper function to convert to a structured Syscall+Args enum.
-#[derive(PartialEq, Debug, Eq, Clone, Copy)]
+#[derive(PartialEq, Debug, Eq, Clone, Copy, Serialize, Deserialize)]
 pub struct SyscallArgs {
     pub arg0: u64,
     pub arg1: u64,

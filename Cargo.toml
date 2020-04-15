@@ -21,10 +21,11 @@ default = ["use_std"]
 # (for example). Currently, this isn't supported, and removing the 'use_std'
 # feature will prevent regex from compiling.
 use_std = []
+with-serde = ["serde", "serde_repr"]
 
 [dependencies]
-serde = { version = "1.0", features = ["derive"] }
-serde_repr = "0.1"
+serde = { version = "1.0", features = ["derive"], optional = true }
+serde_repr = { version = "0.1", optional = true }
 
 [build-dependencies]
 cc = "1.0"
@@ -36,3 +37,6 @@ libc = "0.2"
 members = [
     "syscalls-gen",
 ]
+
+[package.metadata.docs.rs]
+features = ["use_std", "with-serde"]

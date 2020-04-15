@@ -8,25 +8,18 @@ pub mod macros;
 mod nr;
 
 pub use args::{SyscallArgs, SyscallRet};
-pub use helper::{syscall0, syscall1, syscall2, syscall3, syscall4, syscall5, syscall6};
+pub use helper::{
+    syscall0, syscall1, syscall2, syscall3, syscall4, syscall5, syscall6,
+};
 pub use nr::{SyscallNo, SyscallNo::*};
 
 /// do a syscall
 /// @nr: syscall number
 /// @args: packed arguments
 /// @return: Ok on success, Err when syscall failed (with errno)
-pub unsafe fn syscall(
-    nr: SyscallNo,
-    args: &SyscallArgs,
-) -> Result<i64, i64> {
+pub unsafe fn syscall(nr: SyscallNo, args: &SyscallArgs) -> Result<i64, i64> {
     crate::helper::syscall6(
-        nr,
-        args.arg0,
-        args.arg1,
-        args.arg2,
-        args.arg3,
-        args.arg4,
-        args.arg5,
+        nr, args.arg0, args.arg1, args.arg2, args.arg3, args.arg4, args.arg5,
     )
 }
 
@@ -100,10 +93,14 @@ mod tests {
                 let mut buffer1: [u8; 64] = unsafe { std::mem::zeroed() };
                 let mut buffer2: [u8; 64] = unsafe { std::mem::zeroed() };
 
-                let args = SyscallArgs::from(&[fd as u64, buffer1.as_mut_ptr() as _, 64, 16]);
-                let r1 = unsafe {
-                    syscall(SYS_pread64, &args)
-                }.expect("SYS_pread64 failed");
+                let args = SyscallArgs::from(&[
+                    fd as u64,
+                    buffer1.as_mut_ptr() as _,
+                    64,
+                    16,
+                ]);
+                let r1 = unsafe { syscall(SYS_pread64, &args) }
+                    .expect("SYS_pread64 failed");
 
                 let s1 = unsafe {
                     std::slice::from_raw_parts(

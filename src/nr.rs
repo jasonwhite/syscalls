@@ -2,11 +2,11 @@
 
 pub use self::SyscallNo::*;
 use core::fmt;
-use serde_repr::{Serialize_repr, Deserialize_repr};
-
+#[cfg(feature = "serde_repr")]
+use serde_repr::{Deserialize_repr, Serialize_repr};
 #[allow(non_snake_case, non_camel_case_types, non_upper_case_globals)]
-
-#[derive(PartialEq, Eq, Clone, Copy, Serialize_repr, Deserialize_repr)]
+#[derive(PartialEq, Eq, Clone, Copy)]
+#[cfg_attr(feature = "serde_repr", derive(Serialize_repr, Deserialize_repr))]
 #[repr(i32)]
 pub enum SyscallNo {
     SYS_read = 0,
@@ -342,8 +342,10 @@ pub enum SyscallNo {
     SYS_pkey_alloc = 330,
     SYS_pkey_free = 331,
     SYS_statx = 332,
+    SYS_io_pgetevents = 333,
+    SYS_rseq = 334,
 }
-static SYSCALL_NAMES: [&str; 333] = [
+static SYSCALL_NAMES: [&str; 335] = [
     "read",
     "write",
     "open",
@@ -677,13 +679,15 @@ static SYSCALL_NAMES: [&str; 333] = [
     "pkey_alloc",
     "pkey_free",
     "statx",
+    "io_pgetevents",
+    "rseq",
 ];
 impl fmt::Debug for SyscallNo {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "{}", SYSCALL_NAMES[self.clone() as usize])
     }
 }
-static SYSCALL_IDS: [SyscallNo; 333] = [
+static SYSCALL_IDS: [SyscallNo; 335] = [
     SYS_read,
     SYS_write,
     SYS_open,
@@ -1017,6 +1021,8 @@ static SYSCALL_IDS: [SyscallNo; 333] = [
     SYS_pkey_alloc,
     SYS_pkey_free,
     SYS_statx,
+    SYS_io_pgetevents,
+    SYS_rseq,
 ];
 impl From<i32> for SyscallNo {
     fn from(item: i32) -> Self {

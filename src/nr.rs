@@ -702,11 +702,20 @@ static SYSCALL_NAMES: [&str; 345] = [
     "fsmount",
     "fspick",
 ];
-impl fmt::Debug for SyscallNo {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{}", SYSCALL_NAMES[self.clone() as usize])
+
+impl SyscallNo {
+    #[inline]
+    fn name(&self) -> &'static str {
+        SYSCALL_NAMES[*self as usize]
     }
 }
+
+impl fmt::Debug for SyscallNo {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        f.write_str(self.name())
+    }
+}
+
 static SYSCALL_IDS: [SyscallNo; 345] = [
     SYS_read,
     SYS_write,

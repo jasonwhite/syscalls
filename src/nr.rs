@@ -710,6 +710,12 @@ impl SyscallNo {
     }
 }
 
+impl fmt::Display for SyscallNo {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        f.write_str(self.name())
+    }
+}
+
 impl fmt::Debug for SyscallNo {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         f.write_str(self.name())

@@ -125,19 +125,38 @@ fn gen_syscall_nrs(dest: &Path) -> Result<()> {
             name.chars().skip(5).collect::<String>().as_str()
         )?;
     }
-    writeln!(f, "];")?;
+    writeln!(f, "];\n")?;
 
-    writeln!(f, "impl fmt::Debug for SyscallNo {{")?;
-    writeln!(
-        f,
-        "    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {{"
+    f.write(
+        br#"impl SyscallNo {
+    #[inline]
+    fn name(&self) -> &'static str {
+        SYSCALL_NAMES[*self as usize]
+    }
+}
+
+"#,
     )?;
-    writeln!(
-        f,
-        "        write!(f, \"{{}}\", SYSCALL_NAMES[self.clone() as usize])"
+
+    f.write(
+        br#"impl fmt::Display for SyscallNo {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        f.write_str(self.name())
+    }
+}
+
+"#,
     )?;
-    writeln!(f, "    }}")?;
-    writeln!(f, "}}")?;
+
+    f.write(
+        br#"impl fmt::Debug for SyscallNo {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        f.write_str(self.name())
+    }
+}
+
+"#,
+    )?;
 
     writeln!(f, "static SYSCALL_IDS: [SyscallNo; {}] = [", syscalls.len())?;
     for (name, _) in &syscalls {

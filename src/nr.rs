@@ -344,8 +344,18 @@ pub enum SyscallNo {
     SYS_statx = 332,
     SYS_io_pgetevents = 333,
     SYS_rseq = 334,
+    SYS_pidfd_send_signal = 424,
+    SYS_io_uring_setup = 425,
+    SYS_io_uring_enter = 426,
+    SYS_io_uring_register = 427,
+    SYS_open_tree = 428,
+    SYS_move_mount = 429,
+    SYS_fsopen = 430,
+    SYS_fsconfig = 431,
+    SYS_fsmount = 432,
+    SYS_fspick = 433,
 }
-static SYSCALL_NAMES: [&str; 335] = [
+static SYSCALL_NAMES: [&str; 345] = [
     "read",
     "write",
     "open",
@@ -681,13 +691,23 @@ static SYSCALL_NAMES: [&str; 335] = [
     "statx",
     "io_pgetevents",
     "rseq",
+    "pidfd_send_signal",
+    "io_uring_setup",
+    "io_uring_enter",
+    "io_uring_register",
+    "open_tree",
+    "move_mount",
+    "fsopen",
+    "fsconfig",
+    "fsmount",
+    "fspick",
 ];
 impl fmt::Debug for SyscallNo {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "{}", SYSCALL_NAMES[self.clone() as usize])
     }
 }
-static SYSCALL_IDS: [SyscallNo; 335] = [
+static SYSCALL_IDS: [SyscallNo; 345] = [
     SYS_read,
     SYS_write,
     SYS_open,
@@ -1023,6 +1043,16 @@ static SYSCALL_IDS: [SyscallNo; 335] = [
     SYS_statx,
     SYS_io_pgetevents,
     SYS_rseq,
+    SYS_pidfd_send_signal,
+    SYS_io_uring_setup,
+    SYS_io_uring_enter,
+    SYS_io_uring_register,
+    SYS_open_tree,
+    SYS_move_mount,
+    SYS_fsopen,
+    SYS_fsconfig,
+    SYS_fsmount,
+    SYS_fspick,
 ];
 impl From<i32> for SyscallNo {
     fn from(item: i32) -> Self {

@@ -705,7 +705,7 @@ static SYSCALL_NAMES: [&str; 345] = [
 
 impl SyscallNo {
     #[inline]
-    fn name(&self) -> &'static str {
+    pub fn name(&self) -> &'static str {
         SYSCALL_NAMES[*self as usize]
     }
 }

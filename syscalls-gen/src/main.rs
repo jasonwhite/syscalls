@@ -130,7 +130,7 @@ fn gen_syscall_nrs(dest: &Path) -> Result<()> {
     f.write(
         br#"impl SyscallNo {
     #[inline]
-    fn name(&self) -> &'static str {
+    pub fn name(&self) -> &'static str {
         SYSCALL_NAMES[*self as usize]
     }
 }

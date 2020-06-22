@@ -137,4 +137,12 @@ mod tests {
     fn test_name() {
         assert_eq!(SYS_write.name(), "write");
     }
+
+    #[test]
+    fn test_syscallno() {
+        assert_eq!(SyscallNo::from(2), SYS_open);
+        assert_eq!(SyscallNo::new(2), Some(SYS_open));
+        assert_eq!(SyscallNo::new(-1i32 as usize), None);
+        assert_eq!(SyscallNo::new(1024), None);
+    }
 }

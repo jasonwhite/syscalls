@@ -704,9 +704,16 @@ static SYSCALL_NAMES: [&str; 345] = [
 ];
 
 impl SyscallNo {
+    /// Returns the name of the syscall.
     #[inline]
     pub fn name(&self) -> &'static str {
         SYSCALL_NAMES[*self as usize]
+    }
+
+    /// Constructs a `SyscallNo` from an ID. Returns `None` if the number falls
+    /// outside the bounds of possible enum values.
+    pub fn new(id: usize) -> Option<Self> {
+        SYSCALL_IDS.get(id).map(|x| *x)
     }
 }
 
@@ -1070,11 +1077,9 @@ static SYSCALL_IDS: [SyscallNo; 345] = [
     SYS_fspick,
 ];
 impl From<i32> for SyscallNo {
-    fn from(item: i32) -> Self {
-        if item as usize > SYSCALL_IDS.len() {
-            panic!("invalid syscall: {}", item)
-        } else {
-            SYSCALL_IDS[item as usize]
-        }
+    fn from(id: i32) -> Self {
+        Self::new(id as usize).unwrap_or_else(|| {
+            panic!("invalid syscall: {}", id)
+        })
     }
 }

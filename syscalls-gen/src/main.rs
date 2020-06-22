@@ -129,9 +129,16 @@ fn gen_syscall_nrs(dest: &Path) -> Result<()> {
 
     f.write(
         br#"impl SyscallNo {
+    /// Returns the name of the syscall.
     #[inline]
     pub fn name(&self) -> &'static str {
         SYSCALL_NAMES[*self as usize]
+    }
+
+    /// Constructs a `SyscallNo` from an ID. Returns `None` if the number falls
+    /// outside the bounds of possible enum values.
+    pub fn new(id: usize) -> Option<Self> {
+        SYSCALL_IDS.get(id).map(|x| *x)
     }
 }
 
@@ -164,15 +171,16 @@ fn gen_syscall_nrs(dest: &Path) -> Result<()> {
     }
     writeln!(f, "];")?;
 
-    writeln!(f, "impl From<i32> for SyscallNo {{")?;
-    writeln!(f, "    fn from(item: i32) -> Self {{")?;
-    writeln!(f, "        if item as usize > SYSCALL_IDS.len() {{")?;
-    writeln!(f, "            panic!(\"invalid syscall: {{}}\", item)")?;
-    writeln!(f, "        }} else {{")?;
-    writeln!(f, "            SYSCALL_IDS[item as usize]")?;
-    writeln!(f, "        }}")?;
-    writeln!(f, "    }}")?;
-    writeln!(f, "}}")?;
+    f.write(
+        br#"impl From<i32> for SyscallNo {
+    fn from(id: i32) -> Self {
+        Self::new(id as usize).unwrap_or_else(|| {
+            panic!("invalid syscall: {}", id)
+        })
+    }
+}
+"#,
+    )?;
 
     Ok(())
 }

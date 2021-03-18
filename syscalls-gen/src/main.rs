@@ -58,10 +58,10 @@ fn get_asm_unistd_h() -> Result<String> {
     }
 }
 
-fn gen_syscalls_from(unistd: String) -> Result<Vec<(String, i32)>> {
+fn parse_syscalls(unistd: String) -> Result<Vec<(usize, String)>> {
     let mut file = File::open(unistd)?;
     let mut buff = String::new();
-    let mut ret: Vec<(String, i32)> = Vec::new();
+    let mut ret = Vec::new();
     file.read_to_string(&mut buff)?;
     for candidate in buff
         .lines()
@@ -70,24 +70,48 @@ fn gen_syscalls_from(unistd: String) -> Result<Vec<(String, i32)>> {
         let words = candidate.split_whitespace();
         let mut it = words.skip_while(|x| !x.starts_with("__NR_"));
         let name_ = it.next();
-        let nr_ = it.filter(|x| x.parse::<i32>().is_ok()).next();
+        let nr_ = it.filter(|x| x.parse::<usize>().is_ok()).next();
         if let Some((name, nr)) = name_.and_then(|x| {
             nr_.and_then(|y| {
-                y.parse::<i32>().ok().and_then(|z| Some((x.to_string(), z)))
+                y.parse::<usize>()
+                    .ok()
+                    .and_then(|z| Some((x.to_string(), z)))
             })
         }) {
-            ret.push((name, nr));
+            let name = name.strip_prefix("__NR_").unwrap_or(&name);
+            ret.push((nr, name.to_owned()));
         }
     }
 
     Ok(ret)
 }
 
-fn gen_syscalls() -> Result<Vec<(String, i32)>> {
-    get_asm_unistd_h().and_then(|x| gen_syscalls_from(x))
+/// Converts a list of syscall to an index vector of syscalls (where holes are
+/// denoted with `None`). This also sorts the syscalls.
+///
+/// Not every syscall number maps to a real syscall.
+fn syscall_table(syscalls: Vec<(usize, String)>) -> Vec<Option<String>> {
+    // Find the syscall with the highest number. This will be the length of our
+    // table.
+    let max = syscalls.iter().max_by_key(|(nr, _)| nr).unwrap().0;
+
+    let mut table = vec![None; max + 1];
+
+    for (nr, name) in syscalls {
+        table[nr] = Some(name);
+    }
+
+    table
+}
+
+fn gen_syscalls() -> Result<Vec<Option<String>>> {
+    get_asm_unistd_h().and_then(|x| parse_syscalls(x).map(syscall_table))
 }
 
 fn gen_syscall_nrs(dest: &Path) -> Result<()> {
+    let syscalls = gen_syscalls()?;
+    assert!(syscalls.len() > 100);
+
     let mut f = File::create(dest)?;
     writeln!(f, "// AUTOMATICALLY GENERATED. DO NOT EDIT.\n")?;
     writeln!(f, "pub use self::SyscallNo::*;")?;
@@ -104,26 +128,20 @@ fn gen_syscall_nrs(dest: &Path) -> Result<()> {
     writeln!(f, "#[repr(i32)]")?;
     writeln!(f, "pub enum SyscallNo {{")?;
 
-    let syscalls = gen_syscalls()?;
-    assert!(syscalls.len() > 100);
-
-    for (name, nr) in &syscalls {
-        writeln!(
-            f,
-            "    SYS{} = {},",
-            name.chars().skip(4).collect::<String>(),
-            nr
-        )?;
+    for (nr, name) in syscalls.iter().enumerate() {
+        if let Some(name) = name {
+            writeln!(f, "    SYS_{} = {},", name, nr)?;
+        }
     }
     writeln!(f, "}}")?;
 
-    writeln!(f, "static SYSCALL_NAMES: [&str; {}] = [", syscalls.len())?;
-    for (name, _) in &syscalls {
-        writeln!(
-            f,
-            "    \"{}\",",
-            name.chars().skip(5).collect::<String>().as_str()
-        )?;
+    writeln!(
+        f,
+        "static SYSCALL_NAMES: [Option<&str>; {}] = [",
+        syscalls.len()
+    )?;
+    for name in &syscalls {
+        writeln!(f, "    {:?},", name)?;
     }
     writeln!(f, "];\n")?;
 
@@ -132,13 +150,13 @@ fn gen_syscall_nrs(dest: &Path) -> Result<()> {
     /// Returns the name of the syscall.
     #[inline]
     pub fn name(&self) -> &'static str {
-        SYSCALL_NAMES[*self as usize]
+        SYSCALL_NAMES[*self as usize].unwrap()
     }
 
     /// Constructs a `SyscallNo` from an ID. Returns `None` if the number falls
     /// outside the bounds of possible enum values.
     pub fn new(id: usize) -> Option<Self> {
-        SYSCALL_IDS.get(id).map(|x| *x)
+        SYSCALL_IDS.get(id).and_then(|x| *x)
     }
 }
 
@@ -165,9 +183,17 @@ fn gen_syscall_nrs(dest: &Path) -> Result<()> {
 "#,
     )?;
 
-    writeln!(f, "static SYSCALL_IDS: [SyscallNo; {}] = [", syscalls.len())?;
-    for (name, _) in &syscalls {
-        writeln!(f, "    SYS{},", name.chars().skip(4).collect::<String>())?;
+    writeln!(
+        f,
+        "static SYSCALL_IDS: [Option<SyscallNo>; {}] = [",
+        syscalls.len()
+    )?;
+    for name in &syscalls {
+        if let Some(name) = name {
+            writeln!(f, "    Some(SYS_{}),", name)?;
+        } else {
+            writeln!(f, "    None,")?;
+        }
     }
     writeln!(f, "];")?;
 

@@ -136,6 +136,7 @@ mod tests {
     #[test]
     fn test_name() {
         assert_eq!(SYS_write.name(), "write");
+        assert_eq!(SYS_fsopen.name(), "fsopen");
     }
 
     #[test]

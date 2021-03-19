@@ -3,15 +3,9 @@
 //! SyscallArgs and SyscallRet.
 //! io:Error is not implemented for better no_std support.
 
-use core::result::Result;
-#[cfg(feature = "serde")]
-use serde::{Deserialize, Serialize};
-
 /// The 6 arguments of a syscall, raw untyped version.
-///
-/// TODO: Use a helper function to convert to a structured Syscall+Args enum.
 #[derive(PartialEq, Debug, Eq, Clone, Copy)]
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct SyscallArgs {
     pub arg0: u64,
     pub arg1: u64,
@@ -150,112 +144,44 @@ macro_rules! syscall_args {
     };
 }
 
-#[test]
-fn syscall_args_macro_test() {
-    assert_eq!(
-        syscall_args!(1, 2, 3, 4, 5, 6),
-        SyscallArgs::new(1, 2, 3, 4, 5, 6)
-    );
-    assert_eq!(
-        syscall_args!(1, 2, 3, 4, 5),
-        SyscallArgs::new(1, 2, 3, 4, 5, 0)
-    );
-    assert_eq!(
-        syscall_args!(1, 2, 3, 4),
-        SyscallArgs::new(1, 2, 3, 4, 0, 0)
-    );
-    assert_eq!(syscall_args!(1, 2, 3), SyscallArgs::new(1, 2, 3, 0, 0, 0));
-    assert_eq!(syscall_args!(1, 2), SyscallArgs::new(1, 2, 0, 0, 0, 0));
-    assert_eq!(syscall_args!(1), SyscallArgs::new(1, 0, 0, 0, 0, 0));
-    assert_eq!(syscall_args!(), SyscallArgs::new(0, 0, 0, 0, 0, 0));
-}
+#[cfg(test)]
+mod tests {
+    use super::*;
 
-#[test]
-fn syscall_args_from_u64_slice() {
-    assert_eq!(
-        SyscallArgs::from(&[1, 2, 3, 4, 5, 6]),
-        syscall_args!(1, 2, 3, 4, 5, 6)
-    );
-    assert_eq!(
-        SyscallArgs::from(&[1, 2, 3, 4, 5]),
-        syscall_args!(1, 2, 3, 4, 5)
-    );
-    assert_eq!(SyscallArgs::from(&[1, 2, 3, 4]), syscall_args!(1, 2, 3, 4));
-    assert_eq!(SyscallArgs::from(&[1, 2, 3]), syscall_args!(1, 2, 3));
-    assert_eq!(SyscallArgs::from(&[1, 2]), syscall_args!(1, 2));
-    assert_eq!(SyscallArgs::from(&[1]), syscall_args!(1));
-    assert_eq!(SyscallArgs::from(&[0]), syscall_args!());
-}
-
-/// syscall return value
-#[derive(PartialEq, Eq, PartialOrd, Ord, Clone, Copy, Debug)]
-pub struct SyscallRet {
-    pub retval: i64,
-}
-
-impl From<i64> for SyscallRet {
-    fn from(retval: i64) -> Self {
-        SyscallRet { retval }
+    #[test]
+    fn syscall_args_macro_test() {
+        assert_eq!(
+            syscall_args!(1, 2, 3, 4, 5, 6),
+            SyscallArgs::new(1, 2, 3, 4, 5, 6)
+        );
+        assert_eq!(
+            syscall_args!(1, 2, 3, 4, 5),
+            SyscallArgs::new(1, 2, 3, 4, 5, 0)
+        );
+        assert_eq!(
+            syscall_args!(1, 2, 3, 4),
+            SyscallArgs::new(1, 2, 3, 4, 0, 0)
+        );
+        assert_eq!(syscall_args!(1, 2, 3), SyscallArgs::new(1, 2, 3, 0, 0, 0));
+        assert_eq!(syscall_args!(1, 2), SyscallArgs::new(1, 2, 0, 0, 0, 0));
+        assert_eq!(syscall_args!(1), SyscallArgs::new(1, 0, 0, 0, 0, 0));
+        assert_eq!(syscall_args!(), SyscallArgs::new(0, 0, 0, 0, 0, 0));
     }
-}
 
-impl From<Result<i64, i64>> for SyscallRet {
-    fn from(res: Result<i64, i64>) -> Self {
-        match res {
-            Ok(ret_ok) => SyscallRet { retval: ret_ok },
-            Err(ret_err) => SyscallRet { retval: -ret_err },
-        }
+    #[test]
+    fn syscall_args_from_u64_slice() {
+        assert_eq!(
+            SyscallArgs::from(&[1, 2, 3, 4, 5, 6]),
+            syscall_args!(1, 2, 3, 4, 5, 6)
+        );
+        assert_eq!(
+            SyscallArgs::from(&[1, 2, 3, 4, 5]),
+            syscall_args!(1, 2, 3, 4, 5)
+        );
+        assert_eq!(SyscallArgs::from(&[1, 2, 3, 4]), syscall_args!(1, 2, 3, 4));
+        assert_eq!(SyscallArgs::from(&[1, 2, 3]), syscall_args!(1, 2, 3));
+        assert_eq!(SyscallArgs::from(&[1, 2]), syscall_args!(1, 2));
+        assert_eq!(SyscallArgs::from(&[1]), syscall_args!(1));
+        assert_eq!(SyscallArgs::from(&[0]), syscall_args!());
     }
-}
-
-impl From<Result<i64, i32>> for SyscallRet {
-    fn from(res: Result<i64, i32>) -> Self {
-        match res {
-            Ok(ret_ok) => SyscallRet { retval: ret_ok },
-            Err(ret_err) => SyscallRet {
-                retval: -ret_err as i64,
-            },
-        }
-    }
-}
-
-impl From<SyscallRet> for Result<i64, i64> {
-    fn from(res: SyscallRet) -> Result<i64, i64> {
-        crate::helper::syscall_ret(res.retval)
-    }
-}
-
-impl From<SyscallRet> for Result<i64, i32> {
-    fn from(res: SyscallRet) -> Result<i64, i32> {
-        crate::helper::syscall_ret(res.retval).map_err(|e| e as i32)
-    }
-}
-
-#[test]
-fn syscall_ret_err_test() {
-    let ok_value = 0x7fff_1234_5678i64;
-    let err_value = 22i64;
-    let ok1: Result<i64, i64> = Ok(ok_value);
-    assert_eq!(SyscallRet::from(ok1), SyscallRet::from(ok_value));
-
-    let err1: Result<i64, i64> = Err(err_value);
-    assert_eq!(SyscallRet::from(err1), SyscallRet::from(-err_value as i64));
-
-    let ok2: Result<i64, i32> = Ok(ok_value);
-    assert_eq!(SyscallRet::from(ok2), SyscallRet::from(ok_value));
-
-    let err2: Result<i64, i32> = Err(err_value as i32);
-    assert_eq!(SyscallRet::from(err2), SyscallRet::from(-err_value as i64));
-
-    let res1: SyscallRet = ok1.into();
-    assert_eq!(res1, SyscallRet::from(ok_value));
-
-    let res2: SyscallRet = err1.into();
-    assert_eq!(res2, SyscallRet::from(-err_value as i64));
-
-    let ok1_1: Result<i64, i64> = res1.into();
-    assert_eq!(ok1_1, ok1);
-
-    let err1_1: Result<i64, i64> = res2.into();
-    assert_eq!(err1_1, err1);
 }

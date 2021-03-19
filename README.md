@@ -1,19 +1,44 @@
 # syscalls
 
-This crate automatically generates a list of system calls using the Linux
-`<sys/syscall.h>` header.
+[![Crates.io](https://img.shields.io/crates/v/syscalls?style=for-the-badge)](https://crates.io/crates/syscalls)
+[![docs.rs](https://img.shields.io/docsrs/syscalls?style=for-the-badge)](https://docs.rs/syscalls)
+![License](https://img.shields.io/crates/l/syscalls.svg?style=for-the-badge)
 
-## `no_std` support
+A list of all Linux system calls.
 
-Support of `no_std` can be enabled by turn off default features:
+## Features
+
+ - Provides of all syscalls for multiple architectures.
+ - Provides methods for invoking raw syscalls.
+ - Provides an `Errno` type for Rustic error handling.
+
+## Feature Flags
+
+### `std`
+
+By default, `std` support is enabled. If you wish to compile in a `no_std`
+environment, use:
 ```
 syscalls = { version = "0.3", default-features = false }
 ```
 
+### `with-serde`
+
+Various types can be serialized with Serde. This can be enabled with:
+```
+syscalls = { version = "0.3", features = ["with-serde"] }
+```
+
+## Architecture Support
+
+Currently, only the `x86-64` architecture is fully supported.
+
 ## Updating the syscall list
 
-Run:
-```
-cd syscalls-gen
-cargo run -- ../src/nr.rs
-```
+Updates are pulled from the `.tbl` files in the Linux source tree.
+
+ 1. Change the Linux version in `syscalls-gen/src/main.rs` to the latest
+    version. Using a release candidate version is OK.
+ 2. Run `cd syscalls-gen && cargo run`. This will regenerate the syscall tables
+    in `src/arch/`.
+

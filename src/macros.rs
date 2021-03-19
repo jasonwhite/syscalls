@@ -1,58 +1,41 @@
-/// syscall macro
-/// accept a syscall nr and variadic arguments (0 to 6).
-/// returns Ok on success, or Err(errno) on failure
+/// Performs a syscall.
+///
+/// Accepts a syscall nr and a variable number of arguments (0 to 6).
+///
+/// # Returns
+///  - `Ok` on success, or
+///  - `Err(errno)` if the syscall failed.
 #[macro_export]
 macro_rules! syscall {
     ($nr:ident) => {
-        $crate::helper::syscall0($crate::$nr)
+        $crate::syscall0($nr)
     };
 
     ($nr:ident, $a1:expr) => {
-        $crate::helper::syscall1($crate::$nr, $a1 as u64)
+        $crate::syscall1($nr, $a1 as u64)
     };
 
     ($nr:ident, $a1:expr, $a2:expr) => {
-        $crate::helper::syscall2($crate::$nr, $a1 as u64, $a2 as u64)
+        $crate::syscall2($nr, $a1 as u64, $a2 as u64)
     };
 
     ($nr:ident, $a1:expr, $a2:expr, $a3:expr) => {
-        $crate::helper::syscall3(
-            $crate::$nr,
-            $a1 as u64,
-            $a2 as u64,
-            $a3 as u64,
-        )
+        $crate::syscall3($nr, $a1 as u64, $a2 as u64, $a3 as u64)
     };
 
     ($nr:ident, $a1:expr, $a2:expr, $a3:expr, $a4:expr) => {
-        $crate::helper::syscall4(
-            $crate::$nr,
-            $a1 as u64,
-            $a2 as u64,
-            $a3 as u64,
-            $a4 as u64,
-        )
+        $crate::syscall4($nr, $a1 as u64, $a2 as u64, $a3 as u64, $a4 as u64)
     };
 
     ($nr:ident, $a1:expr, $a2:expr, $a3:expr, $a4:expr, $a5:expr) => {
-        $crate::helper::syscall5(
-            $crate::$nr,
-            $a1 as u64,
-            $a2 as u64,
-            $a3 as u64,
-            $a4 as u64,
-            $a5 as u64,
+        $crate::syscall5(
+            $nr, $a1 as u64, $a2 as u64, $a3 as u64, $a4 as u64, $a5 as u64,
         )
     };
 
     ($nr:ident, $a1:expr, $a2:expr, $a3:expr, $a4:expr, $a5:expr, $a6:expr) => {
-        $crate::helper::syscall6(
-            $crate::$nr,
-            $a1 as u64,
-            $a2 as u64,
-            $a3 as u64,
-            $a4 as u64,
-            $a5 as u64,
+        $crate::syscall6(
+            $nr, $a1 as u64, $a2 as u64, $a3 as u64, $a4 as u64, $a5 as u64,
             $a6 as u64,
         )
     };

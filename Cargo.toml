@@ -14,18 +14,14 @@ homepage = "https://github.com/jasonwhite/syscalls"
 documentation = "https://docs.rs/syscalls"
 
 [features]
-default = ["use_std"]
-# The 'use_std' feature permits the regex crate to use the standard library.
-# This is intended to support future use cases where the regex crate may be
-# able to compile without std, and instead just rely on 'core' and 'alloc'
-# (for example). Currently, this isn't supported, and removing the 'use_std'
-# feature will prevent regex from compiling.
-use_std = []
+default = ["std"]
+std = []
 with-serde = ["serde", "serde_repr"]
 
 [dependencies]
 serde = { version = "1.0", features = ["derive"], optional = true }
 serde_repr = { version = "0.1", optional = true }
+paste = "1"
 
 [build-dependencies]
 cc = "1.0"
@@ -39,4 +35,4 @@ members = [
 ]
 
 [package.metadata.docs.rs]
-features = ["use_std", "with-serde"]
+features = ["std", "with-serde"]

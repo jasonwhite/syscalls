@@ -1,24 +1,36 @@
-#![cfg_attr(not(feature = "use_std"), no_std)]
+#![cfg_attr(not(feature = "std"), no_std)]
 
 #[macro_use]
+mod macros;
 
+mod arch;
 mod args;
-pub mod helper;
-pub mod macros;
-mod nr;
+mod errno;
+mod ffi;
 
-pub use args::{SyscallArgs, SyscallRet};
-pub use helper::{
+pub use arch::*;
+pub use args::SyscallArgs;
+pub use errno::Errno;
+pub use ffi::{
     syscall0, syscall1, syscall2, syscall3, syscall4, syscall5, syscall6,
 };
-pub use nr::{SyscallNo, SyscallNo::*};
 
-/// do a syscall
-/// @nr: syscall number
-/// @args: packed arguments
-/// @return: Ok on success, Err when syscall failed (with errno)
-pub unsafe fn syscall(nr: SyscallNo, args: &SyscallArgs) -> Result<i64, i64> {
-    crate::helper::syscall6(
+/// Does a raw syscall.
+///
+/// # Arguments
+///  - `nr`: The syscall number.
+///  - `args`: packed arguments
+///
+/// # Returns
+///  - `Ok` on success,
+///  - `Err` when the syscall failed (with errno).
+///
+/// # Safety
+///
+/// Running a system call is inherently unsafe. It is the caller's
+/// responsibility to ensure safety.
+pub unsafe fn syscall(nr: Sysno, args: &SyscallArgs) -> Result<i64, Errno> {
+    syscall6(
         nr, args.arg0, args.arg1, args.arg2, args.arg3, args.arg4, args.arg5,
     )
 }
@@ -139,11 +151,21 @@ mod tests {
         assert_eq!(SYS_fsopen.name(), "fsopen");
     }
 
+    #[cfg(target_arch = "x86_64")]
     #[test]
     fn test_syscallno() {
-        assert_eq!(SyscallNo::from(2), SYS_open);
-        assert_eq!(SyscallNo::new(2), Some(SYS_open));
-        assert_eq!(SyscallNo::new(-1i32 as usize), None);
-        assert_eq!(SyscallNo::new(1024), None);
+        assert_eq!(Sysno::from(2), SYS_open);
+        assert_eq!(Sysno::new(2), Some(SYS_open));
+        assert_eq!(Sysno::new(-1i32 as usize), None);
+        assert_eq!(Sysno::new(1024), None);
+    }
+
+    #[test]
+    fn test_first() {
+        #[cfg(target_arch = "x86_64")]
+        assert_eq!(Sysno::first(), Sysno::read);
+
+        #[cfg(target_arch = "x86")]
+        assert_eq!(Sysno::first(), Sysno::restart_syscall);
     }
 }

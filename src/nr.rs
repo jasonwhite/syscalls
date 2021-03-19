@@ -1262,8 +1262,7 @@ static SYSCALL_IDS: [Option<SyscallNo>; 436] = [
 ];
 impl From<i32> for SyscallNo {
     fn from(id: i32) -> Self {
-        Self::new(id as usize).unwrap_or_else(|| {
-            panic!("invalid syscall: {}", id)
-        })
+        Self::new(id as usize)
+            .unwrap_or_else(|| panic!("invalid syscall: {}", id))
     }
 }

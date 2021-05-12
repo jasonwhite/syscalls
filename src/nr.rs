@@ -356,8 +356,19 @@ pub enum SyscallNo {
     SYS_fspick = 433,
     SYS_pidfd_open = 434,
     SYS_clone3 = 435,
+    SYS_close_range = 436,
+    SYS_openat2 = 437,
+    SYS_pidfd_getfd = 438,
+    SYS_faccessat2 = 439,
+    SYS_process_madvise = 440,
+    SYS_epoll_pwait2 = 441,
+    SYS_mount_setattr = 442,
+    SYS_quotactl_path = 443,
+    SYS_landlock_create_ruleset = 444,
+    SYS_landlock_add_rule = 445,
+    SYS_landlock_restrict_self = 446,
 }
-static SYSCALL_NAMES: [Option<&str>; 436] = [
+static SYSCALL_NAMES: [Option<&str>; 447] = [
     Some("read"),
     Some("write"),
     Some("open"),
@@ -794,6 +805,17 @@ static SYSCALL_NAMES: [Option<&str>; 436] = [
     Some("fspick"),
     Some("pidfd_open"),
     Some("clone3"),
+    Some("close_range"),
+    Some("openat2"),
+    Some("pidfd_getfd"),
+    Some("faccessat2"),
+    Some("process_madvise"),
+    Some("epoll_pwait2"),
+    Some("mount_setattr"),
+    Some("quotactl_path"),
+    Some("landlock_create_ruleset"),
+    Some("landlock_add_rule"),
+    Some("landlock_restrict_self"),
 ];
 
 impl SyscallNo {
@@ -822,7 +844,7 @@ impl fmt::Debug for SyscallNo {
     }
 }
 
-static SYSCALL_IDS: [Option<SyscallNo>; 436] = [
+static SYSCALL_IDS: [Option<SyscallNo>; 447] = [
     Some(SYS_read),
     Some(SYS_write),
     Some(SYS_open),
@@ -1259,6 +1281,17 @@ static SYSCALL_IDS: [Option<SyscallNo>; 436] = [
     Some(SYS_fspick),
     Some(SYS_pidfd_open),
     Some(SYS_clone3),
+    Some(SYS_close_range),
+    Some(SYS_openat2),
+    Some(SYS_pidfd_getfd),
+    Some(SYS_faccessat2),
+    Some(SYS_process_madvise),
+    Some(SYS_epoll_pwait2),
+    Some(SYS_mount_setattr),
+    Some(SYS_quotactl_path),
+    Some(SYS_landlock_create_ruleset),
+    Some(SYS_landlock_add_rule),
+    Some(SYS_landlock_restrict_self),
 ];
 impl From<i32> for SyscallNo {
     fn from(id: i32) -> Self {

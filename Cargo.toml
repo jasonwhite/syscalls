@@ -9,8 +9,8 @@ A list of Linux system calls.
 """
 keywords = ["syscall", "linux"]
 readme = "README.md"
-repository = "https://github.com/wangbj/syscalls"
-homepage = "https://github.com/wangbj/syscalls"
+repository = "https://github.com/jasonwhite/syscalls"
+homepage = "https://github.com/jasonwhite/syscalls"
 documentation = "https://docs.rs/syscalls"
 
 [features]

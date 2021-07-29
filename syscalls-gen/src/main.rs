@@ -123,7 +123,10 @@ fn gen_syscall_nrs(dest: &Path) -> Result<()> {
         f,
         "#[allow(non_snake_case, non_camel_case_types, non_upper_case_globals)]"
     )?;
-    writeln!(f, "#[derive(PartialEq, Eq, Clone, Copy)]")?;
+    writeln!(
+        f,
+        "#[derive(PartialEq, Eq, Clone, Copy, Ord, PartialOrd, Hash)]"
+    )?;
     writeln!(f, "#[cfg_attr(feature = \"serde_repr\", derive(Serialize_repr, Deserialize_repr))]")?;
     writeln!(f, "#[repr(i32)]")?;
     writeln!(f, "pub enum SyscallNo {{")?;

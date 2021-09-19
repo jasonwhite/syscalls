@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.6.6 (WIP)
+
+ - Added aarch64 support.
+
 ## v0.6.5
 
  - Renamed `with-serde` feature to just `serde`. The `with-serde` feature will

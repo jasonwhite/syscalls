@@ -17,63 +17,73 @@ static LINUX_VERSION: &str = "v5.17";
 lazy_static! {
     /// List of syscall tables for each architecture.
     static ref SOURCES: Vec<Source<'static>> = vec![
-        Source {
+        Source::Table(Table {
             arch: "x86",
             path: "arch/x86/entry/syscalls/syscall_32.tbl",
             abi: &[ABI::I386],
-        },
-        Source {
+        }),
+        Source::Table(Table {
             arch: "x86_64",
             path: "arch/x86/entry/syscalls/syscall_64.tbl",
             abi: &[ABI::COMMON, ABI::B64],
-        },
-        Source {
+        }),
+        Source::Table(Table {
             arch: "arm",
             path: "arch/arm/tools/syscall.tbl",
             abi: &[ABI::COMMON],
-        },
-        Source {
+        }),
+        // NOTE: arm64/aarch64 is a little different from all the other tables.
+        // These are defined in `unistd.h`, which is supposed to be the method
+        // used for all new architectures going forward.
+        Source::Header(Header {
+            arch: "aarch64",
+            headers: &[
+                "include/uapi/asm-generic/unistd.h",
+                //"arch/arm64/include/asm/unistd.h",
+            ],
+            blocklist: &[
+                // This syscall was renamed to `sync_file_range2` on aarch64.
+                // Thus, only `sync_file_range2` should appear in the syscall
+                // table.
+                "sync_file_range",
+            ],
+        }),
+        Source::Table(Table {
             arch: "sparc",
             path: "arch/sparc/kernel/syscalls/syscall.tbl",
             abi: &[ABI::COMMON, ABI::B32],
-        },
-        Source {
+        }),
+        Source::Table(Table {
             arch: "sparc64",
             path: "arch/sparc/kernel/syscalls/syscall.tbl",
             abi: &[ABI::COMMON, ABI::B64],
-        },
-        Source {
+        }),
+        Source::Table(Table {
             arch: "powerpc",
             path: "arch/powerpc/kernel/syscalls/syscall.tbl",
             abi: &[ABI::COMMON, ABI::NOSPU, ABI::B32],
-        },
-        Source {
+        }),
+        Source::Table(Table {
             arch: "powerpc64",
             path: "arch/powerpc/kernel/syscalls/syscall.tbl",
             abi: &[ABI::COMMON, ABI::NOSPU, ABI::B64],
-        },
-        Source {
+        }),
+        Source::Table(Table {
             arch: "mips",
             path: "arch/mips/kernel/syscalls/syscall_o32.tbl",
             abi: &[ABI::O32],
-        },
-        Source {
+        }),
+        Source::Table(Table {
             arch: "mips64",
             path: "arch/mips/kernel/syscalls/syscall_n64.tbl",
             abi: &[ABI::N64],
-        },
-        Source {
+        }),
+        Source::Table(Table {
             arch: "s390x",
             path: "arch/s390/kernel/syscalls/syscall.tbl",
             abi: &[ABI::COMMON, ABI::B64],
-        },
+        }),
     ];
-}
-
-struct Source<'a> {
-    arch: &'a str,
-    path: &'a str,
-    abi: &'a [ABI<'a>],
 }
 
 struct ABI<'a> {
@@ -98,6 +108,25 @@ impl<'a> ABI<'a> {
     }
 }
 
+struct Table<'a> {
+    arch: &'a str,
+    path: &'a str,
+    abi: &'a [ABI<'a>],
+}
+
+struct Header<'a> {
+    arch: &'a str,
+    headers: &'a [&'a str],
+    blocklist: &'a [&'a str],
+}
+
+enum Source<'a> {
+    /// The definitions are in a `syscall.tbl` file.
+    Table(Table<'a>),
+    /// The definitions are in a unistd.h header file.
+    Header(Header<'a>),
+}
+
 #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
 struct TableEntry {
     id: u32,
@@ -120,7 +149,7 @@ impl TableEntry {
     }
 }
 
-impl<'a> Source<'a> {
+impl<'a> Table<'a> {
     async fn fetch_table(&self) -> Result<Vec<TableEntry>> {
         let contents = fetch_path(self.path).await?;
 
@@ -172,23 +201,83 @@ impl<'a> Source<'a> {
 
         Ok(table)
     }
+}
+
+impl<'a> Header<'a> {
+    async fn fetch_table(&self) -> Result<Vec<TableEntry>> {
+        lazy_static! {
+            // Pattern for matching the syscall definition.
+            static ref RE_SYSCALLNR: Regex = Regex::new(r"^#define\s+__NR_([a-z0-9_]+)\s+(\d+)").unwrap();
+        }
+
+        let mut table = Vec::new();
+
+        for header in self.headers {
+            let contents = fetch_path(header).await?;
+
+            for line in contents.lines() {
+                let line = line.trim();
+
+                if let Some(cap) = RE_SYSCALLNR.captures(line) {
+                    let name: &str = cap[1].into();
+                    let id: u32 = cap[2].parse()?;
+
+                    if name == "syscalls" {
+                        // This just keeps track of the number of syscalls in
+                        // the table and isn't a real syscall.
+                        continue;
+                    }
+
+                    if self.blocklist.contains(&name) {
+                        continue;
+                    }
+
+                    table.push(TableEntry {
+                        id,
+                        name: name.into(),
+                        entry_point: Some(format!("sys_{}", name)),
+                    });
+                }
+            }
+        }
+
+        // The table should already be sorted, but lets make sure.
+        table.sort();
+
+        Ok(table)
+    }
+}
+
+impl<'a> Source<'a> {
+    pub fn arch(&self) -> &'a str {
+        match self {
+            Self::Table(table) => table.arch,
+            Self::Header(header) => header.arch,
+        }
+    }
+
+    async fn fetch_table(&self) -> Result<Vec<TableEntry>> {
+        match self {
+            Self::Table(table) => table.fetch_table().await,
+            Self::Header(header) => header.fetch_table().await,
+        }
+    }
 
     /// Generates the source file.
     async fn generate(&self, dir: &Path) -> Result<(&str, PathBuf)> {
-        let table = self
-            .fetch_table()
-            .await
-            .wrap_err_with(|| eyre!("Failed fetching table {:?}", self.path))?;
+        let table = self.fetch_table().await.wrap_err_with(|| {
+            eyre!("Failed fetching table for {}", self.arch())
+        })?;
 
         // Generate `src/arch/{arch}.rs`
-        let syscalls = dir.join(format!("src/arch/{}.rs", self.arch));
+        let syscalls = dir.join(format!("src/arch/{}.rs", self.arch()));
 
         let mut file = fs::File::create(&syscalls)
             .wrap_err_with(|| eyre!("Failed to create file {:?}", syscalls))?;
-        writeln!(file, "//! Syscalls for the {} architecture.\n", self.arch)?;
+        writeln!(file, "//! Syscalls for the {} architecture.\n", self.arch())?;
         write!(file, "{}", SyscallFile(&table))?;
 
-        Ok((self.arch, syscalls))
+        Ok((self.arch(), syscalls))
     }
 }
 

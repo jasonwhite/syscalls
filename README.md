@@ -31,7 +31,24 @@ syscalls = { version = "0.3", features = ["with-serde"] }
 
 ## Architecture Support
 
-Currently, only the `x86-64` architecture is fully supported.
+The *Enum* column means that a `Sysno` enum is implemented for this
+architecture.
+
+The *Invoke* column means that syscalls can be invoked for this architecture.
+
+|     Arch    | Enum | Invoke |
+|:-----------:|:----:|:------:|
+|       `arm` |   ✅  |    ✅   |
+|   `aarch64` |   ❌  |    ❌   |
+|      `mips` |   ✅  |    ✅   |
+|    `mips64` |   ✅  |    ✅   |
+|   `powerpc` |   ✅  |    ✅   |
+| `powerpc64` |   ✅  |    ✅   |
+|     `s390x` |   ✅  |    ✅   |
+|     `sparc` |   ✅  |    ❌   |
+|   `sparc64` |   ✅  |    ❌   |
+|       `x86` |   ✅  |    ✅   |
+|    `x86_64` |   ✅  |    ✅   |
 
 ## Updating the syscall list
 

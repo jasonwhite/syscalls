@@ -55,7 +55,6 @@ pub unsafe fn syscall1(nr: Sysno, a1: u64) -> Result<i64, Errno> {
 /// Running a system call is inherently unsafe. It is the caller's
 /// responsibility to ensure safety.
 #[inline(always)]
-#[inline(always)]
 pub unsafe fn syscall2(nr: Sysno, a1: u64, a2: u64) -> Result<i64, Errno> {
     Errno::from_ret(__syscall2(nr as i64, a1, a2))
 }

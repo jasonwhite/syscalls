@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.4.2
+
+ - Made `ErrnoSentinel` public.
+
 ## v0.4.1
 
  - Added the ability to invoke syscalls for all architectures except `aarch64`,

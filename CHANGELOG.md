@@ -7,8 +7,8 @@
 
 ## v0.4.0
 
-This is a major change from v0.3. You can fix most compilation errors by simply
-doing `s/SyscallNo::SYS_/Sysno::/g`.
+This is a major breaking change from v0.3. You can fix most compilation errors
+by simply doing `s/SyscallNo::SYS_/Sysno::/g`.
 
  - Created this changelog.
  - Renamed `SyscallNo::SYS_*` to `Sysno::*`.

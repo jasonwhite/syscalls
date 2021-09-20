@@ -1,11 +1,12 @@
 [package]
 name = "syscalls-gen"
-version = "0.2.0"
+publish = false
+version = "0.0.0"
 authors = ["Baojun Wang <wangbj@gmail.com>", "Jason White <rust@jasonwhite.io>"]
 edition = "2018"
 license = "BSD-2-Clause"
 description = """
-Generates a syscalls table from Linux header files.
+Generates a syscalls table from Linux source code.
 """
 keywords = ["syscall", "linux"]
 readme = "README.md"

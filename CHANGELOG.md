@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.4.1 (WIP)
+
+ - Added the ability to invoke syscalls for all architectures except `aarch64`,
+   `sparc`, and `sparc64`.
+
 ## v0.4.0
 
 This is a major change from v0.3. You can fix most compilation errors by simply

@@ -10,7 +10,7 @@ mod ffi;
 
 pub use arch::*;
 pub use args::SyscallArgs;
-pub use errno::Errno;
+pub use errno::{Errno, ErrnoSentinel};
 pub use ffi::{
     syscall0, syscall1, syscall2, syscall3, syscall4, syscall5, syscall6,
 };

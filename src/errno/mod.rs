@@ -3,7 +3,7 @@ mod macros;
 
 mod generated;
 
-#[cfg(feature = "use_std")]
+#[cfg(feature = "std")]
 mod last;
 
 use core::fmt;
@@ -46,13 +46,13 @@ impl Errno {
     }
 
     /// Returns the last error that occurred.
-    #[cfg(feature = "use_std")]
+    #[cfg(feature = "std")]
     pub fn last() -> Self {
         Self(unsafe { *last::errno() })
     }
 
     /// Converts a value into an `Errno`.
-    #[cfg(feature = "use_std")]
+    #[cfg(feature = "std")]
     pub fn result<T>(value: T) -> Result<T, Errno>
     where
         T: ErrnoSentinel + PartialEq<T>,
@@ -83,7 +83,7 @@ impl Errno {
     /// A `From<std::io::Error>` implementation is not provided because this
     /// conversion can fail. However, the reverse is possible, so that is
     /// provided as a `From` implementation.
-    #[cfg(feature = "use_std")]
+    #[cfg(feature = "std")]
     pub fn from_io_error(err: std::io::Error) -> Option<Self> {
         err.raw_os_error().map(Self::new)
     }
@@ -115,14 +115,14 @@ impl fmt::Debug for Errno {
     }
 }
 
-#[cfg(feature = "use_std")]
+#[cfg(feature = "std")]
 impl From<Errno> for std::io::Error {
     fn from(err: Errno) -> Self {
         std::io::Error::from_raw_os_error(err.into_raw())
     }
 }
 
-#[cfg(feature = "use_std")]
+#[cfg(feature = "std")]
 impl std::error::Error for Errno {}
 
 pub trait ErrnoSentinel: Sized {
@@ -183,7 +183,7 @@ mod test {
         assert_eq!(Errno::from_ret(2), Ok(2));
     }
 
-    #[cfg(feature = "use_std")]
+    #[cfg(feature = "std")]
     #[test]
     fn io_error() {
         use std::io;
@@ -204,7 +204,7 @@ mod test {
         );
     }
 
-    #[cfg(feature = "use_std")]
+    #[cfg(feature = "std")]
     #[test]
     fn last_errno() {
         assert_eq!(

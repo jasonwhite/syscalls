@@ -1,9 +1,11 @@
 # Changelog
 
-## v0.4.1 (WIP)
+## v0.4.1
 
  - Added the ability to invoke syscalls for all architectures except `aarch64`,
    `sparc`, and `sparc64`.
+ - Fixed std-dependent Errno trait impls not getting compiled.
+ - Made `syscalls::arch::{x86, x86_64, ...}` private.
 
 ## v0.4.0
 

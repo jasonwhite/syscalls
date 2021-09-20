@@ -2,25 +2,25 @@
 mod macros;
 
 #[cfg(target_arch = "arm")]
-pub mod arm;
+mod arm;
 #[cfg(target_arch = "mips")]
-pub mod mips;
+mod mips;
 #[cfg(target_arch = "mips64")]
-pub mod mips64;
+mod mips64;
 #[cfg(target_arch = "powerpc")]
-pub mod powerpc;
+mod powerpc;
 #[cfg(target_arch = "powerpc64")]
-pub mod powerpc64;
+mod powerpc64;
 #[cfg(target_arch = "s390x")]
-pub mod s390x;
+mod s390x;
 #[cfg(target_arch = "sparc")]
-pub mod sparc;
+mod sparc;
 #[cfg(target_arch = "sparc64")]
-pub mod sparc64;
+mod sparc64;
 #[cfg(target_arch = "x86")]
-pub mod x86;
+mod x86;
 #[cfg(target_arch = "x86_64")]
-pub mod x86_64;
+mod x86_64;
 
 #[cfg(target_arch = "arm")]
 pub use arm::*;

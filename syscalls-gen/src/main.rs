@@ -20,52 +20,52 @@ lazy_static! {
         Source {
             arch: "x86",
             path: "arch/x86/entry/syscalls/syscall_32.tbl",
-            abi: vec!["i386"],
+            abi: &[ABI::I386],
         },
         Source {
             arch: "x86_64",
             path: "arch/x86/entry/syscalls/syscall_64.tbl",
-            abi: vec!["common", "64"],
+            abi: &[ABI::COMMON, ABI::B64],
         },
         Source {
             arch: "arm",
             path: "arch/arm/tools/syscall.tbl",
-            abi: vec!["common"],
+            abi: &[ABI::COMMON],
         },
         Source {
             arch: "sparc",
             path: "arch/sparc/kernel/syscalls/syscall.tbl",
-            abi: vec!["common", "32"],
+            abi: &[ABI::COMMON, ABI::B32],
         },
         Source {
             arch: "sparc64",
             path: "arch/sparc/kernel/syscalls/syscall.tbl",
-            abi: vec!["common", "64"],
+            abi: &[ABI::COMMON, ABI::B64],
         },
         Source {
             arch: "powerpc",
             path: "arch/powerpc/kernel/syscalls/syscall.tbl",
-            abi: vec!["common", "nospu", "32"],
+            abi: &[ABI::COMMON, ABI::NOSPU, ABI::B32],
         },
         Source {
             arch: "powerpc64",
             path: "arch/powerpc/kernel/syscalls/syscall.tbl",
-            abi: vec!["common", "nospu", "64"],
+            abi: &[ABI::COMMON, ABI::NOSPU, ABI::B64],
         },
         Source {
             arch: "mips",
             path: "arch/mips/kernel/syscalls/syscall_o32.tbl",
-            abi: vec!["o32"],
+            abi: &[ABI::O32],
         },
         Source {
             arch: "mips64",
             path: "arch/mips/kernel/syscalls/syscall_n64.tbl",
-            abi: vec!["n64"],
+            abi: &[ABI::N64],
         },
         Source {
             arch: "s390x",
             path: "arch/s390/kernel/syscalls/syscall.tbl",
-            abi: vec!["common", "64"],
+            abi: &[ABI::COMMON, ABI::B64],
         },
     ];
 }
@@ -80,7 +80,29 @@ pub use self::syscalls::*;
 struct Source<'a> {
     arch: &'a str,
     path: &'a str,
-    abi: Vec<&'a str>,
+    abi: &'a [ABI<'a>],
+}
+
+struct ABI<'a> {
+    name: &'a str,
+    offset: u32,
+}
+
+impl<'a> ABI<'a> {
+    // Different syscall ABIs have different offsets. This currently only
+    // applies to MIPS and ia64. (Search for `__NR_Linux` in the kernel source
+    // to find syscall offsets.)
+    pub const COMMON: Self = Self::new("common", 0);
+    pub const I386: Self = Self::new("i386", 0);
+    pub const NOSPU: Self = Self::new("nospu", 0);
+    pub const B32: Self = Self::new("32", 0);
+    pub const B64: Self = Self::new("64", 0);
+    pub const O32: Self = Self::new("o32", 4000);
+    pub const N64: Self = Self::new("n64", 5000);
+
+    pub const fn new(name: &'a str, offset: u32) -> Self {
+        Self { name, offset }
+    }
 }
 
 #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
@@ -122,14 +144,14 @@ impl<'a> Source<'a> {
             let mut fields =
                 line.split(char::is_whitespace).filter(|x| !x.is_empty());
 
-            let id = fields
+            let id: u32 = fields
                 .next()
                 .ok_or_else(|| {
                     eyre!("Missing syscall number (line {:?})", line)
                 })?
                 .parse()
                 .wrap_err_with(|| eyre!("Failed parsing line {:?}", line))?;
-            let abi = fields.next().ok_or_else(|| {
+            let abi_name = fields.next().ok_or_else(|| {
                 eyre!("Missing syscall abi field (line {:?})", line)
             })?;
             let name = fields
@@ -140,12 +162,15 @@ impl<'a> Source<'a> {
                 .into();
             let entry_point = fields.next().map(Into::into);
 
-            if self.abi.contains(&abi) {
-                table.push(TableEntry {
-                    id,
-                    name,
-                    entry_point,
-                });
+            for abi in self.abi {
+                if abi.name == abi_name {
+                    table.push(TableEntry {
+                        id: id + abi.offset,
+                        name,
+                        entry_point,
+                    });
+                    break;
+                }
             }
         }
 

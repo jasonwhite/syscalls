@@ -1,5 +1,14 @@
 # Changelog
 
+## v0.5.0
+
+This is a major breaking change from v0.4.
+
+ - Changed all syscalls to take and return `usize` instead of `i64` or `u64`.
+   This fixes calling syscalls on 32-bit architectures.
+ - Fixed syscall offsets for mips and mips64.
+ - Added CI tests for more than just `x86_64`.
+
 ## v0.4.2
 
  - Made `ErrnoSentinel` public.

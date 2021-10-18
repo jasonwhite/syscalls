@@ -12,31 +12,47 @@ macro_rules! syscall {
     };
 
     ($nr:ident, $a1:expr) => {
-        $crate::syscall1($nr, $a1 as u64)
+        $crate::syscall1($nr, $a1 as usize)
     };
 
     ($nr:ident, $a1:expr, $a2:expr) => {
-        $crate::syscall2($nr, $a1 as u64, $a2 as u64)
+        $crate::syscall2($nr, $a1 as usize, $a2 as usize)
     };
 
     ($nr:ident, $a1:expr, $a2:expr, $a3:expr) => {
-        $crate::syscall3($nr, $a1 as u64, $a2 as u64, $a3 as u64)
+        $crate::syscall3($nr, $a1 as usize, $a2 as usize, $a3 as usize)
     };
 
     ($nr:ident, $a1:expr, $a2:expr, $a3:expr, $a4:expr) => {
-        $crate::syscall4($nr, $a1 as u64, $a2 as u64, $a3 as u64, $a4 as u64)
+        $crate::syscall4(
+            $nr,
+            $a1 as usize,
+            $a2 as usize,
+            $a3 as usize,
+            $a4 as usize,
+        )
     };
 
     ($nr:ident, $a1:expr, $a2:expr, $a3:expr, $a4:expr, $a5:expr) => {
         $crate::syscall5(
-            $nr, $a1 as u64, $a2 as u64, $a3 as u64, $a4 as u64, $a5 as u64,
+            $nr,
+            $a1 as usize,
+            $a2 as usize,
+            $a3 as usize,
+            $a4 as usize,
+            $a5 as usize,
         )
     };
 
     ($nr:ident, $a1:expr, $a2:expr, $a3:expr, $a4:expr, $a5:expr, $a6:expr) => {
         $crate::syscall6(
-            $nr, $a1 as u64, $a2 as u64, $a3 as u64, $a4 as u64, $a5 as u64,
-            $a6 as u64,
+            $nr,
+            $a1 as usize,
+            $a2 as usize,
+            $a3 as usize,
+            $a4 as usize,
+            $a5 as usize,
+            $a6 as usize,
         )
     };
 }

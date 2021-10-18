@@ -34,8 +34,8 @@ impl Errno {
 
     /// Converts a raw syscall return value to a result.
     #[inline(always)]
-    pub fn from_ret(value: i64) -> Result<i64, Errno> {
-        if value as u64 > -4096i64 as u64 {
+    pub fn from_ret(value: usize) -> Result<usize, Errno> {
+        if value > -4096isize as usize {
             // Truncation of the error value is guaranteed to never occur due to
             // the above check. This is the same check that musl uses:
             // https://git.musl-libc.org/cgit/musl/tree/src/internal/syscall_ret.c?h=v1.1.15
@@ -179,7 +179,7 @@ mod test {
 
     #[test]
     fn from_ret() {
-        assert_eq!(Errno::from_ret(-2i64), Err(Errno::ENOENT));
+        assert_eq!(Errno::from_ret(-2isize as usize), Err(Errno::ENOENT));
         assert_eq!(Errno::from_ret(2), Ok(2));
     }
 

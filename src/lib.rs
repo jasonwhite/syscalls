@@ -29,7 +29,7 @@ pub use ffi::{
 ///
 /// Running a system call is inherently unsafe. It is the caller's
 /// responsibility to ensure safety.
-pub unsafe fn syscall(nr: Sysno, args: &SyscallArgs) -> Result<i64, Errno> {
+pub unsafe fn syscall(nr: Sysno, args: &SyscallArgs) -> Result<usize, Errno> {
     syscall6(
         nr, args.arg0, args.arg1, args.arg2, args.arg3, args.arg4, args.arg5,
     )
@@ -44,7 +44,7 @@ mod tests {
     fn test_syscall1_syscall4() {
         let pmaps = CString::new("/proc/self/maps").unwrap();
         let fd = unsafe {
-            let at_fdcwd = (-100i64) as u64;
+            let at_fdcwd = -100isize;
             syscall!(SYS_openat, at_fdcwd, pmaps.as_ptr(), 0)
         }
         .unwrap();
@@ -62,9 +62,8 @@ mod tests {
                 r1 as usize,
             )
         };
-        let r2 = unsafe {
-            syscall!(SYS_pread64, fd, buffer2.as_mut_ptr() as u64, 64, 16)
-        };
+        let r2 =
+            unsafe { syscall!(SYS_pread64, fd, buffer2.as_mut_ptr(), 64, 16) };
         let s2 = unsafe {
             std::slice::from_raw_parts(
                 buffer1.as_mut_ptr() as *const u8,
@@ -72,10 +71,10 @@ mod tests {
             )
         };
 
-        assert_eq!(r2, Ok(r1 as i64));
+        assert_eq!(r2, Ok(r1 as usize));
         assert_eq!(s1, s2);
 
-        let closed = unsafe { syscall!(SYS_close, fd as u64) };
+        let closed = unsafe { syscall!(SYS_close, fd) };
         assert!(closed.is_ok());
     }
 
@@ -83,7 +82,7 @@ mod tests {
     fn test_syscall1_syscall4_2() {
         let pmaps = CString::new("/proc/self/maps").unwrap();
         let fd = unsafe {
-            let at_fdcwd = (-100i64) as u64;
+            let at_fdcwd = -100isize;
             syscall!(SYS_openat, at_fdcwd, pmaps.as_ptr(), 0)
         }
         .unwrap();
@@ -91,8 +90,12 @@ mod tests {
         let mut buffer1: [u8; 64] = unsafe { std::mem::zeroed() };
         let mut buffer2: [u8; 64] = unsafe { std::mem::zeroed() };
 
-        let args =
-            SyscallArgs::from(&[fd as u64, buffer1.as_mut_ptr() as _, 64, 16]);
+        let args = SyscallArgs::from(&[
+            fd as usize,
+            buffer1.as_mut_ptr() as _,
+            64,
+            16,
+        ]);
         let r1 =
             unsafe { syscall(SYS_pread64, &args) }.expect("SYS_pread64 failed");
 
@@ -102,9 +105,8 @@ mod tests {
                 r1 as usize,
             )
         };
-        let r2 = unsafe {
-            syscall!(SYS_pread64, fd, buffer2.as_mut_ptr() as u64, 64, 16)
-        };
+        let r2 =
+            unsafe { syscall!(SYS_pread64, fd, buffer2.as_mut_ptr(), 64, 16) };
         let s2 = unsafe {
             std::slice::from_raw_parts(
                 buffer1.as_mut_ptr() as *const u8,
@@ -112,10 +114,10 @@ mod tests {
             )
         };
 
-        assert_eq!(r2, Ok(r1 as i64));
+        assert_eq!(r2, Ok(r1 as usize));
         assert_eq!(s1, s2);
 
-        let closed = unsafe { syscall!(SYS_close, fd as u64) };
+        let closed = unsafe { syscall!(SYS_close, fd) };
         assert!(closed.is_ok());
     }
 

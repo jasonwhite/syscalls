@@ -7,16 +7,23 @@
 #[derive(PartialEq, Debug, Eq, Clone, Copy)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct SyscallArgs {
-    pub arg0: u64,
-    pub arg1: u64,
-    pub arg2: u64,
-    pub arg3: u64,
-    pub arg4: u64,
-    pub arg5: u64,
+    pub arg0: usize,
+    pub arg1: usize,
+    pub arg2: usize,
+    pub arg3: usize,
+    pub arg4: usize,
+    pub arg5: usize,
 }
 
 impl SyscallArgs {
-    pub fn new(a0: u64, a1: u64, a2: u64, a3: u64, a4: u64, a5: u64) -> Self {
+    pub fn new(
+        a0: usize,
+        a1: usize,
+        a2: usize,
+        a3: usize,
+        a4: usize,
+        a5: usize,
+    ) -> Self {
         SyscallArgs {
             arg0: a0,
             arg1: a1,
@@ -28,8 +35,8 @@ impl SyscallArgs {
     }
 }
 
-impl From<&[u64; 6]> for SyscallArgs {
-    fn from(args: &[u64; 6]) -> Self {
+impl From<&[usize; 6]> for SyscallArgs {
+    fn from(args: &[usize; 6]) -> Self {
         SyscallArgs {
             arg0: args[0],
             arg1: args[1],
@@ -41,8 +48,8 @@ impl From<&[u64; 6]> for SyscallArgs {
     }
 }
 
-impl From<&[u64; 5]> for SyscallArgs {
-    fn from(args: &[u64; 5]) -> Self {
+impl From<&[usize; 5]> for SyscallArgs {
+    fn from(args: &[usize; 5]) -> Self {
         SyscallArgs {
             arg0: args[0],
             arg1: args[1],
@@ -54,8 +61,8 @@ impl From<&[u64; 5]> for SyscallArgs {
     }
 }
 
-impl From<&[u64; 4]> for SyscallArgs {
-    fn from(args: &[u64; 4]) -> Self {
+impl From<&[usize; 4]> for SyscallArgs {
+    fn from(args: &[usize; 4]) -> Self {
         SyscallArgs {
             arg0: args[0],
             arg1: args[1],
@@ -67,8 +74,8 @@ impl From<&[u64; 4]> for SyscallArgs {
     }
 }
 
-impl From<&[u64; 3]> for SyscallArgs {
-    fn from(args: &[u64; 3]) -> Self {
+impl From<&[usize; 3]> for SyscallArgs {
+    fn from(args: &[usize; 3]) -> Self {
         SyscallArgs {
             arg0: args[0],
             arg1: args[1],
@@ -80,8 +87,8 @@ impl From<&[u64; 3]> for SyscallArgs {
     }
 }
 
-impl From<&[u64; 2]> for SyscallArgs {
-    fn from(args: &[u64; 2]) -> Self {
+impl From<&[usize; 2]> for SyscallArgs {
+    fn from(args: &[usize; 2]) -> Self {
         SyscallArgs {
             arg0: args[0],
             arg1: args[1],
@@ -93,8 +100,8 @@ impl From<&[u64; 2]> for SyscallArgs {
     }
 }
 
-impl From<&[u64; 1]> for SyscallArgs {
-    fn from(args: &[u64; 1]) -> Self {
+impl From<&[usize; 1]> for SyscallArgs {
+    fn from(args: &[usize; 1]) -> Self {
         SyscallArgs {
             arg0: args[0],
             arg1: 0,
@@ -106,8 +113,8 @@ impl From<&[u64; 1]> for SyscallArgs {
     }
 }
 
-impl From<&[u64; 0]> for SyscallArgs {
-    fn from(_args: &[u64; 0]) -> Self {
+impl From<&[usize; 0]> for SyscallArgs {
+    fn from(_args: &[usize; 0]) -> Self {
         SyscallArgs {
             arg0: 0,
             arg1: 0,

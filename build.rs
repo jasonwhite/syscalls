@@ -2,12 +2,9 @@ use std::path::PathBuf;
 
 fn main() {
     // The target architecture should be the first value in the TARGET triple.
-    let target = std::env::var("TARGET").ok();
-
-    let target_arch = target
-        .as_ref()
-        .and_then(|target| target.split('-').next())
-        .unwrap_or("x86_64");
+    let target_arch = std::env::var("CARGO_CFG_TARGET_ARCH");
+    let target_arch = target_arch.as_ref().map(String::as_str);
+    let target_arch = target_arch.unwrap_or("x64_64");
 
     let file = PathBuf::from(format!("src/arch/{}/syscall.c", target_arch));
 

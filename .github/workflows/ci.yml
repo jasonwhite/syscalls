@@ -27,6 +27,23 @@ jobs:
   test:
     name: Test Suite
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        target:
+          # NOTE: cargo-cross doesn't have images for all architectures
+          # supported by this project and so those architectures are commented
+          # out.
+          - arm-unknown-linux-gnueabi
+          - i686-unknown-linux-gnu
+          - mips-unknown-linux-gnu
+          - mips64-unknown-linux-gnuabi64
+            #- sparc-unknown-linux-gnu
+            #- sparc64-unknown-linux-gnu
+          - powerpc-unknown-linux-gnu
+            #- powerpc64-unknown-linux-gnu
+          - s390x-unknown-linux-gnu
+          - x86_64-unknown-linux-gnu
     steps:
       - name: Checkout sources
         uses: actions/checkout@v2
@@ -37,11 +54,14 @@ jobs:
           profile: minimal
           toolchain: stable
           override: true
+          target: ${{ matrix.target }}
 
       - name: Run cargo test
         uses: actions-rs/cargo@v1
         with:
+          use-cross: true
           command: test
+          args: --target ${{ matrix.target }}
 
   rustfmt:
     name: Check format

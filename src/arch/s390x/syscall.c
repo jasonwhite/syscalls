@@ -31,6 +31,10 @@
     return r2;                                                    \
   } while (0)
 
+#ifndef SYS_mmap
+#define SYS_mmap 90
+#endif
+
 long __syscall0(long n) {
   register long r1 __asm__("r1") = n;
   register long r2 __asm__("r2");

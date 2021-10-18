@@ -42,7 +42,7 @@ mod tests {
 
     #[test]
     fn test_syscall1_syscall4() {
-        let pmaps = CString::new("/proc/self/maps").unwrap();
+        let pmaps = CString::new("/dev/zero").unwrap();
         let fd = unsafe {
             let at_fdcwd = -100isize;
             syscall!(SYS_openat, at_fdcwd, pmaps.as_ptr(), 0)
@@ -52,9 +52,8 @@ mod tests {
         let mut buffer1: [u8; 64] = unsafe { std::mem::zeroed() };
         let mut buffer2: [u8; 64] = unsafe { std::mem::zeroed() };
 
-        let r1 = unsafe {
-            libc::pread64(fd as i32, buffer1.as_mut_ptr() as _, 64, 16)
-        };
+        let r1 =
+            unsafe { libc::read(fd as i32, buffer1.as_mut_ptr() as _, 64) };
 
         let s1 = unsafe {
             std::slice::from_raw_parts(
@@ -62,8 +61,7 @@ mod tests {
                 r1 as usize,
             )
         };
-        let r2 =
-            unsafe { syscall!(SYS_pread64, fd, buffer2.as_mut_ptr(), 64, 16) };
+        let r2 = unsafe { syscall!(SYS_read, fd, buffer2.as_mut_ptr(), 64) };
         let s2 = unsafe {
             std::slice::from_raw_parts(
                 buffer1.as_mut_ptr() as *const u8,
@@ -80,7 +78,7 @@ mod tests {
 
     #[test]
     fn test_syscall1_syscall4_2() {
-        let pmaps = CString::new("/proc/self/maps").unwrap();
+        let pmaps = CString::new("/dev/zero").unwrap();
         let fd = unsafe {
             let at_fdcwd = -100isize;
             syscall!(SYS_openat, at_fdcwd, pmaps.as_ptr(), 0)
@@ -90,14 +88,9 @@ mod tests {
         let mut buffer1: [u8; 64] = unsafe { std::mem::zeroed() };
         let mut buffer2: [u8; 64] = unsafe { std::mem::zeroed() };
 
-        let args = SyscallArgs::from(&[
-            fd as usize,
-            buffer1.as_mut_ptr() as _,
-            64,
-            16,
-        ]);
-        let r1 =
-            unsafe { syscall(SYS_pread64, &args) }.expect("SYS_pread64 failed");
+        let args =
+            SyscallArgs::from(&[fd as usize, buffer1.as_mut_ptr() as _, 64]);
+        let r1 = unsafe { syscall(SYS_read, &args) }.expect("SYS_read failed");
 
         let s1 = unsafe {
             std::slice::from_raw_parts(
@@ -105,8 +98,7 @@ mod tests {
                 r1 as usize,
             )
         };
-        let r2 =
-            unsafe { syscall!(SYS_pread64, fd, buffer2.as_mut_ptr(), 64, 16) };
+        let r2 = unsafe { syscall!(SYS_read, fd, buffer2.as_mut_ptr(), 64) };
         let s2 = unsafe {
             std::slice::from_raw_parts(
                 buffer1.as_mut_ptr() as *const u8,

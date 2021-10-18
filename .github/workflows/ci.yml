@@ -1,4 +1,4 @@
-name: Continuous Integration
+name: CI
 
 on:
   push:
@@ -64,7 +64,7 @@ jobs:
           command: fmt
           args: --all -- --check
 
-  clippy_check:
+  clippy:
     name: Clippy
     runs-on: ubuntu-latest
     steps:
@@ -77,3 +77,24 @@ jobs:
       - uses: actions-rs/clippy-check@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+
+  publish_crate:
+    name: Publish Crate
+    # Don't publish unless all the checks pass.
+    needs: [check, test, clippy, rustfmt]
+    # Only publish for tags
+    if: ${{ startsWith(github.event.ref, 'refs/tags/') }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v1
+
+      - name: cargo login
+        uses: actions-rs/cargo@v1
+        with:
+          command: login
+          args: ${{ secrets.CARGO_TOKEN }}
+
+      - name: publish
+        run: cargo publish --no-verify
+

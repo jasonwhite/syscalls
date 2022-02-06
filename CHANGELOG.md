@@ -1,5 +1,12 @@
 # Changelog
 
+## v0.6.0 (WIP)
+
+ - Removed `build.rs` and switched to Rust's inline assembly syntax. This should
+   enable better codegen, including the ability to have syscalls get inlined.
+ - **Breaking**: Architectures besides `arm`, `x86`, and `x86-64` now require
+   nightly.
+
 ## v0.5.0
 
 This is a major breaking change from v0.4.

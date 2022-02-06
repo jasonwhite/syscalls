@@ -1,4 +1,16 @@
 #![cfg_attr(not(feature = "std"), no_std)]
+#![cfg_attr(
+    // These architectures require nightly to use inline assembly.
+    // See https://github.com/rust-lang/rust/issues/93335
+    any(
+        target_arch = "mips",
+        target_arch = "mips64",
+        target_arch = "s390x",
+        target_arch = "powerpc",
+        target_arch = "powerpc65",
+    ),
+    feature(asm_experimental_arch)
+)]
 
 #[macro_use]
 mod macros;

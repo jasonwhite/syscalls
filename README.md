@@ -19,14 +19,14 @@ A list of all Linux system calls.
 By default, `std` support is enabled. If you wish to compile in a `no_std`
 environment, use:
 ```
-syscalls = { version = "0.3", default-features = false }
+syscalls = { version = "0.5", default-features = false }
 ```
 
 ### `with-serde`
 
 Various types can be serialized with Serde. This can be enabled with:
 ```
-syscalls = { version = "0.3", features = ["with-serde"] }
+syscalls = { version = "0.5", features = ["with-serde"] }
 ```
 
 ## Architecture Support
@@ -36,19 +36,25 @@ architecture.
 
 The *Invoke* column means that syscalls can be invoked for this architecture.
 
-|     Arch    | Enum | Invoke |
-|:-----------:|:----:|:------:|
-|       `arm` |   ✅  |    ✅   |
-|   `aarch64` |   ❌  |    ❌   |
-|      `mips` |   ✅  |    ✅   |
-|    `mips64` |   ✅  |    ✅   |
-|   `powerpc` |   ✅  |    ✅   |
-| `powerpc64` |   ✅  |    ✅   |
-|     `s390x` |   ✅  |    ✅   |
-|     `sparc` |   ✅  |    ❌   |
-|   `sparc64` |   ✅  |    ❌   |
-|       `x86` |   ✅  |    ✅   |
-|    `x86_64` |   ✅  |    ✅   |
+The *Requires Nightly?* column means that syscalls can only be invoked if
+compiled with nightly Rust. This is because inline assembly [is not yet
+stabilized for all architectures][asm_experimental_arch].
+
+[asm_experimental_arch]: https://github.com/rust-lang/rust/issues/93335
+
+|     Arch    | Enum  | Invoke  | Requires Nightly? |
+|:-----------:|:-----:|:-------:|:-----------------:|
+|       `arm` |   ✅  |    ✅   | No ✅             |
+|   `aarch64` |   ❌  |    ❌   | N/A               |
+|      `mips` |   ✅  |    ✅   | Yes ❌            |
+|    `mips64` |   ✅  |    ✅   | Yes ❌            |
+|   `powerpc` |   ✅  |    ✅   | Yes ❌            |
+| `powerpc64` |   ✅  |    ✅   | Yes ❌            |
+|     `s390x` |   ✅  |    ✅   | Yes ❌            |
+|     `sparc` |   ✅  |    ❌   | N/A               |
+|   `sparc64` |   ✅  |    ❌   | N/A               |
+|       `x86` |   ✅  |    ✅   | No ✅             |
+|    `x86_64` |   ✅  |    ✅   | No ✅             |
 
 ## Updating the syscall list
 

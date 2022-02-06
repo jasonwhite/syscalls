@@ -1,36 +1,7 @@
 use crate::Errno;
 use crate::Sysno;
 
-extern "C" {
-    fn __syscall0(nr: usize) -> usize;
-    fn __syscall1(nr: usize, arg1: usize) -> usize;
-    fn __syscall2(nr: usize, arg1: usize, arg2: usize) -> usize;
-    fn __syscall3(nr: usize, arg1: usize, arg2: usize, arg3: usize) -> usize;
-    fn __syscall4(
-        nr: usize,
-        arg1: usize,
-        arg2: usize,
-        arg3: usize,
-        arg4: usize,
-    ) -> usize;
-    fn __syscall5(
-        nr: usize,
-        arg1: usize,
-        arg2: usize,
-        arg3: usize,
-        arg4: usize,
-        arg5: usize,
-    ) -> usize;
-    fn __syscall6(
-        nr: usize,
-        arg1: usize,
-        arg2: usize,
-        arg3: usize,
-        arg4: usize,
-        arg5: usize,
-        arg6: usize,
-    ) -> usize;
-}
+use crate::arch;
 
 /// Issues a system call with 0 arguments.
 ///
@@ -38,9 +9,9 @@ extern "C" {
 ///
 /// Running a system call is inherently unsafe. It is the caller's
 /// responsibility to ensure safety.
-#[inline(always)]
+#[inline]
 pub unsafe fn syscall0(nr: Sysno) -> Result<usize, Errno> {
-    Errno::from_ret(__syscall0(nr as usize))
+    Errno::from_ret(arch::syscall0(nr))
 }
 
 /// Issues a system call with 1 arguments.
@@ -49,9 +20,9 @@ pub unsafe fn syscall0(nr: Sysno) -> Result<usize, Errno> {
 ///
 /// Running a system call is inherently unsafe. It is the caller's
 /// responsibility to ensure safety.
-#[inline(always)]
+#[inline]
 pub unsafe fn syscall1(nr: Sysno, a1: usize) -> Result<usize, Errno> {
-    Errno::from_ret(__syscall1(nr as usize, a1))
+    Errno::from_ret(arch::syscall1(nr, a1))
 }
 
 /// Issues a system call with 2 arguments.
@@ -60,13 +31,13 @@ pub unsafe fn syscall1(nr: Sysno, a1: usize) -> Result<usize, Errno> {
 ///
 /// Running a system call is inherently unsafe. It is the caller's
 /// responsibility to ensure safety.
-#[inline(always)]
+#[inline]
 pub unsafe fn syscall2(
     nr: Sysno,
     a1: usize,
     a2: usize,
 ) -> Result<usize, Errno> {
-    Errno::from_ret(__syscall2(nr as usize, a1, a2))
+    Errno::from_ret(arch::syscall2(nr, a1, a2))
 }
 
 /// Issues a system call with 3 arguments.
@@ -75,14 +46,14 @@ pub unsafe fn syscall2(
 ///
 /// Running a system call is inherently unsafe. It is the caller's
 /// responsibility to ensure safety.
-#[inline(always)]
+#[inline]
 pub unsafe fn syscall3(
     nr: Sysno,
     a1: usize,
     a2: usize,
     a3: usize,
 ) -> Result<usize, Errno> {
-    Errno::from_ret(__syscall3(nr as usize, a1, a2, a3))
+    Errno::from_ret(arch::syscall3(nr, a1, a2, a3))
 }
 
 /// Issues a system call with 4 arguments.
@@ -91,7 +62,7 @@ pub unsafe fn syscall3(
 ///
 /// Running a system call is inherently unsafe. It is the caller's
 /// responsibility to ensure safety.
-#[inline(always)]
+#[inline]
 pub unsafe fn syscall4(
     nr: Sysno,
     a1: usize,
@@ -99,7 +70,7 @@ pub unsafe fn syscall4(
     a3: usize,
     a4: usize,
 ) -> Result<usize, Errno> {
-    Errno::from_ret(__syscall4(nr as usize, a1, a2, a3, a4))
+    Errno::from_ret(arch::syscall4(nr, a1, a2, a3, a4))
 }
 
 /// Issues a system call with 5 arguments.
@@ -108,7 +79,7 @@ pub unsafe fn syscall4(
 ///
 /// Running a system call is inherently unsafe. It is the caller's
 /// responsibility to ensure safety.
-#[inline(always)]
+#[inline]
 pub unsafe fn syscall5(
     nr: Sysno,
     a1: usize,
@@ -117,7 +88,7 @@ pub unsafe fn syscall5(
     a4: usize,
     a5: usize,
 ) -> Result<usize, Errno> {
-    Errno::from_ret(__syscall5(nr as usize, a1, a2, a3, a4, a5))
+    Errno::from_ret(arch::syscall5(nr, a1, a2, a3, a4, a5))
 }
 
 /// Issues a system call with 6 arguments.
@@ -126,7 +97,7 @@ pub unsafe fn syscall5(
 ///
 /// Running a system call is inherently unsafe. It is the caller's
 /// responsibility to ensure safety.
-#[inline(always)]
+#[inline]
 pub unsafe fn syscall6(
     nr: Sysno,
     a1: usize,
@@ -136,5 +107,5 @@ pub unsafe fn syscall6(
     a5: usize,
     a6: usize,
 ) -> Result<usize, Errno> {
-    Errno::from_ret(__syscall6(nr as usize, a1, a2, a3, a4, a5, a6))
+    Errno::from_ret(arch::syscall6(nr, a1, a2, a3, a4, a5, a6))
 }

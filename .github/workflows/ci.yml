@@ -36,13 +36,8 @@ jobs:
           # out.
           - arm-unknown-linux-gnueabi
           - i686-unknown-linux-gnu
-          - mips-unknown-linux-gnu
-          - mips64-unknown-linux-gnuabi64
             #- sparc-unknown-linux-gnu
             #- sparc64-unknown-linux-gnu
-          - powerpc-unknown-linux-gnu
-            #- powerpc64-unknown-linux-gnu
-          - s390x-unknown-linux-gnu
           - x86_64-unknown-linux-gnu
     steps:
       - name: Checkout sources
@@ -53,6 +48,40 @@ jobs:
         with:
           profile: minimal
           toolchain: stable
+          override: true
+          target: ${{ matrix.target }}
+
+      - name: Run cargo test
+        uses: actions-rs/cargo@v1
+        with:
+          use-cross: true
+          command: test
+          args: --target ${{ matrix.target }}
+
+  test_nightly:
+    name: Test Suite (Nightly)
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        target:
+          - mips-unknown-linux-gnu
+          - mips64-unknown-linux-gnuabi64
+          - mipsel-unknown-linux-gnu
+          - mips64el-unknown-linux-gnuabi64
+          - powerpc-unknown-linux-gnu
+            #- powerpc64-unknown-linux-gnu
+          - s390x-unknown-linux-gnu
+          - x86_64-unknown-linux-gnu
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v2
+
+      - name: Install nightly toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: nightly
           override: true
           target: ${{ matrix.target }}
 

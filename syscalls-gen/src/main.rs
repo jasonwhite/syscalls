@@ -72,8 +72,10 @@ lazy_static! {
 
 // `src/{arch}/mod.rs`
 static ARCH_MOD: &str = r#"
+mod syscall;
 mod syscalls;
 
+pub(crate) use self::syscall::*;
 pub use self::syscalls::*;
 "#;
 
@@ -299,6 +301,7 @@ enum Errno {
         num: u32,
         description: Option<String>,
     },
+    #[allow(unused)]
     Alias {
         alias: String,
         name: String,

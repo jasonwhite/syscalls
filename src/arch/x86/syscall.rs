@@ -20,7 +20,7 @@ use super::syscalls::Sysno;
 pub unsafe fn syscall0(n: Sysno) -> usize {
     let mut ret: usize;
     asm!(
-        "int $0x80",
+        "int $$0x80",
         inlateout("eax") n as usize => ret,
         options(nostack, preserves_flags, readonly)
     );

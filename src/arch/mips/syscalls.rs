@@ -421,10 +421,13 @@ syscall_enum! {
         process_madvise = 4440,
         epoll_pwait2 = 4441,
         mount_setattr = 4442,
-        quotactl_path = 4443,
+        quotactl_fd = 4443,
         landlock_create_ruleset = 4444,
         landlock_add_rule = 4445,
         landlock_restrict_self = 4446,
+        process_mrelease = 4448,
+        futex_waitv = 4449,
+        set_mempolicy_home_node = 4450,
     }
-    LAST: landlock_restrict_self;
+    LAST: set_mempolicy_home_node;
 }

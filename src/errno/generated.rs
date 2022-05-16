@@ -151,5 +151,6 @@ errno_enum! {
         EJUKEBOX(528) = "Request initiated, but will not complete before timeout",
         EIOCBQUEUED(529) = "iocb queued, will get completion event",
         ERECALLCONFLICT(530) = "conflict with recalled state",
+        ENOGRACE(531) = "NFS file lock reclaim refused",
     }
 }

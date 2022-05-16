@@ -351,10 +351,12 @@ syscall_enum! {
         process_madvise = 5440,
         epoll_pwait2 = 5441,
         mount_setattr = 5442,
-        quotactl_path = 5443,
+        quotactl_fd = 5443,
         landlock_create_ruleset = 5444,
         landlock_add_rule = 5445,
         landlock_restrict_self = 5446,
+        process_mrelease = 5448,
+        futex_waitv = 5449,
     }
-    LAST: landlock_restrict_self;
+    LAST: futex_waitv;
 }

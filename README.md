@@ -4,11 +4,11 @@
 [![docs.rs](https://img.shields.io/docsrs/syscalls?style=for-the-badge)](https://docs.rs/syscalls)
 ![License](https://img.shields.io/crates/l/syscalls.svg?style=for-the-badge)
 
-A list of all Linux system calls.
+This is a low-level library for listing and invoking raw Linux system calls.
 
 ## Features
 
- - Provides of all syscalls for multiple architectures.
+ - Provides of all syscalls for multiple architectures (see table below).
  - Provides methods for invoking raw syscalls.
  - Provides an `Errno` type for Rustic error handling.
 

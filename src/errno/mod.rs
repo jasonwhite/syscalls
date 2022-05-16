@@ -170,11 +170,14 @@ mod test {
             Errno::ENOENT.description(),
             Some("No such file or directory")
         );
-        assert_eq!(
-            format!("{}", Errno::ENOENT),
-            "-2 ENOENT (No such file or directory)"
-        );
-        assert_eq!(format!("{:?}", Errno::ENOENT), "ENOENT");
+        #[cfg(feature = "std")]
+        {
+            assert_eq!(
+                format!("{}", Errno::ENOENT),
+                "-2 ENOENT (No such file or directory)"
+            );
+            assert_eq!(format!("{:?}", Errno::ENOENT), "ENOENT");
+        }
     }
 
     #[test]

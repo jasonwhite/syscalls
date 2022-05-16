@@ -153,32 +153,30 @@ pub unsafe fn syscall(nr: Sysno, args: &SyscallArgs) -> Result<usize, Errno> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use std::ffi::CString;
 
     #[test]
     fn test_syscall1_syscall4() {
-        let pmaps = CString::new("/dev/zero").unwrap();
         let fd = unsafe {
             let at_fdcwd = -100isize;
-            syscall!(Sysno::openat, at_fdcwd, pmaps.as_ptr(), 0)
+            syscall!(Sysno::openat, at_fdcwd, "/dev/zero\0".as_ptr(), 0)
         }
         .unwrap();
 
-        let mut buffer1: [u8; 64] = unsafe { std::mem::zeroed() };
-        let mut buffer2: [u8; 64] = unsafe { std::mem::zeroed() };
+        let mut buffer1: [u8; 64] = unsafe { core::mem::zeroed() };
+        let mut buffer2: [u8; 64] = unsafe { core::mem::zeroed() };
 
         let r1 =
             unsafe { libc::read(fd as i32, buffer1.as_mut_ptr() as _, 64) };
 
         let s1 = unsafe {
-            std::slice::from_raw_parts(
+            core::slice::from_raw_parts(
                 buffer1.as_mut_ptr() as *const u8,
                 r1 as usize,
             )
         };
         let r2 = unsafe { syscall!(Sysno::read, fd, buffer2.as_mut_ptr(), 64) };
         let s2 = unsafe {
-            std::slice::from_raw_parts(
+            core::slice::from_raw_parts(
                 buffer1.as_mut_ptr() as *const u8,
                 r2.unwrap_or(0) as usize,
             )
@@ -193,29 +191,28 @@ mod tests {
 
     #[test]
     fn test_syscall1_syscall4_2() {
-        let pmaps = CString::new("/dev/zero").unwrap();
         let fd = unsafe {
             let at_fdcwd = -100isize;
-            syscall!(Sysno::openat, at_fdcwd, pmaps.as_ptr(), 0)
+            syscall!(Sysno::openat, at_fdcwd, "/dev/zero\0".as_ptr(), 0)
         }
         .unwrap();
 
-        let mut buffer1: [u8; 64] = unsafe { std::mem::zeroed() };
-        let mut buffer2: [u8; 64] = unsafe { std::mem::zeroed() };
+        let mut buffer1: [u8; 64] = unsafe { core::mem::zeroed() };
+        let mut buffer2: [u8; 64] = unsafe { core::mem::zeroed() };
 
         let args =
             SyscallArgs::from(&[fd as usize, buffer1.as_mut_ptr() as _, 64]);
         let r1 = unsafe { syscall(Sysno::read, &args) }.expect("read failed");
 
         let s1 = unsafe {
-            std::slice::from_raw_parts(
+            core::slice::from_raw_parts(
                 buffer1.as_mut_ptr() as *const u8,
                 r1 as usize,
             )
         };
         let r2 = unsafe { syscall!(Sysno::read, fd, buffer2.as_mut_ptr(), 64) };
         let s2 = unsafe {
-            std::slice::from_raw_parts(
+            core::slice::from_raw_parts(
                 buffer1.as_mut_ptr() as *const u8,
                 r2.unwrap_or(0) as usize,
             )

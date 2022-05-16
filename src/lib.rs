@@ -57,7 +57,7 @@ mod tests {
         let pmaps = CString::new("/dev/zero").unwrap();
         let fd = unsafe {
             let at_fdcwd = -100isize;
-            syscall!(SYS_openat, at_fdcwd, pmaps.as_ptr(), 0)
+            syscall!(Sysno::openat, at_fdcwd, pmaps.as_ptr(), 0)
         }
         .unwrap();
 
@@ -73,7 +73,7 @@ mod tests {
                 r1 as usize,
             )
         };
-        let r2 = unsafe { syscall!(SYS_read, fd, buffer2.as_mut_ptr(), 64) };
+        let r2 = unsafe { syscall!(Sysno::read, fd, buffer2.as_mut_ptr(), 64) };
         let s2 = unsafe {
             std::slice::from_raw_parts(
                 buffer1.as_mut_ptr() as *const u8,
@@ -84,7 +84,7 @@ mod tests {
         assert_eq!(r2, Ok(r1 as usize));
         assert_eq!(s1, s2);
 
-        let closed = unsafe { syscall!(SYS_close, fd) };
+        let closed = unsafe { syscall!(Sysno::close, fd) };
         assert!(closed.is_ok());
     }
 
@@ -93,7 +93,7 @@ mod tests {
         let pmaps = CString::new("/dev/zero").unwrap();
         let fd = unsafe {
             let at_fdcwd = -100isize;
-            syscall!(SYS_openat, at_fdcwd, pmaps.as_ptr(), 0)
+            syscall!(Sysno::openat, at_fdcwd, pmaps.as_ptr(), 0)
         }
         .unwrap();
 
@@ -102,7 +102,7 @@ mod tests {
 
         let args =
             SyscallArgs::from(&[fd as usize, buffer1.as_mut_ptr() as _, 64]);
-        let r1 = unsafe { syscall(SYS_read, &args) }.expect("SYS_read failed");
+        let r1 = unsafe { syscall(Sysno::read, &args) }.expect("read failed");
 
         let s1 = unsafe {
             std::slice::from_raw_parts(
@@ -110,7 +110,7 @@ mod tests {
                 r1 as usize,
             )
         };
-        let r2 = unsafe { syscall!(SYS_read, fd, buffer2.as_mut_ptr(), 64) };
+        let r2 = unsafe { syscall!(Sysno::read, fd, buffer2.as_mut_ptr(), 64) };
         let s2 = unsafe {
             std::slice::from_raw_parts(
                 buffer1.as_mut_ptr() as *const u8,
@@ -121,21 +121,21 @@ mod tests {
         assert_eq!(r2, Ok(r1 as usize));
         assert_eq!(s1, s2);
 
-        let closed = unsafe { syscall!(SYS_close, fd) };
+        let closed = unsafe { syscall!(Sysno::close, fd) };
         assert!(closed.is_ok());
     }
 
     #[test]
     fn test_name() {
-        assert_eq!(SYS_write.name(), "write");
-        assert_eq!(SYS_fsopen.name(), "fsopen");
+        assert_eq!(Sysno::write.name(), "write");
+        assert_eq!(Sysno::fsopen.name(), "fsopen");
     }
 
     #[cfg(target_arch = "x86_64")]
     #[test]
     fn test_syscallno() {
-        assert_eq!(Sysno::from(2), SYS_open);
-        assert_eq!(Sysno::new(2), Some(SYS_open));
+        assert_eq!(Sysno::from(2), Sysno::open);
+        assert_eq!(Sysno::new(2), Some(Sysno::open));
         assert_eq!(Sysno::new(-1i32 as usize), None);
         assert_eq!(Sysno::new(1024), None);
     }

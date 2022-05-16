@@ -6,6 +6,8 @@
    enable better codegen, including the ability to have syscalls get inlined.
  - **Breaking**: Architectures besides `arm`, `x86`, and `x86-64` now require
    nightly.
+ - **Breaking**: Removed top-level `SYS_` constants. Just use the `Sysno` enum
+   instead.
 
 ## v0.5.0
 

@@ -36,25 +36,25 @@ architecture.
 
 The *Invoke* column means that syscalls can be invoked for this architecture.
 
-The *Requires Nightly?* column means that syscalls can only be invoked if
-compiled with nightly Rust. This is because inline assembly [is not yet
-stabilized for all architectures][asm_experimental_arch].
+The *Stable Rust?* column means that syscall invocation only requires stable
+Rust. Some architectures require nightly Rust because inline assembly [is not
+yet stabilized for all architectures][asm_experimental_arch].
 
 [asm_experimental_arch]: https://github.com/rust-lang/rust/issues/93335
 
-|     Arch    | Enum  | Invoke  | Requires Nightly? |
+|     Arch    | Enum  | Invoke  | Stable Rust?      |
 |:-----------:|:-----:|:-------:|:-----------------:|
-|       `arm` |   ✅  |    ✅   | No ✅             |
+|       `arm` |   ✅  |    ✅   | Yes ✅            |
 |   `aarch64` |   ❌  |    ❌   | N/A               |
-|      `mips` |   ✅  |    ✅   | Yes ❌            |
-|    `mips64` |   ✅  |    ✅   | Yes ❌            |
-|   `powerpc` |   ✅  |    ✅   | Yes ❌            |
-| `powerpc64` |   ✅  |    ✅   | Yes ❌            |
-|     `s390x` |   ✅  |    ✅   | Yes ❌            |
+|      `mips` |   ✅  |    ✅   | No ❌             |
+|    `mips64` |   ✅  |    ✅   | No ❌             |
+|   `powerpc` |   ✅  |    ✅   | No ❌             |
+| `powerpc64` |   ✅  |    ✅   | No ❌             |
+|     `s390x` |   ✅  |    ✅   | No ❌             |
 |     `sparc` |   ✅  |    ❌   | N/A               |
 |   `sparc64` |   ✅  |    ❌   | N/A               |
-|       `x86` |   ✅  |    ✅   | No ✅             |
-|    `x86_64` |   ✅  |    ✅   | No ✅             |
+|       `x86` |   ✅  |    ✅   | Yes ✅            |
+|    `x86_64` |   ✅  |    ✅   | Yes ✅            |
 
 ## Updating the syscall list
 

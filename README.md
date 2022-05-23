@@ -19,14 +19,14 @@ This is a low-level library for listing and invoking raw Linux system calls.
 By default, `std` support is enabled. If you wish to compile in a `no_std`
 environment, use:
 ```
-syscalls = { version = "0.5", default-features = false }
+syscalls = { version = "0.6", default-features = false }
 ```
 
 ### `with-serde`
 
 Various types can be serialized with Serde. This can be enabled with:
 ```
-syscalls = { version = "0.5", features = ["with-serde"] }
+syscalls = { version = "0.6", features = ["with-serde"] }
 ```
 
 ## Architecture Support

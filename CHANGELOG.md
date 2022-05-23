@@ -1,6 +1,6 @@
 # Changelog
 
-## v0.6.0 (WIP)
+## v0.6.0
 
  - Removed `build.rs` and switched to Rust's inline assembly syntax. This should
    enable better codegen, including the ability to have syscalls get inlined.

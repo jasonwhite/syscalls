@@ -19,9 +19,21 @@ mod arch;
 mod args;
 mod errno;
 
-pub use arch::*;
+pub use arch::Sysno;
 pub use args::SyscallArgs;
 pub use errno::{Errno, ErrnoSentinel};
+
+pub mod raw {
+    //! Exposes raw syscalls that simply return a `usize` instead of a `Result`.
+
+    pub use super::arch::syscall0;
+    pub use super::arch::syscall1;
+    pub use super::arch::syscall2;
+    pub use super::arch::syscall3;
+    pub use super::arch::syscall4;
+    pub use super::arch::syscall5;
+    pub use super::arch::syscall6;
+}
 
 /// Issues a system call with 0 arguments.
 ///
@@ -34,7 +46,7 @@ pub unsafe fn syscall0(nr: Sysno) -> Result<usize, Errno> {
     Errno::from_ret(arch::syscall0(nr))
 }
 
-/// Issues a system call with 1 arguments.
+/// Issues a system call with 1 argument.
 ///
 /// # Safety
 ///

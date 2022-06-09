@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.6.1
+
+ - Exposed `syscalls::raw::*` to allow avoidance of the `Result` return type.
+   This makes it cleaner to call syscalls like `gettid` that are guaranteed to
+   never fail.
+
 ## v0.6.0
 
  - Removed `build.rs` and switched to Rust's inline assembly syntax. This should

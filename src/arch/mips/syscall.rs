@@ -34,7 +34,12 @@ use core::arch::asm;
 
 use super::syscalls::Sysno;
 
-/// A syscall that takes 0 arguments.
+/// Issues a raw system call with 0 arguments.
+///
+/// # Safety
+///
+/// Running a system call is inherently unsafe. It is the caller's
+/// responsibility to ensure safety.
 #[inline]
 pub unsafe fn syscall0(n: Sysno) -> usize {
     let mut err: usize;
@@ -63,7 +68,12 @@ pub unsafe fn syscall0(n: Sysno) -> usize {
     }
 }
 
-/// A syscall that takes 1 argument.
+/// Issues a raw system call with 1 argument.
+///
+/// # Safety
+///
+/// Running a system call is inherently unsafe. It is the caller's
+/// responsibility to ensure safety.
 #[inline]
 pub unsafe fn syscall1(n: Sysno, arg1: usize) -> usize {
     let mut err: usize;
@@ -93,7 +103,12 @@ pub unsafe fn syscall1(n: Sysno, arg1: usize) -> usize {
     }
 }
 
-/// A syscall that takes 2 arguments.
+/// Issues a raw system call with 2 arguments.
+///
+/// # Safety
+///
+/// Running a system call is inherently unsafe. It is the caller's
+/// responsibility to ensure safety.
 #[inline]
 pub unsafe fn syscall2(n: Sysno, arg1: usize, arg2: usize) -> usize {
     let mut err: usize;
@@ -124,7 +139,12 @@ pub unsafe fn syscall2(n: Sysno, arg1: usize, arg2: usize) -> usize {
     }
 }
 
-/// A syscall that takes 3 arguments.
+/// Issues a raw system call with 3 arguments.
+///
+/// # Safety
+///
+/// Running a system call is inherently unsafe. It is the caller's
+/// responsibility to ensure safety.
 #[inline]
 pub unsafe fn syscall3(
     n: Sysno,
@@ -161,7 +181,12 @@ pub unsafe fn syscall3(
     }
 }
 
-/// A syscall that takes 4 arguments.
+/// Issues a raw system call with 4 arguments.
+///
+/// # Safety
+///
+/// Running a system call is inherently unsafe. It is the caller's
+/// responsibility to ensure safety.
 #[inline]
 pub unsafe fn syscall4(
     n: Sysno,
@@ -200,7 +225,12 @@ pub unsafe fn syscall4(
     }
 }
 
-/// A syscall that takes 5 arguments.
+/// Issues a raw system call with 5 arguments.
+///
+/// # Safety
+///
+/// Running a system call is inherently unsafe. It is the caller's
+/// responsibility to ensure safety.
 #[inline]
 pub unsafe fn syscall5(
     n: Sysno,
@@ -250,7 +280,12 @@ pub unsafe fn syscall5(
     }
 }
 
-/// A syscall that takes 6 arguments.
+/// Issues a raw system call with 6 arguments.
+///
+/// # Safety
+///
+/// Running a system call is inherently unsafe. It is the caller's
+/// responsibility to ensure safety.
 #[inline]
 pub unsafe fn syscall6(
     n: Sysno,
@@ -304,7 +339,12 @@ pub unsafe fn syscall6(
     }
 }
 
-/// A syscall that takes 7 arguments.
+/// Issues a raw system call with 7 arguments.
+///
+/// # Safety
+///
+/// Running a system call is inherently unsafe. It is the caller's
+/// responsibility to ensure safety.
 #[allow(unused)]
 #[inline]
 pub unsafe fn syscall7(

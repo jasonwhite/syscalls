@@ -91,7 +91,7 @@ macro_rules! syscall_enum {
 
             /// Returns the length of the syscall table, including any gaps.
             pub const fn len() -> usize {
-                Self::last().id() as usize + 1
+                (Self::last().id() - Self::first().id()) as usize + 1
             }
 
             /// Returns an iterator that iterates over all possible syscalls.

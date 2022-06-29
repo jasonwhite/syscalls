@@ -260,4 +260,10 @@ mod tests {
         #[cfg(target_arch = "x86")]
         assert_eq!(Sysno::first(), Sysno::restart_syscall);
     }
+
+    #[test]
+    fn test_syscall_len() {
+        assert!(Sysno::len() > 300);
+        assert!(Sysno::len() < 1000);
+    }
 }

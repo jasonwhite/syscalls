@@ -18,10 +18,12 @@ mod macros;
 mod arch;
 mod args;
 mod errno;
+mod set;
 
 pub use arch::Sysno;
 pub use args::SyscallArgs;
 pub use errno::{Errno, ErrnoSentinel};
+pub use set::SysnoSet;
 
 pub mod raw {
     //! Exposes raw syscalls that simply return a `usize` instead of a `Result`.
@@ -263,7 +265,7 @@ mod tests {
 
     #[test]
     fn test_syscall_len() {
-        assert!(Sysno::len() > 300);
-        assert!(Sysno::len() < 1000);
+        assert!(Sysno::table_size() > 300);
+        assert!(Sysno::table_size() < 1000);
     }
 }

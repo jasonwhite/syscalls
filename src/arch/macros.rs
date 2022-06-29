@@ -30,9 +30,19 @@ macro_rules! syscall_enum {
         }
 
         impl $Name {
+            /// A slice of all possible syscalls.
+            pub(crate) const ALL: &'static [Self] = &[
+                Self::$first_syscall,
+                $(
+                    Self::$syscall,
+                )*
+            ];
+
             /// Constructs a new syscall from the given ID. If the ID does not
             /// represent a valid syscall, returns `None`.
             pub const fn new(id: usize) -> Option<Self> {
+                // TODO: Get rid of this huge match and use the SysnoSet for
+                // checking validity.
                 match id {
                     $(#[$first_inner])*
                     $first_num => Some(Self::$first_syscall),
@@ -61,10 +71,10 @@ macro_rules! syscall_enum {
                     return None;
                 }
 
-                let mut next_id = self.id() as usize + 1;
+                let mut next_id = self.id() + 1;
 
-                while next_id < Self::len() {
-                    if let Some(next) = Self::new(next_id) {
+                while next_id < Self::last().id() {
+                    if let Some(next) = Self::new(next_id as usize) {
                         return Some(next);
                     }
 
@@ -90,7 +100,19 @@ macro_rules! syscall_enum {
             }
 
             /// Returns the length of the syscall table, including any gaps.
+            #[deprecated = "Sysno::len() is misleading. Use Sysno::table_size() instead."]
             pub const fn len() -> usize {
+                Self::table_size()
+            }
+
+            /// Returns the total number of valid syscalls.
+            pub const fn count() -> usize {
+                Self::ALL.len()
+            }
+
+            /// Returns the length of the syscall table, including any gaps.
+            /// This is not the same thing as the total number of syscalls.
+            pub const fn table_size() -> usize {
                 (Self::last().id() - Self::first().id()) as usize + 1
             }
 
@@ -124,6 +146,13 @@ macro_rules! syscall_enum {
         impl core::fmt::Debug for $Name {
             fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
                 f.write_str(self.name())
+            }
+        }
+
+        impl From<u32> for $Name {
+            fn from(id: u32) -> Self {
+                Self::new(id as usize)
+                    .unwrap_or_else(|| panic!("invalid syscall: {}", id))
             }
         }
 

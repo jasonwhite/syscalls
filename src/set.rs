@@ -22,8 +22,25 @@ const fn words<T>(bits: usize) -> usize {
 
 /// A set of syscalls.
 ///
-/// This provides constant-time lookup of syscalls within a bitset. This is
-/// useful for efficient
+/// This provides constant-time lookup of syscalls within a bitset.
+///
+/// # Examples
+///
+/// ```
+/// # use syscalls::{Sysno, SysnoSet};
+/// let syscalls = SysnoSet::new(&[Sysno::read, Sysno::write, Sysno::open, Sysno::close]);
+/// assert!(syscalls.contains(Sysno::read));
+/// assert!(syscalls.contains(Sysno::close));
+/// ```
+/// Most operations can be done at compile-time as well.
+/// ```
+/// # use syscalls::{Sysno, SysnoSet};
+/// const SYSCALLS: SysnoSet =
+///     SysnoSet::new(&[Sysno::read, Sysno::write, Sysno::open, Sysno::close])
+///         .union(&SysnoSet::new(&[Sysno::openat]));
+/// const _: () = assert!(SYSCALLS.contains(Sysno::read));
+/// const _: () = assert!(SYSCALLS.contains(Sysno::openat));
+/// ```
 #[derive(Clone, Eq, PartialEq)]
 pub struct SysnoSet {
     data: [usize; words::<usize>(Sysno::table_size())],

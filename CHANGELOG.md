@@ -1,6 +1,6 @@
 # Changelog
 
-## v0.6.2 (WIP)
+## v0.6.2
 
  - Added `SysnoSet` for constructing sets of syscalls. It uses a bitset under
    the hood and provides constant-time lookup and insertion of `Sysno`s.

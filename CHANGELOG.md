@@ -1,5 +1,14 @@
 # Changelog
 
+## v0.6.2 (WIP)
+
+ - Added `SysnoSet` for constructing sets of syscalls. It uses a bitset under
+   the hood and provides constant-time lookup and insertion of `Sysno`s.
+ - Fixed `Sysno::len()` returning the wrong value for architectures with large
+   syscall offsets.
+ - Deprecated `Sysno::len()`. Use `Sysno::table_size()` instead. This will be
+   removed in the next major version.
+
 ## v0.6.1
 
  - Exposed `syscalls::raw::*` to allow avoidance of the `Result` return type.

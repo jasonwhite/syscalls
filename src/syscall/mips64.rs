@@ -34,7 +34,7 @@
 // and t1, which still get clobbered.
 use core::arch::asm;
 
-use super::syscalls::Sysno;
+use crate::arch::mips64::Sysno;
 
 /// Issues a raw system call with 0 arguments.
 ///

@@ -16,7 +16,7 @@
 // (cr0). This is then used to decide if the return value should be negated.
 use core::arch::asm;
 
-use super::syscalls::Sysno;
+use crate::arch::powerpc64::Sysno;
 
 /// Issues a raw system call with 0 arguments.
 ///

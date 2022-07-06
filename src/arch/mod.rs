@@ -1,26 +1,26 @@
 #[macro_use]
 mod macros;
 
-#[cfg(target_arch = "arm")]
-mod arm;
-#[cfg(target_arch = "mips")]
-mod mips;
-#[cfg(target_arch = "mips64")]
-mod mips64;
-#[cfg(target_arch = "powerpc")]
-mod powerpc;
-#[cfg(target_arch = "powerpc64")]
-mod powerpc64;
-#[cfg(target_arch = "s390x")]
-mod s390x;
-#[cfg(target_arch = "sparc")]
-mod sparc;
-#[cfg(target_arch = "sparc64")]
-mod sparc64;
-#[cfg(target_arch = "x86")]
-mod x86;
-#[cfg(target_arch = "x86_64")]
-mod x86_64;
+#[cfg(any(target_arch = "arm", feature = "arm"))]
+pub mod arm;
+#[cfg(any(target_arch = "mips", feature = "mips"))]
+pub mod mips;
+#[cfg(any(target_arch = "mips64", feature = "mips64"))]
+pub mod mips64;
+#[cfg(any(target_arch = "powerpc", feature = "powerpc"))]
+pub mod powerpc;
+#[cfg(any(target_arch = "powerpc64", feature = "powerpc64"))]
+pub mod powerpc64;
+#[cfg(any(target_arch = "s390x", feature = "s390x"))]
+pub mod s390x;
+#[cfg(any(target_arch = "sparc", feature = "sparc"))]
+pub mod sparc;
+#[cfg(any(target_arch = "sparc64", feature = "sparc64"))]
+pub mod sparc64;
+#[cfg(any(target_arch = "x86", feature = "x86"))]
+pub mod x86;
+#[cfg(any(target_arch = "x86_64", feature = "x86_64"))]
+pub mod x86_64;
 
 #[cfg(target_arch = "arm")]
 pub use arm::*;

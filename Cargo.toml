@@ -14,8 +14,33 @@ homepage = "https://github.com/jasonwhite/syscalls"
 documentation = "https://docs.rs/syscalls"
 
 [features]
-default = ["std"]
+default = ["std", "with-serde"]
+
+# Enables all extra features.
+full = ["std", "with-serde", "all"]
+
+# Enables usage of libstd.
 std = []
+
+# Includes the syscall tables for all architectures.
+all = [
+    "arm", "mips", "mips64", "powerpc", "powerpc64", "s390x", "sparc",
+    "sparc64", "x86", "x86_64"
+]
+
+# Enable syscall tables for individual architectures.
+arm = []
+mips = []
+mips64 = []
+powerpc = []
+powerpc64 = []
+s390x = []
+sparc = []
+sparc64 = []
+x86 = []
+x86_64 = []
+
+# Enables Serialize/Deserialize impls.
 with-serde = ["serde", "serde_repr"]
 
 [dependencies]
@@ -34,4 +59,5 @@ members = [
 ]
 
 [package.metadata.docs.rs]
-features = ["std", "with-serde"]
+all-features = true
+rustdoc-args = ["--cfg", "doc_cfg"]

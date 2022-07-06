@@ -32,7 +32,7 @@
 // All temporary registers are clobbered (8-15, 24-25).
 use core::arch::asm;
 
-use super::syscalls::Sysno;
+use crate::arch::mips::Sysno;
 
 /// Issues a raw system call with 0 arguments.
 ///

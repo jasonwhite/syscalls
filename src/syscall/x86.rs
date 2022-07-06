@@ -1,19 +1,19 @@
-// On x86-64, the following registers are used for args 1-6:
-// arg1: %rdi
-// arg2: %rsi
-// arg3: %rdx
-// arg4: %r10
-// arg5: %r8
-// arg6: %r9
+// On x86, the following registers are used for args 1-6:
+// arg1: %ebx
+// arg2: %ecx
+// arg3: %edx
+// arg4: %esi
+// arg5: %edi
+// arg6: %ebp
 //
-// rax is used for both the syscall number and the syscall return value.
+// eax is used for both the syscall number and the syscall return value.
 //
-// rcx and r11 are always clobbered. syscalls can also modify memory. With the
+// No other registers are clobbered. syscalls can also modify memory. With the
 // `asm!()` macro, it is assumed that memory is clobbered unless the nomem
 // option is specified.
 use core::arch::asm;
 
-use super::syscalls::Sysno;
+use crate::arch::x86::Sysno;
 
 /// Issues a raw system call with 0 arguments.
 ///
@@ -25,10 +25,8 @@ use super::syscalls::Sysno;
 pub unsafe fn syscall0(n: Sysno) -> usize {
     let mut ret: usize;
     asm!(
-        "syscall",
-        inlateout("rax") n as usize => ret,
-        out("rcx") _, // rcx is used to store old rip
-        out("r11") _, // r11 is used to store old rflags
+        "int $$0x80",
+        inlateout("eax") n as usize => ret,
         options(nostack, preserves_flags, readonly)
     );
     ret
@@ -44,11 +42,9 @@ pub unsafe fn syscall0(n: Sysno) -> usize {
 pub unsafe fn syscall1(n: Sysno, arg1: usize) -> usize {
     let mut ret: usize;
     asm!(
-        "syscall",
-        inlateout("rax") n as usize => ret,
-        in("rdi") arg1,
-        out("rcx") _, // rcx is used to store old rip
-        out("r11") _, // r11 is used to store old rflags
+        "int $$0x80",
+        inlateout("eax") n as usize => ret,
+        in("ebx") arg1,
         options(nostack, preserves_flags)
     );
     ret
@@ -64,12 +60,10 @@ pub unsafe fn syscall1(n: Sysno, arg1: usize) -> usize {
 pub unsafe fn syscall2(n: Sysno, arg1: usize, arg2: usize) -> usize {
     let mut ret: usize;
     asm!(
-        "syscall",
-        inlateout("rax") n as usize => ret,
-        in("rdi") arg1,
-        in("rsi") arg2,
-        out("rcx") _, // rcx is used to store old rip
-        out("r11") _, // r11 is used to store old rflags
+        "int $$0x80",
+        inlateout("eax") n as usize => ret,
+        in("ebx") arg1,
+        in("ecx") arg2,
         options(nostack, preserves_flags)
     );
     ret
@@ -90,13 +84,11 @@ pub unsafe fn syscall3(
 ) -> usize {
     let mut ret: usize;
     asm!(
-        "syscall",
-        inlateout("rax") n as usize => ret,
-        in("rdi") arg1,
-        in("rsi") arg2,
-        in("rdx") arg3,
-        out("rcx") _, // rcx is used to store old rip
-        out("r11") _, // r11 is used to store old rflags
+        "int $$0x80",
+        inlateout("eax") n as usize => ret,
+        in("ebx") arg1,
+        in("ecx") arg2,
+        in("edx") arg3,
         options(nostack, preserves_flags)
     );
     ret
@@ -118,14 +110,16 @@ pub unsafe fn syscall4(
 ) -> usize {
     let mut ret: usize;
     asm!(
-        "syscall",
-        inlateout("rax") n as usize => ret,
-        in("rdi") arg1,
-        in("rsi") arg2,
-        in("rdx") arg3,
-        in("r10") arg4,
-        out("rcx") _, // rcx is used to store old rip
-        out("r11") _, // r11 is used to store old rflags
+        "xchg esi, {arg4}",
+        "int $$0x80",
+        "xchg esi, {arg4}",
+        // Using esi is not allowed, so we need to use another register to
+        // save/restore esi. Thus, we can say that esi is not clobbered.
+        arg4 = in(reg) arg4,
+        inlateout("eax") n as usize => ret,
+        in("ebx") arg1,
+        in("ecx") arg2,
+        in("edx") arg3,
         options(nostack, preserves_flags)
     );
     ret
@@ -148,15 +142,17 @@ pub unsafe fn syscall5(
 ) -> usize {
     let mut ret: usize;
     asm!(
-        "syscall",
-        inlateout("rax") n as usize => ret,
-        in("rdi") arg1,
-        in("rsi") arg2,
-        in("rdx") arg3,
-        in("r10") arg4,
-        in("r8")  arg5,
-        out("rcx") _, // rcx is used to store old rip
-        out("r11") _, // r11 is used to store old rflags
+        "xchg esi, {arg4}",
+        "int $$0x80",
+        "xchg esi, {arg4}",
+        // Using esi is not allowed, so we need to use another register to
+        // save/restore esi. Thus, we can say that esi is not clobbered.
+        arg4 = in(reg) arg4,
+        inlateout("eax") n as usize => ret,
+        in("ebx") arg1,
+        in("ecx") arg2,
+        in("edx") arg3,
+        in("edi") arg5,
         options(nostack, preserves_flags)
     );
     ret
@@ -178,19 +174,27 @@ pub unsafe fn syscall6(
     arg5: usize,
     arg6: usize,
 ) -> usize {
+    // Since using esi and ebp are not allowed and because x86 only has 6
+    // general purpose registers (excluding ESP and EBP), we need to push them
+    // onto the stack and then set them using a pointer to memory (our input
+    // array).
     let mut ret: usize;
     asm!(
-        "syscall",
-        inlateout("rax") n as usize => ret,
-        in("rdi") arg1,
-        in("rsi") arg2,
-        in("rdx") arg3,
-        in("r10") arg4,
-        in("r8")  arg5,
-        in("r9")  arg6,
-        out("rcx") _, // rcx is used to store old rip
-        out("r11") _, // r11 is used to store old rflags
-        options(nostack, preserves_flags)
+        "push ebp",
+        "push esi",
+        "mov esi, DWORD PTR [eax + 0]", // Set esi to arg4
+        "mov ebp, DWORD PTR [eax + 4]", // Set ebp to arg6
+        "mov eax, DWORD PTR [eax + 8]", // Lastly, set eax to the syscall number.
+        "int $$0x80",
+        "pop esi",
+        "pop ebp",
+        // Set eax to a pointer to our input array.
+        inout("eax") &[arg4, arg6, n as usize] => ret,
+        in("ebx") arg1,
+        in("ecx") arg2,
+        in("edx") arg3,
+        in("edi") arg5,
+        options(preserves_flags)
     );
     ret
 }

@@ -70,15 +70,6 @@ lazy_static! {
     ];
 }
 
-// `src/{arch}/mod.rs`
-static ARCH_MOD: &str = r#"
-mod syscall;
-mod syscalls;
-
-pub use self::syscall::*;
-pub use self::syscalls::*;
-"#;
-
 struct Source<'a> {
     arch: &'a str,
     path: &'a str,
@@ -189,28 +180,15 @@ impl<'a> Source<'a> {
             .await
             .wrap_err_with(|| eyre!("Failed fetching table {:?}", self.path))?;
 
-        let dir = dir.join(format!("src/arch/{}", self.arch));
-
-        fs::create_dir_all(&dir)
-            .wrap_err_with(|| eyre!("Failed to create directory {:?}", dir))?;
-
-        // Generate `src/{arch}/mod.rs`
-        let module = dir.join("mod.rs");
-
-        let mut file = fs::File::create(&module)
-            .wrap_err_with(|| eyre!("Failed to create file {:?}", module))?;
-        writeln!(file, "//! Syscalls for the {} architecture.", self.arch)?;
-        file.write_all(ARCH_MOD.as_bytes())?;
-
-        // Generate `src/{arch}/syscalls.rs`
-        let syscalls = dir.join("syscalls.rs");
+        // Generate `src/arch/{arch}.rs`
+        let syscalls = dir.join(format!("src/arch/{}.rs", self.arch));
 
         let mut file = fs::File::create(&syscalls)
             .wrap_err_with(|| eyre!("Failed to create file {:?}", syscalls))?;
         writeln!(file, "//! Syscalls for the {} architecture.\n", self.arch)?;
         write!(file, "{}", SyscallFile(&table))?;
 
-        Ok((self.arch, dir))
+        Ok((self.arch, syscalls))
     }
 }
 

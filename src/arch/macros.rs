@@ -44,7 +44,6 @@ macro_rules! syscall_enum {
                 // TODO: Get rid of this huge match and use the SysnoSet for
                 // checking validity.
                 match id {
-                    $(#[$first_inner])*
                     $first_num => Some(Self::$first_syscall),
                     $(
                         $num => Some(Self::$syscall),
@@ -56,7 +55,6 @@ macro_rules! syscall_enum {
             /// Returns the name of the syscall.
             pub const fn name(&self) -> &'static str {
                 match self {
-                    $(#[$first_inner])*
                     Self::$first_syscall => core::stringify!($first_syscall),
                     $(
                         Self::$syscall => core::stringify!($syscall),
@@ -127,7 +125,6 @@ macro_rules! syscall_enum {
 
             fn from_str(s: &str) -> Result<Self, Self::Err> {
                 match s {
-                    $(#[$first_inner])*
                     core::stringify!($first_syscall) => Ok(Self::$first_syscall),
                     $(
                         core::stringify!($syscall) => Ok(Self::$syscall),

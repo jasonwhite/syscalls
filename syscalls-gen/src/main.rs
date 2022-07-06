@@ -205,6 +205,11 @@ impl<'a> fmt::Display for SyscallFile<'a> {
             if entry.entry_point.is_some() {
                 writeln!(
                     f,
+                    "        /// See [{name}(2)](https://man7.org/linux/man-pages/man2/{name}.2.html) for more info on this syscall.",
+                    name = entry.ident(),
+                )?;
+                writeln!(
+                    f,
                     "        {name} = {id},",
                     name = entry.ident(),
                     id = entry.id

@@ -1,5 +1,19 @@
 # Changelog
 
+## v0.6.3
+
+ - Added features to expose the syscall tables of other architectures besides
+   the target architecture. There is one feature per architecture and have the
+   same name. For example, if the target architecture is `x86-64` and we also
+   want the syscall table for `x86`, the `x86` feature can be enabled. Then,
+   `syscalls::x86::Sysno` will be exposed.
+ - Added the `all` feature, which enables the syscall tables for all
+   architectures.
+ - Added the `full` feature, which enables all current and future features for
+   the crate.
+ - Added man page links for all syscalls. Since these are generated, some links
+   may be broken.
+
 ## v0.6.2
 
  - Added `SysnoSet` for constructing sets of syscalls. It uses a bitset under

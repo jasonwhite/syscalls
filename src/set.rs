@@ -493,6 +493,7 @@ mod tests {
         );
     }
 
+    #[cfg(feature = "std")]
     #[test]
     fn test_iter() {
         let syscalls = &[Sysno::read, Sysno::open, Sysno::close];
@@ -506,6 +507,7 @@ mod tests {
         assert_eq!(SysnoSet::all().iter().count(), Sysno::count());
     }
 
+    #[cfg(feature = "std")]
     #[test]
     fn test_iter_empty() {
         assert_eq!(SysnoSet::empty().iter().collect::<Vec<_>>(), &[]);

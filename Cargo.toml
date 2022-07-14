@@ -14,10 +14,10 @@ homepage = "https://github.com/jasonwhite/syscalls"
 documentation = "https://docs.rs/syscalls"
 
 [features]
-default = ["std", "with-serde"]
+default = ["std", "serde"]
 
 # Enables all extra features.
-full = ["std", "with-serde", "all"]
+full = ["std", "serde", "all"]
 
 # Enables usage of libstd.
 std = []
@@ -40,11 +40,14 @@ sparc64 = []
 x86 = []
 x86_64 = []
 
-# Enables Serialize/Deserialize impls.
+# Deprecated: Use the `serde` instead.
 with-serde = ["serde", "serde_repr"]
 
+# Enables Serialize/Deserialize impls.
+serde = ["dep:serde", "serde_repr"]
+
 [dependencies]
-serde = { version = "1.0", features = ["derive"], optional = true }
+serde = { version = "1.0", default-features = false, features = ["derive"], optional = true }
 serde_repr = { version = "0.1", optional = true }
 
 [build-dependencies]

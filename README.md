@@ -14,6 +14,8 @@ This is a low-level library for listing and invoking raw Linux system calls.
 
 ## Feature Flags
 
+The features that are enabled by default include `std` and `serde`.
+
 ### `std`
 
 By default, `std` support is enabled. If you wish to compile in a `no_std`
@@ -22,12 +24,23 @@ environment, use:
 syscalls = { version = "0.6", default-features = false }
 ```
 
-### `with-serde`
+### `serde`
 
 Various types can be serialized with Serde. This can be enabled with:
 ```
-syscalls = { version = "0.6", features = ["with-serde"] }
+syscalls = { version = "0.6", features = ["serde"] }
 ```
+
+### `full`
+
+Enables all extra features.
+
+### `all`
+
+Enables syscall tables for all architectures. If you don't need all
+architectures, you can enable them individually with features like `arm`, `x86`,
+`powerpc`, etc. See the Architecture Support table below for a full list of
+available architectures.
 
 ## Architecture Support
 

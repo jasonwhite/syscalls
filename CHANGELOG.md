@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.6.4
+
+ - Implemented `Default`, `BitOr`, and `BitOrAssign` for `SysnoSet`.
+
 ## v0.6.3
 
  - Added features to expose the syscall tables of other architectures besides

@@ -221,11 +221,17 @@ impl core::ops::BitOr for SysnoSet {
     }
 }
 
-impl core::ops::BitOrAssign for SysnoSet {
-    fn bitor_assign(&mut self, rhs: Self) {
+impl core::ops::BitOrAssign<&Self> for SysnoSet {
+    fn bitor_assign(&mut self, rhs: &Self) {
         for (left, right) in self.data.iter_mut().zip(rhs.data.iter()) {
             *left |= right;
         }
+    }
+}
+
+impl core::ops::BitOrAssign for SysnoSet {
+    fn bitor_assign(&mut self, rhs: Self) {
+        *self |= &rhs;
     }
 }
 
@@ -429,6 +435,7 @@ mod tests {
     fn test_bitorassign() {
         let mut a = SysnoSet::new(&[Sysno::read, Sysno::open, Sysno::close]);
         let b = SysnoSet::new(&[Sysno::write, Sysno::open, Sysno::close]);
+        a |= &b;
         a |= b;
         a |= Sysno::openat;
 

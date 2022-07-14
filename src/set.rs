@@ -46,6 +46,12 @@ pub struct SysnoSet {
     data: [usize; words::<usize>(Sysno::table_size())],
 }
 
+impl Default for SysnoSet {
+    fn default() -> Self {
+        Self::empty()
+    }
+}
+
 impl SysnoSet {
     /// The set of all valid syscalls.
     const ALL: &'static SysnoSet = &SysnoSet::new(Sysno::ALL);
@@ -206,6 +212,29 @@ impl fmt::Debug for SysnoSet {
     }
 }
 
+impl core::ops::BitOr for SysnoSet {
+    type Output = Self;
+
+    fn bitor(mut self, rhs: Self) -> Self::Output {
+        self |= rhs;
+        self
+    }
+}
+
+impl core::ops::BitOrAssign for SysnoSet {
+    fn bitor_assign(&mut self, rhs: Self) {
+        for (left, right) in self.data.iter_mut().zip(rhs.data.iter()) {
+            *left |= right;
+        }
+    }
+}
+
+impl core::ops::BitOrAssign<Sysno> for SysnoSet {
+    fn bitor_assign(&mut self, syscall: Sysno) {
+        self.insert(syscall);
+    }
+}
+
 /// Helper for iterating over the non-zero values of the words in the bitset.
 struct NonZeroUsizeIter<'a> {
     iter: core::slice::Iter<'a, usize>,
@@ -310,6 +339,11 @@ mod tests {
     }
 
     #[test]
+    fn test_default() {
+        assert_eq!(SysnoSet::default(), SysnoSet::empty());
+    }
+
+    #[test]
     fn test_const_new() {
         static SYSCALLS: SysnoSet =
             SysnoSet::new(&[Sysno::open, Sysno::read, Sysno::close]);
@@ -387,6 +421,40 @@ mod tests {
                 Sysno::write,
                 Sysno::open,
                 Sysno::close
+            ])
+        );
+    }
+
+    #[test]
+    fn test_bitorassign() {
+        let mut a = SysnoSet::new(&[Sysno::read, Sysno::open, Sysno::close]);
+        let b = SysnoSet::new(&[Sysno::write, Sysno::open, Sysno::close]);
+        a |= b;
+        a |= Sysno::openat;
+
+        assert_eq!(
+            a,
+            SysnoSet::new(&[
+                Sysno::read,
+                Sysno::write,
+                Sysno::open,
+                Sysno::close,
+                Sysno::openat,
+            ])
+        );
+    }
+
+    #[test]
+    fn test_bitor() {
+        let a = SysnoSet::new(&[Sysno::read, Sysno::open, Sysno::close]);
+        let b = SysnoSet::new(&[Sysno::write, Sysno::open, Sysno::close]);
+        assert_eq!(
+            a | b,
+            SysnoSet::new(&[
+                Sysno::read,
+                Sysno::write,
+                Sysno::open,
+                Sysno::close,
             ])
         );
     }

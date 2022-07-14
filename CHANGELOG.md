@@ -3,6 +3,7 @@
 ## v0.6.4
 
  - Implemented `Default`, `BitOr`, and `BitOrAssign` for `SysnoSet`.
+ - Implemented `Serialize` and `Deserialize` for `SysnoSet`.
 
 ## v0.6.3
 

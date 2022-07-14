@@ -324,6 +324,59 @@ impl<'a> Iterator for SysnoSetIter<'a> {
     }
 }
 
+#[cfg(feature = "serde")]
+use serde::{
+    de::{Deserialize, Deserializer, SeqAccess, Visitor},
+    ser::{Serialize, SerializeSeq, Serializer},
+};
+
+#[cfg(feature = "serde")]
+impl Serialize for SysnoSet {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        let mut seq = serializer.serialize_seq(Some(self.count()))?;
+        for sysno in self.iter() {
+            seq.serialize_element(&sysno)?;
+        }
+        seq.end()
+    }
+}
+
+#[cfg(feature = "serde")]
+impl<'de> Deserialize<'de> for SysnoSet {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        struct SeqVisitor;
+
+        impl<'de> Visitor<'de> for SeqVisitor {
+            type Value = SysnoSet;
+
+            fn expecting(&self, f: &mut fmt::Formatter) -> fmt::Result {
+                f.write_str("a sequence")
+            }
+
+            fn visit_seq<A>(self, mut seq: A) -> Result<Self::Value, A::Error>
+            where
+                A: SeqAccess<'de>,
+            {
+                let mut values = SysnoSet::empty();
+
+                while let Some(value) = seq.next_element()? {
+                    values.insert(value);
+                }
+
+                Ok(values)
+            }
+        }
+
+        deserializer.deserialize_seq(SeqVisitor)
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -511,5 +564,21 @@ mod tests {
     #[test]
     fn test_iter_empty() {
         assert_eq!(SysnoSet::empty().iter().collect::<Vec<_>>(), &[]);
+    }
+
+    #[cfg(feature = "serde")]
+    #[test]
+    fn test_serde_roundtrip() {
+        let syscalls = SysnoSet::new(&[
+            Sysno::open,
+            Sysno::read,
+            Sysno::write,
+            Sysno::close,
+            Sysno::openat,
+        ]);
+
+        let s = serde_json::to_string_pretty(&syscalls).unwrap();
+
+        assert_eq!(serde_json::from_str::<SysnoSet>(&s).unwrap(), syscalls);
     }
 }

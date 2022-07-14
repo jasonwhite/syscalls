@@ -1,9 +1,14 @@
 # Changelog
 
+## v0.6.5
+
+ - Renamed `with-serde` feature to just `serde`. The `with-serde` feature will
+   be removed in the next major release.
+ - Implemented `Serialize` and `Deserialize` for `SysnoSet`.
+
 ## v0.6.4
 
  - Implemented `Default`, `BitOr`, and `BitOrAssign` for `SysnoSet`.
- - Implemented `Serialize` and `Deserialize` for `SysnoSet`.
 
 ## v0.6.3
 

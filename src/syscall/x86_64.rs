@@ -29,7 +29,7 @@ pub unsafe fn syscall0(n: Sysno) -> usize {
         inlateout("rax") n as usize => ret,
         out("rcx") _, // rcx is used to store old rip
         out("r11") _, // r11 is used to store old rflags
-        options(nostack, preserves_flags, readonly)
+        options(nostack, preserves_flags)
     );
     ret
 }

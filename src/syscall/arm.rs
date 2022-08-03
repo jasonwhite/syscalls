@@ -28,7 +28,7 @@ pub unsafe fn syscall0(n: Sysno) -> usize {
         "svc 0",
         in("r7") n as usize,
         lateout("r0") ret,
-        options(nostack, preserves_flags, readonly)
+        options(nostack, preserves_flags)
     );
     ret
 }

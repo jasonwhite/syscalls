@@ -61,7 +61,7 @@ pub unsafe fn syscall0(n: Sysno) -> usize {
         lateout("$15") _,
         lateout("$24") _,
         lateout("$25") _,
-        options(nostack, preserves_flags, readonly)
+        options(nostack, preserves_flags)
     );
     if err == 0 {
         ret

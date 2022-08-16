@@ -1,6 +1,6 @@
 # Changelog
 
-## v0.6.6 (WIP)
+## v0.6.6
 
  - Added aarch64 support.
 

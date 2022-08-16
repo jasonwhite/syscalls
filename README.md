@@ -58,7 +58,7 @@ yet stabilized for all architectures][asm_experimental_arch].
 |     Arch    | Enum  | Invoke  | Stable Rust?      |
 |:-----------:|:-----:|:-------:|:-----------------:|
 |       `arm` |   ✅  |    ✅   | Yes ✅            |
-|   `aarch64` |   ❌  |    ❌   | N/A               |
+|   `aarch64` |   ✅  |    ✅   | Yes ✅            |
 |      `mips` |   ✅  |    ✅   | No ❌             |
 |    `mips64` |   ✅  |    ✅   | No ❌             |
 |   `powerpc` |   ✅  |    ✅   | No ❌             |

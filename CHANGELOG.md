@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.6.7
+
+ - Fixed missing aarch64 syscalls
+
 ## v0.6.6
 
  - Added aarch64 support.

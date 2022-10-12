@@ -492,8 +492,6 @@ syscall_enum! {
         accept4 = 242,
         /// See [recvmmsg(2)](https://man7.org/linux/man-pages/man2/recvmmsg.2.html) for more info on this syscall.
         recvmmsg = 243,
-        /// See [arch_specific_syscall(2)](https://man7.org/linux/man-pages/man2/arch_specific_syscall.2.html) for more info on this syscall.
-        arch_specific_syscall = 244,
         /// See [wait4(2)](https://man7.org/linux/man-pages/man2/wait4.2.html) for more info on this syscall.
         wait4 = 260,
         /// See [prlimit64(2)](https://man7.org/linux/man-pages/man2/prlimit64.2.html) for more info on this syscall.

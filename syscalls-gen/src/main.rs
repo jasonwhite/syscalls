@@ -228,6 +228,12 @@ impl<'a> Header<'a> {
                         continue;
                     }
 
+                    if name == "arch_specific_syscall" {
+                        // This is a placeholder for a block of 16 syscalls
+                        // that are reserved for future use.
+                        continue;
+                    }
+
                     if self.blocklist.contains(&name) {
                         continue;
                     }

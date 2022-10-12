@@ -207,7 +207,7 @@ impl<'a> Header<'a> {
     async fn fetch_table(&self) -> Result<Vec<TableEntry>> {
         lazy_static! {
             // Pattern for matching the syscall definition.
-            static ref RE_SYSCALLNR: Regex = Regex::new(r"^#define\s+__NR_([a-z0-9_]+)\s+(\d+)").unwrap();
+            static ref RE_SYSCALLNR: Regex = Regex::new(r"^#define\s+__NR(?:3264)?_([a-z0-9_]+)\s+(\d+)").unwrap();
         }
 
         let mut table = Vec::new();

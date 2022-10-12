@@ -54,6 +54,8 @@ syscall_enum! {
         dup = 23,
         /// See [dup3(2)](https://man7.org/linux/man-pages/man2/dup3.2.html) for more info on this syscall.
         dup3 = 24,
+        /// See [fcntl(2)](https://man7.org/linux/man-pages/man2/fcntl.2.html) for more info on this syscall.
+        fcntl = 25,
         /// See [inotify_init1(2)](https://man7.org/linux/man-pages/man2/inotify_init1.2.html) for more info on this syscall.
         inotify_init1 = 26,
         /// See [inotify_add_watch(2)](https://man7.org/linux/man-pages/man2/inotify_add_watch.2.html) for more info on this syscall.
@@ -88,6 +90,14 @@ syscall_enum! {
         pivot_root = 41,
         /// See [nfsservctl(2)](https://man7.org/linux/man-pages/man2/nfsservctl.2.html) for more info on this syscall.
         nfsservctl = 42,
+        /// See [statfs(2)](https://man7.org/linux/man-pages/man2/statfs.2.html) for more info on this syscall.
+        statfs = 43,
+        /// See [fstatfs(2)](https://man7.org/linux/man-pages/man2/fstatfs.2.html) for more info on this syscall.
+        fstatfs = 44,
+        /// See [truncate(2)](https://man7.org/linux/man-pages/man2/truncate.2.html) for more info on this syscall.
+        truncate = 45,
+        /// See [ftruncate(2)](https://man7.org/linux/man-pages/man2/ftruncate.2.html) for more info on this syscall.
+        ftruncate = 46,
         /// See [fallocate(2)](https://man7.org/linux/man-pages/man2/fallocate.2.html) for more info on this syscall.
         fallocate = 47,
         /// See [faccessat(2)](https://man7.org/linux/man-pages/man2/faccessat.2.html) for more info on this syscall.
@@ -118,6 +128,8 @@ syscall_enum! {
         quotactl = 60,
         /// See [getdents64(2)](https://man7.org/linux/man-pages/man2/getdents64.2.html) for more info on this syscall.
         getdents64 = 61,
+        /// See [lseek(2)](https://man7.org/linux/man-pages/man2/lseek.2.html) for more info on this syscall.
+        lseek = 62,
         /// See [read(2)](https://man7.org/linux/man-pages/man2/read.2.html) for more info on this syscall.
         read = 63,
         /// See [write(2)](https://man7.org/linux/man-pages/man2/write.2.html) for more info on this syscall.
@@ -134,6 +146,8 @@ syscall_enum! {
         preadv = 69,
         /// See [pwritev(2)](https://man7.org/linux/man-pages/man2/pwritev.2.html) for more info on this syscall.
         pwritev = 70,
+        /// See [sendfile(2)](https://man7.org/linux/man-pages/man2/sendfile.2.html) for more info on this syscall.
+        sendfile = 71,
         /// See [pselect6(2)](https://man7.org/linux/man-pages/man2/pselect6.2.html) for more info on this syscall.
         pselect6 = 72,
         /// See [ppoll(2)](https://man7.org/linux/man-pages/man2/ppoll.2.html) for more info on this syscall.
@@ -148,6 +162,10 @@ syscall_enum! {
         tee = 77,
         /// See [readlinkat(2)](https://man7.org/linux/man-pages/man2/readlinkat.2.html) for more info on this syscall.
         readlinkat = 78,
+        /// See [fstatat(2)](https://man7.org/linux/man-pages/man2/fstatat.2.html) for more info on this syscall.
+        fstatat = 79,
+        /// See [fstat(2)](https://man7.org/linux/man-pages/man2/fstat.2.html) for more info on this syscall.
+        fstat = 80,
         /// See [sync(2)](https://man7.org/linux/man-pages/man2/sync.2.html) for more info on this syscall.
         sync = 81,
         /// See [fsync(2)](https://man7.org/linux/man-pages/man2/fsync.2.html) for more info on this syscall.
@@ -430,6 +448,10 @@ syscall_enum! {
         clone = 220,
         /// See [execve(2)](https://man7.org/linux/man-pages/man2/execve.2.html) for more info on this syscall.
         execve = 221,
+        /// See [mmap(2)](https://man7.org/linux/man-pages/man2/mmap.2.html) for more info on this syscall.
+        mmap = 222,
+        /// See [fadvise64(2)](https://man7.org/linux/man-pages/man2/fadvise64.2.html) for more info on this syscall.
+        fadvise64 = 223,
         /// See [swapon(2)](https://man7.org/linux/man-pages/man2/swapon.2.html) for more info on this syscall.
         swapon = 224,
         /// See [swapoff(2)](https://man7.org/linux/man-pages/man2/swapoff.2.html) for more info on this syscall.

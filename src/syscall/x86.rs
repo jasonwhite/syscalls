@@ -25,7 +25,7 @@ use crate::arch::x86::Sysno;
 pub unsafe fn syscall0(n: Sysno) -> usize {
     let mut ret: usize;
     asm!(
-        "int $$0x80",
+        "int 0x80",
         inlateout("eax") n as usize => ret,
         options(nostack, preserves_flags)
     );
@@ -42,7 +42,7 @@ pub unsafe fn syscall0(n: Sysno) -> usize {
 pub unsafe fn syscall1(n: Sysno, arg1: usize) -> usize {
     let mut ret: usize;
     asm!(
-        "int $$0x80",
+        "int 0x80",
         inlateout("eax") n as usize => ret,
         in("ebx") arg1,
         options(nostack, preserves_flags)
@@ -60,7 +60,7 @@ pub unsafe fn syscall1(n: Sysno, arg1: usize) -> usize {
 pub unsafe fn syscall2(n: Sysno, arg1: usize, arg2: usize) -> usize {
     let mut ret: usize;
     asm!(
-        "int $$0x80",
+        "int 0x80",
         inlateout("eax") n as usize => ret,
         in("ebx") arg1,
         in("ecx") arg2,
@@ -84,7 +84,7 @@ pub unsafe fn syscall3(
 ) -> usize {
     let mut ret: usize;
     asm!(
-        "int $$0x80",
+        "int 0x80",
         inlateout("eax") n as usize => ret,
         in("ebx") arg1,
         in("ecx") arg2,
@@ -111,7 +111,7 @@ pub unsafe fn syscall4(
     let mut ret: usize;
     asm!(
         "xchg esi, {arg4}",
-        "int $$0x80",
+        "int 0x80",
         "xchg esi, {arg4}",
         // Using esi is not allowed, so we need to use another register to
         // save/restore esi. Thus, we can say that esi is not clobbered.
@@ -143,7 +143,7 @@ pub unsafe fn syscall5(
     let mut ret: usize;
     asm!(
         "xchg esi, {arg4}",
-        "int $$0x80",
+        "int 0x80",
         "xchg esi, {arg4}",
         // Using esi is not allowed, so we need to use another register to
         // save/restore esi. Thus, we can say that esi is not clobbered.
@@ -185,7 +185,7 @@ pub unsafe fn syscall6(
         "mov esi, DWORD PTR [eax + 0]", // Set esi to arg4
         "mov ebp, DWORD PTR [eax + 4]", // Set ebp to arg6
         "mov eax, DWORD PTR [eax + 8]", // Lastly, set eax to the syscall number.
-        "int $$0x80",
+        "int 0x80",
         "pop esi",
         "pop ebp",
         // Set eax to a pointer to our input array.

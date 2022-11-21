@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.6.8: WIP
+
+ - aarch64: Removed bogus `arch_specific_syscall`.
+ - x86: Fixed `int 0x80` syntax for non-LLVM rustc backends.
+
 ## v0.6.7
 
  - Fixed missing aarch64 syscalls

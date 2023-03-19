@@ -4,6 +4,8 @@
 
  - aarch64: Removed bogus `arch_specific_syscall`.
  - x86: Fixed `int 0x80` syntax for non-LLVM rustc backends.
+ - Added `SysnoSet::is_empty`.
+ - Minor documentation fixes.
 
 ## v0.6.7
 

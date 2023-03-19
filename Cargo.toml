@@ -1,6 +1,6 @@
 [package]
 name = "syscalls"
-version = "0.6.7"
+version = "0.6.8"
 authors = ["Jason White <rust@jasonwhite.io>", "Baojun Wang <wangbj@gmail.com>"]
 edition = "2018"
 license = "BSD-2-Clause"
@@ -41,7 +41,7 @@ sparc64 = []
 x86 = []
 x86_64 = []
 
-# Deprecated: Use the `serde` instead.
+# Deprecated: Use `serde` instead.
 with-serde = ["serde", "serde_repr"]
 
 # Enables Serialize/Deserialize impls.

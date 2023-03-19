@@ -240,8 +240,8 @@ impl core::ops::BitOrAssign for SysnoSet {
 }
 
 impl core::ops::BitOrAssign<Sysno> for SysnoSet {
-    fn bitor_assign(&mut self, syscall: Sysno) {
-        self.insert(syscall);
+    fn bitor_assign(&mut self, sysno: Sysno) {
+        self.insert(sysno);
     }
 }
 

@@ -1,3 +1,16 @@
+#![deny(clippy::all, clippy::pedantic)]
+#![allow(
+    clippy::cast_possible_truncation,
+    clippy::cast_possible_wrap,
+    clippy::cast_sign_loss,
+    clippy::inline_always,
+    clippy::missing_errors_doc,
+    clippy::module_name_repetitions,
+    clippy::must_use_candidate,
+    clippy::needless_pass_by_value,
+    clippy::ptr_as_ptr,
+    clippy::unsafe_derive_deserialize
+)]
 #![cfg_attr(not(feature = "std"), no_std)]
 #![cfg_attr(
     // These architectures require nightly to use inline assembly.
@@ -194,7 +207,7 @@ mod tests {
         let s2 = unsafe {
             core::slice::from_raw_parts(
                 buffer1.as_mut_ptr() as *const u8,
-                r2.unwrap_or(0) as usize,
+                r2.unwrap_or(0),
             )
         };
 
@@ -216,25 +229,21 @@ mod tests {
         let mut buffer1: [u8; 64] = unsafe { core::mem::zeroed() };
         let mut buffer2: [u8; 64] = unsafe { core::mem::zeroed() };
 
-        let args =
-            SyscallArgs::from(&[fd as usize, buffer1.as_mut_ptr() as _, 64]);
+        let args = SyscallArgs::from(&[fd, buffer1.as_mut_ptr() as _, 64]);
         let r1 = unsafe { syscall(Sysno::read, &args) }.expect("read failed");
 
         let s1 = unsafe {
-            core::slice::from_raw_parts(
-                buffer1.as_mut_ptr() as *const u8,
-                r1 as usize,
-            )
+            core::slice::from_raw_parts(buffer1.as_mut_ptr() as *const u8, r1)
         };
         let r2 = unsafe { syscall!(Sysno::read, fd, buffer2.as_mut_ptr(), 64) };
         let s2 = unsafe {
             core::slice::from_raw_parts(
                 buffer1.as_mut_ptr() as *const u8,
-                r2.unwrap_or(0) as usize,
+                r2.unwrap_or(0),
             )
         };
 
-        assert_eq!(r2, Ok(r1 as usize));
+        assert_eq!(r2, Ok(r1));
         assert_eq!(s1, s2);
 
         let closed = unsafe { syscall!(Sysno::close, fd) };

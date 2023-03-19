@@ -93,7 +93,7 @@ impl fmt::Display for Errno {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self.name_and_description() {
             Some((name, description)) => {
-                write!(f, "{} {} ({})", -self.0, name, description)
+                write!(f, "{} {name} ({description})", -self.0)
             }
             None => {
                 if self.is_valid() {

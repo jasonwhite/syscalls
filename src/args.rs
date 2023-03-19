@@ -1,7 +1,7 @@
-//! define SyscallArgs and SyscallRet
-//! provide helper functions/trait impls to pack/unpack
-//! SyscallArgs and SyscallRet.
-//! io:Error is not implemented for better no_std support.
+//! Provide helper functions/trait impls to pack/unpack
+//! [`SyscallArgs`].
+//!
+//! [`io:Error`] is not implemented for better `no_std` support.
 
 /// The 6 arguments of a syscall, raw untyped version.
 #[derive(PartialEq, Debug, Eq, Clone, Copy)]

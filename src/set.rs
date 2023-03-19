@@ -136,6 +136,7 @@ impl SysnoSet {
     }
 
     /// Does a set union with this set and another.
+    #[must_use]
     pub const fn union(mut self, other: &Self) -> Self {
         let mut i = 0;
         let n = self.data.len();
@@ -148,6 +149,7 @@ impl SysnoSet {
     }
 
     /// Does a set intersection with this set and another.
+    #[must_use]
     pub const fn intersection(mut self, other: &Self) -> Self {
         let mut i = 0;
         let n = self.data.len();
@@ -162,6 +164,7 @@ impl SysnoSet {
     /// Calculates the difference with this set and another. That is, the
     /// resulting set only includes the syscalls that are in `self` but not in
     /// `other`.
+    #[must_use]
     pub const fn difference(mut self, other: &Self) -> Self {
         let mut i = 0;
         let n = self.data.len();
@@ -176,6 +179,7 @@ impl SysnoSet {
     /// Calculates the symmetric difference with this set and another. That is,
     /// the resulting set only includes the syscalls that are in `self` or in
     /// `other`, but not in both.
+    #[must_use]
     pub const fn symmetric_difference(mut self, other: &Self) -> Self {
         let mut i = 0;
         let n = self.data.len();
@@ -199,11 +203,11 @@ impl fmt::Debug for SysnoSet {
 
         let mut iter = self.iter();
         if let Some(sysno) = iter.next() {
-            write!(f, "{}", sysno)?;
+            write!(f, "{sysno}")?;
         }
 
         for sysno in iter {
-            write!(f, ", {}", sysno)?;
+            write!(f, ", {sysno}")?;
         }
 
         write!(f, "}}")?;
@@ -407,23 +411,23 @@ mod tests {
         static SYSCALLS: SysnoSet =
             SysnoSet::new(&[Sysno::openat, Sysno::read, Sysno::close]);
 
-        assert_eq!(SYSCALLS.contains(Sysno::openat), true);
-        assert_eq!(SYSCALLS.contains(Sysno::read), true);
-        assert_eq!(SYSCALLS.contains(Sysno::close), true);
-        assert_eq!(SYSCALLS.contains(Sysno::write), false);
+        assert!(SYSCALLS.contains(Sysno::openat));
+        assert!(SYSCALLS.contains(Sysno::read));
+        assert!(SYSCALLS.contains(Sysno::close));
+        assert!(!SYSCALLS.contains(Sysno::write));
     }
 
     #[test]
     fn test_contains() {
         let set = SysnoSet::empty();
-        assert_eq!(set.contains(Sysno::openat), false);
-        assert_eq!(set.contains(Sysno::first()), false);
-        assert_eq!(set.contains(Sysno::last()), false);
+        assert!(!set.contains(Sysno::openat));
+        assert!(!set.contains(Sysno::first()));
+        assert!(!set.contains(Sysno::last()));
 
         let set = SysnoSet::all();
-        assert_eq!(set.contains(Sysno::openat), true);
-        assert_eq!(set.contains(Sysno::first()), true);
-        assert_eq!(set.contains(Sysno::last()), true);
+        assert!(set.contains(Sysno::openat));
+        assert!(set.contains(Sysno::first()));
+        assert!(set.contains(Sysno::last()));
     }
 
     #[test]

@@ -104,6 +104,12 @@ impl SysnoSet {
         (self.data[idx] & (1 << (bit % Self::WORD_WIDTH))) != 0
     }
 
+    /// Returns true if the set is empty. This is an O(n) operation as
+    /// it must iterate over the entire bitset.
+    pub fn is_empty(&self) -> bool {
+        self.data.iter().all(|&x| x == 0)
+    }
+
     /// Clears the set, removing all syscalls.
     pub fn clear(&mut self) {
         for word in &mut self.data {
@@ -424,6 +430,18 @@ mod tests {
         assert_eq!(set.contains(Sysno::openat), true);
         assert_eq!(set.contains(Sysno::first()), true);
         assert_eq!(set.contains(Sysno::last()), true);
+    }
+
+    #[test]
+    fn test_is_empty() {
+        let mut set = SysnoSet::empty();
+        assert!(set.is_empty());
+        set.insert(Sysno::openat);
+        assert!(!set.is_empty());
+        set.remove(Sysno::openat);
+        assert!(set.is_empty());
+        set.insert(Sysno::last());
+        assert!(!set.is_empty());
     }
 
     #[test]

@@ -8,7 +8,7 @@ This is a low-level library for listing and invoking raw Linux system calls.
 
 ## Features
 
- - Provides of all syscalls for multiple architectures (see table below).
+ - Provides a syscall enum for multiple architectures (see table below).
  - Provides methods for invoking raw syscalls.
  - Provides an `Errno` type for Rustic error handling.
 
@@ -74,7 +74,7 @@ yet stabilized for all architectures][asm_experimental_arch].
 Updates are pulled from the `.tbl` files in the Linux source tree.
 
  1. Change the Linux version in `syscalls-gen/src/main.rs` to the latest
-    version. Using a release candidate version is OK.
+    version. Only updated to the latest stable version (not release candidates).
  2. Run `cd syscalls-gen && cargo run`. This will regenerate the syscall tables
     in `src/arch/`.
 

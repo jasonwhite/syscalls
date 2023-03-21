@@ -190,6 +190,13 @@ impl<T: Default> SysnoMap<T> {
             .iter()
             .map(move |sysno| (sysno, &self.data[sysno.id() as usize]))
     }
+
+    /// Returns an iterator that iterates over all enabled values contained in the map.
+    pub fn values(&self) -> impl Iterator<Item = &T> {
+        self.is_set
+            .iter()
+            .map(move |sysno| &self.data[sysno.id() as usize])
+    }
 }
 
 impl<T: Debug> Debug for SysnoMap<T> {
@@ -243,6 +250,7 @@ mod tests {
         assert_eq!(map.count(), 2);
         assert_eq!(map.insert(Sysno::last(), 5), None);
         assert_eq!(map.count(), 3);
+        assert_eq!(map.values().sum::<u8>(), 51);
     }
 
     #[test]

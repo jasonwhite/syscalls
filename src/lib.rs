@@ -32,12 +32,14 @@ mod macros;
 mod arch;
 mod args;
 mod errno;
+mod map;
 mod set;
 mod syscall;
 
 pub use arch::*;
 pub use args::SyscallArgs;
 pub use errno::{Errno, ErrnoSentinel};
+pub use map::SysnoMap;
 pub use set::SysnoSet;
 
 pub mod raw {

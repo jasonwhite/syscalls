@@ -4,6 +4,8 @@ use super::Sysno;
 
 use core::fmt;
 use core::num::NonZeroUsize;
+use std::fmt::Debug;
+use std::iter::FromIterator;
 
 const fn bits_per<T>() -> usize {
     core::mem::size_of::<T>().saturating_mul(8)
@@ -54,7 +56,7 @@ impl Default for SysnoSet {
 
 impl SysnoSet {
     /// The set of all valid syscalls.
-    const ALL: &'static SysnoSet = &SysnoSet::new(Sysno::ALL);
+    const ALL: &'static Self = &Self::new(Sysno::ALL);
 
     const WORD_WIDTH: usize = usize::BITS as usize;
 
@@ -125,20 +127,27 @@ impl SysnoSet {
             .fold(0, |acc, x| acc + x.count_ones() as usize)
     }
 
-    /// Inserts the given syscall into the set.
-    pub fn insert(&mut self, sysno: Sysno) {
+    /// Inserts the given syscall into the set. Returns true if the syscall was not already in the set.
+    pub fn insert(&mut self, sysno: Sysno) -> bool {
         let bit = (sysno.id() as usize) - (Sysno::first().id() as usize);
         let idx = bit / Self::WORD_WIDTH;
-
-        self.data[idx] |= 1 << (bit % Self::WORD_WIDTH);
+        let mask = 1 << (bit % Self::WORD_WIDTH);
+        // The returned value computation will be optimized away by the compiler if not needed
+        let old_value = self.data[idx] & mask;
+        self.data[idx] |= mask;
+        old_value == 0
     }
 
-    /// Removes the given syscall from the set.
-    pub fn remove(&mut self, sysno: Sysno) {
+    /// Removes the given syscall from the set. Returns true if the syscall was in the set.
+    #[inline]
+    pub fn remove(&mut self, sysno: Sysno) -> bool {
         let bit = (sysno.id() as usize) - (Sysno::first().id() as usize);
         let idx = bit / Self::WORD_WIDTH;
-
-        self.data[idx] &= !(1 << (bit % Self::WORD_WIDTH));
+        let mask = 1 << (bit % Self::WORD_WIDTH);
+        // The returned value computation will be optimized away by the compiler if not needed
+        let old_value = self.data[idx] & mask;
+        self.data[idx] &= !mask;
+        old_value != 0
     }
 
     /// Does a set union with this set and another.
@@ -203,22 +212,11 @@ impl SysnoSet {
     }
 }
 
-impl fmt::Debug for SysnoSet {
+impl Debug for SysnoSet {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{{")?;
-
-        let mut iter = self.iter();
-        if let Some(sysno) = iter.next() {
-            write!(f, "{sysno}")?;
-        }
-
-        for sysno in iter {
-            write!(f, ", {sysno}")?;
-        }
-
-        write!(f, "}}")?;
-
-        Ok(())
+        f.debug_set()
+            .entries(self.iter()) // Adds the first "entry".
+            .finish()
     }
 }
 
@@ -248,6 +246,23 @@ impl core::ops::BitOrAssign for SysnoSet {
 impl core::ops::BitOrAssign<Sysno> for SysnoSet {
     fn bitor_assign(&mut self, sysno: Sysno) {
         self.insert(sysno);
+    }
+}
+
+impl FromIterator<Sysno> for SysnoSet {
+    #[inline]
+    fn from_iter<I: IntoIterator<Item = Sysno>>(iter: I) -> Self {
+        let mut set = SysnoSet::empty();
+        set.extend(iter);
+        set
+    }
+}
+
+impl Extend<Sysno> for SysnoSet {
+    fn extend<T: IntoIterator<Item = Sysno>>(&mut self, iter: T) {
+        for sysno in iter {
+            self.insert(sysno);
+        }
     }
 }
 
@@ -440,11 +455,11 @@ mod tests {
     fn test_is_empty() {
         let mut set = SysnoSet::empty();
         assert!(set.is_empty());
-        set.insert(Sysno::openat);
+        assert!(set.insert(Sysno::openat));
         assert!(!set.is_empty());
-        set.remove(Sysno::openat);
+        assert!(set.remove(Sysno::openat));
         assert!(set.is_empty());
-        set.insert(Sysno::last());
+        assert!(set.insert(Sysno::last()));
         assert!(!set.is_empty());
     }
 
@@ -452,17 +467,17 @@ mod tests {
     fn test_count() {
         let mut set = SysnoSet::empty();
         assert_eq!(set.count(), 0);
-        set.insert(Sysno::openat);
-        set.insert(Sysno::last());
+        assert!(set.insert(Sysno::openat));
+        assert!(set.insert(Sysno::last()));
         assert_eq!(set.count(), 2);
     }
 
     #[test]
     fn test_insert() {
         let mut set = SysnoSet::empty();
-        set.insert(Sysno::openat);
-        set.insert(Sysno::read);
-        set.insert(Sysno::close);
+        assert!(set.insert(Sysno::openat));
+        assert!(set.insert(Sysno::read));
+        assert!(set.insert(Sysno::close));
         assert!(set.contains(Sysno::openat));
         assert!(set.contains(Sysno::read));
         assert!(set.contains(Sysno::close));
@@ -472,9 +487,19 @@ mod tests {
     #[test]
     fn test_remove() {
         let mut set = SysnoSet::all();
-        set.remove(Sysno::openat);
+        assert!(set.remove(Sysno::openat));
         assert!(!set.contains(Sysno::openat));
         assert!(set.contains(Sysno::close));
+    }
+
+    #[test]
+    fn test_from_iter() {
+        let set =
+            SysnoSet::from_iter(vec![Sysno::openat, Sysno::read, Sysno::close]);
+        assert!(set.contains(Sysno::openat));
+        assert!(set.contains(Sysno::read));
+        assert!(set.contains(Sysno::close));
+        assert_eq!(set.count(), 3);
     }
 
     #[test]

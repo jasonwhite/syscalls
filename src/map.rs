@@ -240,7 +240,14 @@ mod tests {
     #[test]
     fn test_debug() {
         let map = syscall_map!(0; Sysno::read => 42, Sysno::openat => 10);
-        assert_eq!(format!("{:?}", map), "{read: 42, openat: 10}");
+        let result = format!("{:?}", map);
+        // The order of the debug output is not guaranteed, so we can't do an exact match
+        assert_eq!(result.len(), "{read: 42, openat: 10}".len());
+        assert!(result.starts_with('{'));
+        assert!(result.ends_with('}'));
+        assert!(result.contains(", "));
+        assert!(result.contains("read: 42"));
+        assert!(result.contains("openat: 10"));
     }
 
     #[cfg(feature = "std")]

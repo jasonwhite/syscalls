@@ -214,9 +214,7 @@ impl SysnoSet {
 
 impl Debug for SysnoSet {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        f.debug_set()
-            .entries(self.iter()) // Adds the first "entry".
-            .finish()
+        f.debug_set().entries(self.iter()).finish()
     }
 }
 

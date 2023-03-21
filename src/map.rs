@@ -149,7 +149,7 @@ impl<T: Default> SysnoMap<T> {
 
     /// Inserts the given syscall into the map. Returns true if the syscall was not already in the map.
     pub fn insert(&mut self, sysno: Sysno, value: T) -> Option<T> {
-        let old = mem::replace(&mut self.data[sysno.id() as usize], value);
+        let old = mem::replace(&mut self.data[data_idx(sysno)], value);
         if self.is_set.insert(sysno) {
             None
         } else {
@@ -160,7 +160,7 @@ impl<T: Default> SysnoMap<T> {
     /// Removes the given syscall from the map. Returns true if the syscall was in the map.
     pub fn remove(&mut self, sysno: Sysno) -> Option<T> {
         if self.is_set.remove(sysno) {
-            Some(mem::take(&mut self.data[sysno.id() as usize]))
+            Some(mem::take(&mut self.data[data_idx(sysno)]))
         } else {
             None
         }
@@ -169,7 +169,7 @@ impl<T: Default> SysnoMap<T> {
     #[inline]
     pub fn get(&self, sysno: Sysno) -> Option<&T> {
         if self.is_set.contains(sysno) {
-            Some(&self.data[sysno.id() as usize])
+            Some(&self.data[data_idx(sysno)])
         } else {
             None
         }
@@ -178,7 +178,7 @@ impl<T: Default> SysnoMap<T> {
     #[inline]
     pub fn get_mut(&mut self, sysno: Sysno) -> Option<&mut T> {
         if self.is_set.contains(sysno) {
-            Some(&mut self.data[sysno.id() as usize])
+            Some(&mut self.data[data_idx(sysno)])
         } else {
             None
         }
@@ -188,15 +188,21 @@ impl<T: Default> SysnoMap<T> {
     pub fn iter(&self) -> impl Iterator<Item = (Sysno, &T)> {
         self.is_set
             .iter()
-            .map(move |sysno| (sysno, &self.data[sysno.id() as usize]))
+            .map(move |sysno| (sysno, &self.data[data_idx(sysno)]))
     }
 
     /// Returns an iterator that iterates over all enabled values contained in the map.
     pub fn values(&self) -> impl Iterator<Item = &T> {
         self.is_set
             .iter()
-            .map(move |sysno| &self.data[sysno.id() as usize])
+            .map(move |sysno| &self.data[data_idx(sysno)])
     }
+}
+
+/// Get internal data index based on sysno value
+#[inline(always)]
+const fn data_idx(sysno: Sysno) -> usize {
+    (sysno.id() as usize) - (Sysno::first().id() as usize)
 }
 
 impl<T: Debug> Debug for SysnoMap<T> {
@@ -205,7 +211,7 @@ impl<T: Debug> Debug for SysnoMap<T> {
             .entries(
                 self.is_set
                     .iter()
-                    .map(|sysno| (sysno, &self.data[sysno.id() as usize])),
+                    .map(|sysno| (sysno, &self.data[data_idx(sysno)])),
             )
             .finish()
     }

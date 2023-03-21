@@ -606,6 +606,13 @@ mod tests {
         assert_eq!(SysnoSet::all().iter().count(), Sysno::count());
     }
 
+    #[test]
+    fn test_debug() {
+        let syscalls = &[Sysno::openat, Sysno::read, Sysno::close];
+        let set = SysnoSet::new(syscalls);
+        assert_eq!(format!("{:?}", set), "{read, close, openat}");
+    }
+
     #[cfg(feature = "std")]
     #[test]
     fn test_iter_empty() {

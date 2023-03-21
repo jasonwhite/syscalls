@@ -28,6 +28,20 @@ use std::mem;
 /// let mut map = syscall_map!(Point::default());
 /// map.insert(Sysno::open, Point { x: 1, y: 2 });
 /// ```
+///
+/// Use function callbacks:
+/// ```
+/// # use syscalls::{syscall_map, Sysno, SysnoMap};
+/// type Handler = fn() -> i32;
+/// let map: SysnoMap<Option<Handler>> = syscall_map!(
+///     None::<Handler>;
+///     Sysno::open => Some(|| 1),
+///     Sysno::close => Some(|| -1),
+/// );
+///
+/// assert_eq!(map.get(Sysno::open).unwrap().unwrap()(), 1);
+/// assert_eq!(map.get(Sysno::close).unwrap().unwrap()(), -1);
+/// ```
 #[macro_export]
 macro_rules! syscall_map {
     ($default:expr) => {
@@ -36,7 +50,9 @@ macro_rules! syscall_map {
     ($default:expr; $($sysno:expr => $value:expr),* $(,)?) => {
         {
             let mut map = $crate::syscall_map!($default);
-            map.extend([$(($sysno, $value),)*]);
+            $(
+                map.insert($sysno, $value);
+            )*
             map
         }
     };

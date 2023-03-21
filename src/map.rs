@@ -2,9 +2,7 @@
 
 use super::Sysno;
 use crate::SysnoSet;
-use core::fmt;
-use std::fmt::Debug;
-use std::mem;
+use core::{fmt, mem};
 
 /// A macro to simplify creation and optionally initializing a syscall map.
 ///
@@ -205,7 +203,7 @@ const fn data_idx(sysno: Sysno) -> usize {
     (sysno.id() as usize) - (Sysno::first().id() as usize)
 }
 
-impl<T: Debug> Debug for SysnoMap<T> {
+impl<T: fmt::Debug> fmt::Debug for SysnoMap<T> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         f.debug_map()
             .entries(
@@ -277,6 +275,7 @@ mod tests {
         assert_eq!(map.remove(Sysno::openat), None);
     }
 
+    #[cfg(feature = "std")]
     #[test]
     fn test_debug() {
         let map = syscall_map!(0; Sysno::read => 42, Sysno::openat => 10);

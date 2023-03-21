@@ -3,9 +3,8 @@
 use super::Sysno;
 
 use core::fmt;
+use core::iter::FromIterator;
 use core::num::NonZeroUsize;
-use std::fmt::Debug;
-use std::iter::FromIterator;
 
 const fn bits_per<T>() -> usize {
     core::mem::size_of::<T>().saturating_mul(8)
@@ -212,7 +211,7 @@ impl SysnoSet {
     }
 }
 
-impl Debug for SysnoSet {
+impl fmt::Debug for SysnoSet {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         f.debug_set().entries(self.iter()).finish()
     }
@@ -490,6 +489,7 @@ mod tests {
         assert!(set.contains(Sysno::close));
     }
 
+    #[cfg(feature = "std")]
     #[test]
     fn test_from_iter() {
         let set =
@@ -604,6 +604,7 @@ mod tests {
         assert_eq!(SysnoSet::all().iter().count(), Sysno::count());
     }
 
+    #[cfg(feature = "std")]
     #[test]
     fn test_debug() {
         let syscalls = &[Sysno::openat, Sysno::read];

@@ -10,9 +10,9 @@ use std::mem;
 ///
 /// # Examples
 ///
-/// Create a new map with a default value of `0` and initialize it with some values:
+/// Create an empty map with a default value of `0` and initialize it with some values:
 /// ```
-/// # use syscalls::{syscall_map, Sysno, SysnoMap};
+/// # use syscalls::{syscall_map, Sysno};
 /// let mut map = syscall_map!(
 ///     0;
 ///     Sysno::open => 0,
@@ -20,9 +20,16 @@ use std::mem;
 /// );
 /// ```
 ///
+/// Create a new map with the defaults set for a set of syscalls:
+/// ```
+/// # use syscalls::{syscall_map, Sysno, SysnoSet};
+/// let mut map = syscall_map!(0, SysnoSet::all());
+/// assert_eq!(map.count(), SysnoSet::all().count());
+/// ```
+///
 /// Use custom copy-iable type:
 /// ```
-/// # use syscalls::{syscall_map, Sysno, SysnoMap};
+/// # use syscalls::{syscall_map, Sysno};
 /// #[derive(Copy, Clone, Default)]
 /// struct Point { x: i32, y: i32 }
 /// let mut map = syscall_map!(Point::default());
@@ -45,17 +52,25 @@ use std::mem;
 #[macro_export]
 macro_rules! syscall_map {
     ($default:expr) => {
-        SysnoMap::new([$default; $crate::Sysno::table_size()])
+        $crate::SysnoMap::new([$default; $crate::Sysno::table_size()])
     };
-    ($default:expr; $($sysno:expr => $value:expr),* $(,)?) => {
-        {
-            let mut map = $crate::syscall_map!($default);
-            $(
-                map.insert($sysno, $value);
-            )*
-            map
-        }
-    };
+    ($default:expr, $syscall_set:expr) => {{
+        $crate::SysnoMap::new_with_set([$default; $crate::Sysno::table_size()], $syscall_set)
+    }};
+    ($default:expr; $($sysno:expr),* $(,)?) => {{
+        let mut map = $crate::syscall_map!($default);
+        $(
+            map.insert($sysno, $default);
+        )*
+        map
+    }};
+    ($default:expr; $($sysno:expr => $value:expr),* $(,)?) => {{
+        let mut map = $crate::syscall_map!($default);
+        $(
+            map.insert($sysno, $value);
+        )*
+        map
+    }};
 }
 
 /// A map of syscalls.
@@ -92,6 +107,17 @@ impl<T: Default> SysnoMap<T> {
     pub fn new(data: [T; Sysno::table_size()]) -> Self {
         Self {
             is_set: SysnoSet::empty(),
+            data,
+        }
+    }
+
+    /// Initialize an syscall map for the given syscalls.
+    pub fn new_with_set(
+        data: [T; Sysno::table_size()],
+        sysno_set: SysnoSet,
+    ) -> Self {
+        Self {
+            is_set: sysno_set,
             data,
         }
     }

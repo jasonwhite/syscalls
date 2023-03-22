@@ -245,11 +245,11 @@ impl<'a, T: Copy> Iterator for SysnoMapValueIter<'a, T> {
 impl<T: fmt::Debug + Copy> fmt::Debug for SysnoMap<T> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         f.debug_map()
-            .entries(
-                self.is_set
-                    .iter()
-                    .map(|sysno| (sysno, &self.data[Self::get_idx(sysno)])),
-            )
+            .entries(self.is_set.iter().map(|sysno| {
+                (sysno, unsafe {
+                    self.data[Self::get_idx(sysno)].assume_init_ref()
+                })
+            }))
             .finish()
     }
 }

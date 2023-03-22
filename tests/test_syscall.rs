@@ -12,7 +12,7 @@ fn test_syscall() {
 #[test]
 fn test_syscall_map() {
     // Make sure the macro exports are ok
-    let mut map = syscall_map!(0);
+    let mut map = SysnoMap::new();
     assert!(map.is_empty());
     assert_eq!(map.count(), 0);
     assert_eq!(map.get(Sysno::write), None);

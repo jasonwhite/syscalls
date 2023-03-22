@@ -44,7 +44,7 @@ const fn words<T>(bits: usize) -> usize {
 /// ```
 #[derive(Clone, Eq, PartialEq)]
 pub struct SysnoSet {
-    data: [usize; words::<usize>(Sysno::table_size())],
+    pub(crate) data: [usize; words::<usize>(Sysno::table_size())],
 }
 
 impl Default for SysnoSet {
@@ -59,24 +59,25 @@ impl SysnoSet {
 
     const WORD_WIDTH: usize = usize::BITS as usize;
 
+    /// Compute the index and mask for the given syscall as stored in the set data.
+    #[inline(always)]
+    pub(crate) const fn get_idx_mask(sysno: Sysno) -> (usize, usize) {
+        let bit = (sysno.id() as usize) - (Sysno::first().id() as usize);
+        (bit / Self::WORD_WIDTH, 1 << (bit % Self::WORD_WIDTH))
+    }
+
     /// Initialize the syscall set with the given slice of syscalls.
     ///
     /// Since this is a `const fn`, this can be used at compile-time.
     pub const fn new(syscalls: &[Sysno]) -> Self {
         let mut set = Self::empty();
 
-        // Use a plain-old while-loop because for-loops are not yet allowed in
-        // const-fns.
+        // Use while-loop because for-loops are not yet allowed in const-fns.
+        // https://github.com/rust-lang/rust/issues/87575
         let mut i = 0;
-        let n = syscalls.len();
-        while i < n {
-            let sysno = syscalls[i];
-
-            let bit = (sysno.id() as usize) - (Sysno::first().id() as usize);
-            let idx = bit / Self::WORD_WIDTH;
-
-            set.data[idx] |= 1 << (bit % Self::WORD_WIDTH);
-
+        while i < syscalls.len() {
+            let (idx, mask) = Self::get_idx_mask(syscalls[i]);
+            set.data[idx] |= mask;
             i += 1;
         }
 
@@ -99,10 +100,8 @@ impl SysnoSet {
 
     /// Returns true if the set contains the given syscall.
     pub const fn contains(&self, sysno: Sysno) -> bool {
-        let bit = (sysno.id() as usize) - (Sysno::first().id() as usize);
-        let idx = bit / Self::WORD_WIDTH;
-
-        (self.data[idx] & (1 << (bit % Self::WORD_WIDTH))) != 0
+        let (idx, mask) = Self::get_idx_mask(sysno);
+        self.data[idx] & mask != 0
     }
 
     /// Returns true if the set is empty. This is an O(n) operation as
@@ -128,10 +127,8 @@ impl SysnoSet {
 
     /// Inserts the given syscall into the set. Returns true if the syscall was not already in the set.
     pub fn insert(&mut self, sysno: Sysno) -> bool {
-        let bit = (sysno.id() as usize) - (Sysno::first().id() as usize);
-        let idx = bit / Self::WORD_WIDTH;
-        let mask = 1 << (bit % Self::WORD_WIDTH);
         // The returned value computation will be optimized away by the compiler if not needed
+        let (idx, mask) = Self::get_idx_mask(sysno);
         let old_value = self.data[idx] & mask;
         self.data[idx] |= mask;
         old_value == 0
@@ -140,10 +137,8 @@ impl SysnoSet {
     /// Removes the given syscall from the set. Returns true if the syscall was in the set.
     #[inline]
     pub fn remove(&mut self, sysno: Sysno) -> bool {
-        let bit = (sysno.id() as usize) - (Sysno::first().id() as usize);
-        let idx = bit / Self::WORD_WIDTH;
-        let mask = 1 << (bit % Self::WORD_WIDTH);
         // The returned value computation will be optimized away by the compiler if not needed
+        let (idx, mask) = Self::get_idx_mask(sysno);
         let old_value = self.data[idx] & mask;
         self.data[idx] &= !mask;
         old_value != 0

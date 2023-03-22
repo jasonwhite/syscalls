@@ -14,8 +14,8 @@
 //! struct Point { x: i32, y: i32 }
 //!
 //! let mut map = SysnoMap::new();
-//! map.insert(Sysno::open, Point { x: 1, y: 2 });
-//! assert!(map.get(Sysno::open).is_some());
+//! map.insert(Sysno::openat, Point { x: 1, y: 2 });
+//! assert!(map.get(Sysno::openat).is_some());
 //! ```
 //!
 //! Use function callbacks:
@@ -23,20 +23,20 @@
 //! # use syscalls::{Sysno, SysnoMap};
 //! type Handler = fn() -> i32;
 //! let mut map = SysnoMap::<Handler>::new();
-//! map.insert(Sysno::open, || 1);
+//! map.insert(Sysno::openat, || 1);
 //! map.insert(Sysno::close, || -1);
-//! assert_eq!(map.get(Sysno::open).unwrap()(), 1);
+//! assert_eq!(map.get(Sysno::openat).unwrap()(), 1);
 //! assert_eq!(map.get(Sysno::close).unwrap()(), -1);
 //! ```
 //!
 //! ```
 //! # use syscalls::{syscall_map, Sysno, SysnoMap};
 //! let mut syscalls = syscall_map!(
-//!     Sysno::open => 0,
+//!     Sysno::openat => 0,
 //!     Sysno::close => 42,
 //! );
 //! assert!(!syscalls.is_empty());
-//! assert_eq!(syscalls.remove(Sysno::open), Some(0));
+//! assert_eq!(syscalls.remove(Sysno::openat), Some(0));
 //! assert_eq!(syscalls.insert(Sysno::close, 4), Some(42));
 //! assert!(syscalls.contains_key(Sysno::close));
 //! assert_eq!(syscalls.get(Sysno::close), Some(&4));
@@ -60,7 +60,7 @@ use core::mem::MaybeUninit;
 /// ```
 /// # use syscalls::{syscall_map, Sysno};
 /// let mut map = syscall_map!(
-///     Sysno::open => 0,
+///     Sysno::openat => 0,
 ///     Sysno::close => 42,
 /// );
 /// ```
@@ -300,9 +300,9 @@ mod tests {
     fn test_fn() {
         type Handler = fn() -> i32;
         let mut map = SysnoMap::<Handler>::new();
-        map.insert(Sysno::open, || 1);
+        map.insert(Sysno::openat, || 1);
         map.insert(Sysno::close, || -1);
-        assert_eq!(map.get(Sysno::open).unwrap()(), 1);
+        assert_eq!(map.get(Sysno::openat).unwrap()(), 1);
         assert_eq!(map.get(Sysno::close).unwrap()(), -1);
     }
 
@@ -310,10 +310,10 @@ mod tests {
     fn test_fn_macro() {
         type Handler = fn() -> i32;
         let map = syscall_map!(
-            Sysno::open => (|| 1) as Handler,
+            Sysno::openat => (|| 1) as Handler,
             Sysno::close => (|| -1) as Handler,
         );
-        assert_eq!(map.get(Sysno::open).unwrap()(), 1);
+        assert_eq!(map.get(Sysno::openat).unwrap()(), 1);
         assert_eq!(map.get(Sysno::close).unwrap()(), -1);
     }
 

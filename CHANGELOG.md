@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.6.9: WIP
+
+ - Added `SysnoMap` for mapping syscall numbers to a type `T`.
+
 ## v0.6.8
 
  - aarch64: Removed bogus `arch_specific_syscall`.

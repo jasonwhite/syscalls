@@ -1,48 +1,3 @@
-//! Enables the creation of an array-backed O(1) map of a syscall to any type
-//! `T`.
-//!
-//! # Examples
-//!
-//! ```
-//! # use syscalls::{Sysno, SysnoMap};
-//! #[derive(Copy, Clone, Default)]
-//! struct Point { x: i32, y: i32 }
-//!
-//! let mut map = SysnoMap::new();
-//! map.insert(Sysno::openat, Point { x: 1, y: 2 });
-//! assert!(map.get(Sysno::openat).is_some());
-//! ```
-//!
-//! Use function callbacks:
-//! ```
-//! # use syscalls::{Sysno, SysnoMap};
-//! type Handler = fn() -> i32;
-//! let mut map = SysnoMap::<Handler>::new();
-//! map.insert(Sysno::openat, || 1);
-//! map.insert(Sysno::close, || -1);
-//! assert_eq!(map.get(Sysno::openat).unwrap()(), 1);
-//! assert_eq!(map.get(Sysno::close).unwrap()(), -1);
-//! ```
-//!
-//! ```
-//! # use syscalls::{Sysno, SysnoMap};
-//! # use core::iter::FromIterator;
-//! let mut syscalls = SysnoMap::from_iter([
-//!     (Sysno::openat, 0),
-//!     (Sysno::close, 42),
-//! ]);
-//!
-//! assert!(!syscalls.is_empty());
-//! assert_eq!(syscalls.remove(Sysno::openat), Some(0));
-//! assert_eq!(syscalls.insert(Sysno::close, 4), Some(42));
-//! assert!(syscalls.contains_key(Sysno::close));
-//! assert_eq!(syscalls.get(Sysno::close), Some(&4));
-//! assert_eq!(syscalls.insert(Sysno::close, 11), Some(4));
-//! assert_eq!(syscalls.count(), 1);
-//! assert_eq!(syscalls.remove(Sysno::close), Some(11));
-//! assert!(syscalls.is_empty());
-//! ```
-
 use super::Sysno;
 use crate::set::SysnoSetIter;
 use crate::SysnoSet;
@@ -52,9 +7,49 @@ use core::mem::MaybeUninit;
 
 type DataArray<T> = [MaybeUninit<T>; Sysno::table_size()];
 
-/// A map of syscalls.
+/// A map of syscalls to a type `T`.
 ///
-/// This provides constant-time lookup of syscalls within a bitset.
+/// This provides constant-time lookup of syscalls within a static array.
+///
+/// # Examples
+///
+/// ```
+/// # use syscalls::{Sysno, SysnoMap};
+/// struct Point { x: i32, y: i32 }
+///
+/// let mut map = SysnoMap::new();
+/// map.insert(Sysno::openat, Point { x: 1, y: 2 });
+/// assert!(map.get(Sysno::openat).is_some());
+/// ```
+///
+/// Use function callbacks:
+/// ```
+/// # use syscalls::{Sysno, SysnoMap};
+/// let mut map = SysnoMap::<fn() -> i32>::new();
+/// map.insert(Sysno::openat, || 1);
+/// map.insert(Sysno::close, || -1);
+/// assert_eq!(map.get(Sysno::openat).unwrap()(), 1);
+/// assert_eq!(map.get(Sysno::close).unwrap()(), -1);
+/// ```
+///
+/// ```
+/// # use syscalls::{Sysno, SysnoMap};
+/// # use core::iter::FromIterator;
+/// let mut syscalls = SysnoMap::from_iter([
+///     (Sysno::openat, 0),
+///     (Sysno::close, 42),
+/// ]);
+///
+/// assert!(!syscalls.is_empty());
+/// assert_eq!(syscalls.remove(Sysno::openat), Some(0));
+/// assert_eq!(syscalls.insert(Sysno::close, 4), Some(42));
+/// assert!(syscalls.contains_key(Sysno::close));
+/// assert_eq!(syscalls.get(Sysno::close), Some(&4));
+/// assert_eq!(syscalls.insert(Sysno::close, 11), Some(4));
+/// assert_eq!(syscalls.count(), 1);
+/// assert_eq!(syscalls.remove(Sysno::close), Some(11));
+/// assert!(syscalls.is_empty());
+/// ```
 pub struct SysnoMap<T> {
     is_set: SysnoSet,
     data: DataArray<T>,

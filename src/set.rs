@@ -3,6 +3,7 @@
 use super::Sysno;
 
 use core::fmt;
+use core::iter::FromIterator;
 use core::num::NonZeroUsize;
 
 const fn bits_per<T>() -> usize {
@@ -43,7 +44,7 @@ const fn words<T>(bits: usize) -> usize {
 /// ```
 #[derive(Clone, Eq, PartialEq)]
 pub struct SysnoSet {
-    data: [usize; words::<usize>(Sysno::table_size())],
+    pub(crate) data: [usize; words::<usize>(Sysno::table_size())],
 }
 
 impl Default for SysnoSet {
@@ -54,9 +55,16 @@ impl Default for SysnoSet {
 
 impl SysnoSet {
     /// The set of all valid syscalls.
-    const ALL: &'static SysnoSet = &SysnoSet::new(Sysno::ALL);
+    const ALL: &'static Self = &Self::new(Sysno::ALL);
 
     const WORD_WIDTH: usize = usize::BITS as usize;
+
+    /// Compute the index and mask for the given syscall as stored in the set data.
+    #[inline]
+    pub(crate) const fn get_idx_mask(sysno: Sysno) -> (usize, usize) {
+        let bit = (sysno.id() as usize) - (Sysno::first().id() as usize);
+        (bit / Self::WORD_WIDTH, 1 << (bit % Self::WORD_WIDTH))
+    }
 
     /// Initialize the syscall set with the given slice of syscalls.
     ///
@@ -64,18 +72,12 @@ impl SysnoSet {
     pub const fn new(syscalls: &[Sysno]) -> Self {
         let mut set = Self::empty();
 
-        // Use a plain-old while-loop because for-loops are not yet allowed in
-        // const-fns.
+        // Use while-loop because for-loops are not yet allowed in const-fns.
+        // https://github.com/rust-lang/rust/issues/87575
         let mut i = 0;
-        let n = syscalls.len();
-        while i < n {
-            let sysno = syscalls[i];
-
-            let bit = (sysno.id() as usize) - (Sysno::first().id() as usize);
-            let idx = bit / Self::WORD_WIDTH;
-
-            set.data[idx] |= 1 << (bit % Self::WORD_WIDTH);
-
+        while i < syscalls.len() {
+            let (idx, mask) = Self::get_idx_mask(syscalls[i]);
+            set.data[idx] |= mask;
             i += 1;
         }
 
@@ -98,14 +100,14 @@ impl SysnoSet {
 
     /// Returns true if the set contains the given syscall.
     pub const fn contains(&self, sysno: Sysno) -> bool {
-        let bit = (sysno.id() as usize) - (Sysno::first().id() as usize);
-        let idx = bit / Self::WORD_WIDTH;
-
-        (self.data[idx] & (1 << (bit % Self::WORD_WIDTH))) != 0
+        let (idx, mask) = Self::get_idx_mask(sysno);
+        self.data[idx] & mask != 0
     }
 
-    /// Returns true if the set is empty. This is an O(n) operation as
-    /// it must iterate over the entire bitset.
+    /// Returns true if the set is empty. Although this is an O(1) operation
+    /// (because the total number of possible syscalls is always constant), it
+    /// must go through the whole bit set to count the number of bits. Thus,
+    /// this may have a large, constant overhead.
     pub fn is_empty(&self) -> bool {
         self.data.iter().all(|&x| x == 0)
     }
@@ -117,28 +119,36 @@ impl SysnoSet {
         }
     }
 
-    /// Returns the number of syscalls in the set. This is an O(n) operation as
-    /// it must count the number of bits in the bitset.
+    /// Returns the number of syscalls in the set. Although this is an O(1)
+    /// operation (because the total number of syscalls is always constant), it
+    /// must go through the whole bit set to count the number of bits. Thus,
+    /// this may have a large, constant overhead.
     pub fn count(&self) -> usize {
         self.data
             .iter()
             .fold(0, |acc, x| acc + x.count_ones() as usize)
     }
 
-    /// Inserts the given syscall into the set.
-    pub fn insert(&mut self, sysno: Sysno) {
-        let bit = (sysno.id() as usize) - (Sysno::first().id() as usize);
-        let idx = bit / Self::WORD_WIDTH;
-
-        self.data[idx] |= 1 << (bit % Self::WORD_WIDTH);
+    /// Inserts the given syscall into the set. Returns true if the syscall was
+    /// not already in the set.
+    pub fn insert(&mut self, sysno: Sysno) -> bool {
+        // The returned value computation will be optimized away by the compiler
+        // if not needed.
+        let (idx, mask) = Self::get_idx_mask(sysno);
+        let old_value = self.data[idx] & mask;
+        self.data[idx] |= mask;
+        old_value == 0
     }
 
-    /// Removes the given syscall from the set.
-    pub fn remove(&mut self, sysno: Sysno) {
-        let bit = (sysno.id() as usize) - (Sysno::first().id() as usize);
-        let idx = bit / Self::WORD_WIDTH;
-
-        self.data[idx] &= !(1 << (bit % Self::WORD_WIDTH));
+    /// Removes the given syscall from the set. Returns true if the syscall was
+    /// in the set.
+    pub fn remove(&mut self, sysno: Sysno) -> bool {
+        // The returned value computation will be optimized away by the compiler
+        // if not needed.
+        let (idx, mask) = Self::get_idx_mask(sysno);
+        let old_value = self.data[idx] & mask;
+        self.data[idx] &= !mask;
+        old_value != 0
     }
 
     /// Does a set union with this set and another.
@@ -205,20 +215,7 @@ impl SysnoSet {
 
 impl fmt::Debug for SysnoSet {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{{")?;
-
-        let mut iter = self.iter();
-        if let Some(sysno) = iter.next() {
-            write!(f, "{sysno}")?;
-        }
-
-        for sysno in iter {
-            write!(f, ", {sysno}")?;
-        }
-
-        write!(f, "}}")?;
-
-        Ok(())
+        f.debug_set().entries(self.iter()).finish()
     }
 }
 
@@ -248,6 +245,22 @@ impl core::ops::BitOrAssign for SysnoSet {
 impl core::ops::BitOrAssign<Sysno> for SysnoSet {
     fn bitor_assign(&mut self, sysno: Sysno) {
         self.insert(sysno);
+    }
+}
+
+impl FromIterator<Sysno> for SysnoSet {
+    fn from_iter<I: IntoIterator<Item = Sysno>>(iter: I) -> Self {
+        let mut set = SysnoSet::empty();
+        set.extend(iter);
+        set
+    }
+}
+
+impl Extend<Sysno> for SysnoSet {
+    fn extend<T: IntoIterator<Item = Sysno>>(&mut self, iter: T) {
+        for sysno in iter {
+            self.insert(sysno);
+        }
     }
 }
 
@@ -440,11 +453,11 @@ mod tests {
     fn test_is_empty() {
         let mut set = SysnoSet::empty();
         assert!(set.is_empty());
-        set.insert(Sysno::openat);
+        assert!(set.insert(Sysno::openat));
         assert!(!set.is_empty());
-        set.remove(Sysno::openat);
+        assert!(set.remove(Sysno::openat));
         assert!(set.is_empty());
-        set.insert(Sysno::last());
+        assert!(set.insert(Sysno::last()));
         assert!(!set.is_empty());
     }
 
@@ -452,17 +465,17 @@ mod tests {
     fn test_count() {
         let mut set = SysnoSet::empty();
         assert_eq!(set.count(), 0);
-        set.insert(Sysno::openat);
-        set.insert(Sysno::last());
+        assert!(set.insert(Sysno::openat));
+        assert!(set.insert(Sysno::last()));
         assert_eq!(set.count(), 2);
     }
 
     #[test]
     fn test_insert() {
         let mut set = SysnoSet::empty();
-        set.insert(Sysno::openat);
-        set.insert(Sysno::read);
-        set.insert(Sysno::close);
+        assert!(set.insert(Sysno::openat));
+        assert!(set.insert(Sysno::read));
+        assert!(set.insert(Sysno::close));
         assert!(set.contains(Sysno::openat));
         assert!(set.contains(Sysno::read));
         assert!(set.contains(Sysno::close));
@@ -472,9 +485,20 @@ mod tests {
     #[test]
     fn test_remove() {
         let mut set = SysnoSet::all();
-        set.remove(Sysno::openat);
+        assert!(set.remove(Sysno::openat));
         assert!(!set.contains(Sysno::openat));
         assert!(set.contains(Sysno::close));
+    }
+
+    #[cfg(feature = "std")]
+    #[test]
+    fn test_from_iter() {
+        let set =
+            SysnoSet::from_iter(vec![Sysno::openat, Sysno::read, Sysno::close]);
+        assert!(set.contains(Sysno::openat));
+        assert!(set.contains(Sysno::read));
+        assert!(set.contains(Sysno::close));
+        assert_eq!(set.count(), 3);
     }
 
     #[test]
@@ -579,6 +603,21 @@ mod tests {
     #[test]
     fn test_iter_full() {
         assert_eq!(SysnoSet::all().iter().count(), Sysno::count());
+    }
+
+    #[cfg(feature = "std")]
+    #[test]
+    fn test_debug() {
+        let syscalls = &[Sysno::openat, Sysno::read];
+        let set = SysnoSet::new(syscalls);
+        // The order of the debug output is not guaranteed, so we can't do an exact match
+        let result = format!("{:?}", set);
+        assert_eq!(result.len(), "{read, openat}".len());
+        assert!(result.starts_with('{'));
+        assert!(result.ends_with('}'));
+        assert!(result.contains(", "));
+        assert!(result.contains("read"));
+        assert!(result.contains("openat"));
     }
 
     #[cfg(feature = "std")]

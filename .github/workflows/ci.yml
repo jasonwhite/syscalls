@@ -59,6 +59,13 @@ jobs:
           command: test
           args: --target ${{ matrix.target }}
 
+      - name: Run no-default test
+        uses: actions-rs/cargo@v1
+        with:
+          use-cross: true
+          command: test
+          args: --target ${{ matrix.target }} --no-default-features
+
   test_nightly:
     name: Test Suite (Nightly)
     runs-on: ubuntu-latest
@@ -92,6 +99,13 @@ jobs:
           use-cross: true
           command: test
           args: --target ${{ matrix.target }}
+
+      - name: Run no-default test
+        uses: actions-rs/cargo@v1
+        with:
+          use-cross: true
+          command: test
+          args: --target ${{ matrix.target }} --no-default-features
 
   rustfmt:
     name: Check format
@@ -147,4 +161,3 @@ jobs:
 
       - name: publish
         run: cargo publish --no-verify
-

@@ -208,6 +208,17 @@ impl<T: Copy> SysnoMap<T> {
     }
 }
 
+impl<T: Clone> SysnoMap<T> {
+    /// Initializes all possible syscalls in the map with the given default
+    /// value.
+    pub fn init_all(default: &T) -> Self {
+        SysnoSet::all()
+            .iter()
+            .map(|v| (v, default.clone()))
+            .collect()
+    }
+}
+
 impl<T> Drop for SysnoMap<T> {
     fn drop(&mut self) {
         self.clear();
@@ -376,5 +387,12 @@ mod tests {
     fn test_iter() {
         let map = SysnoMap::from_iter([(Sysno::read, 42), (Sysno::openat, 10)]);
         assert_eq!(map.iter().collect::<Vec<_>>().len(), 2);
+    }
+
+    #[test]
+    fn test_init_all() {
+        let map = SysnoMap::init_all(&42);
+        assert_eq!(map.get(Sysno::openat), Some(&42));
+        assert_eq!(map.get(Sysno::close), Some(&42));
     }
 }

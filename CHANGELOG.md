@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.6.10: WIP
+
+ - Added `SysnoMap::init_all`
+
 ## v0.6.9
 
  - Added `SysnoMap` for mapping syscall numbers to a type `T`.

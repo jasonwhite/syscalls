@@ -11,7 +11,7 @@ This is a low-level library for listing and invoking raw Linux system calls.
  - Provides a syscall enum for multiple architectures (see table below).
  - Provides methods for invoking raw syscalls.
  - Provides an `Errno` type for Rustic error handling.
- - Provides O(1) array-backed `SysnoSet` and `SysnoMap<T: Copy>` types.
+ - Provides O(1) array-backed `SysnoSet` and `SysnoMap` types.
 
 ## Feature Flags
 

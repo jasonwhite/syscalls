@@ -15,7 +15,7 @@ use regex::Regex;
 static LINUX_REPO: &str = "https://raw.githubusercontent.com/torvalds/linux";
 
 /// Linux version to pull the syscall tables from.
-static LINUX_VERSION: &str = "v5.17";
+static LINUX_VERSION: &str = "v6.2";
 
 lazy_static! {
     /// List of syscall tables for each architecture.
@@ -166,18 +166,16 @@ impl<'a> Table<'a> {
 
             let id: u32 = fields
                 .next()
-                .ok_or_else(|| {
-                    eyre!("Missing syscall number (line {:?})", line)
-                })?
+                .ok_or_else(|| eyre!("Missing syscall number (line {line:?})"))?
                 .parse()
-                .wrap_err_with(|| eyre!("Failed parsing line {:?}", line))?;
+                .wrap_err_with(|| eyre!("Failed parsing line {line:?}"))?;
             let abi_name = fields.next().ok_or_else(|| {
-                eyre!("Missing syscall abi field (line {:?})", line)
+                eyre!("Missing syscall abi field (line {line:?})")
             })?;
             let name = fields
                 .next()
                 .ok_or_else(|| {
-                    eyre!("Missing syscall name field (line {:?})", line)
+                    eyre!("Missing syscall name field (line {line:?})")
                 })?
                 .into();
             let entry_point = fields.next().map(Into::into);
@@ -277,7 +275,7 @@ impl<'a> Source<'a> {
         let syscalls = dir.join(format!("src/arch/{}.rs", self.arch()));
 
         let mut file = fs::File::create(&syscalls)
-            .wrap_err_with(|| eyre!("Failed to create file {:?}", syscalls))?;
+            .wrap_err_with(|| eyre!("Failed to create file {syscalls:?}"))?;
         writeln!(
             file,
             "//! Syscalls for the `{}` architecture.\n",
@@ -342,12 +340,13 @@ impl<'a> fmt::Display for SyscallFile<'a> {
 async fn fetch_path(path: &str) -> Result<String> {
     let url = format!("{LINUX_REPO}/{LINUX_VERSION}/{path}");
 
+    println!("Fetching {url}");
     let contents = reqwest::get(&url)
         .await
-        .wrap_err_with(|| eyre!("Failed to fetch URL '{}'", url))?
+        .wrap_err_with(|| eyre!("Failed to fetch URL '{url}'"))?
         .text()
         .await
-        .wrap_err_with(|| eyre!("Failed to parse contents of URL '{}'", url))?;
+        .wrap_err_with(|| eyre!("Failed to parse contents of URL '{url}'"))?;
 
     Ok(contents)
 }
@@ -363,7 +362,7 @@ async fn generate_errno(dest: &Path) -> Result<()> {
     .await?;
 
     let mut file = fs::File::create(dest)
-        .wrap_err_with(|| eyre!("Failed to create file {:?}", dest))?;
+        .wrap_err_with(|| eyre!("Failed to create file {dest:?}"))?;
     write!(file, "{}", ErrnoFile(&table))?;
 
     Ok(())
@@ -456,8 +455,7 @@ impl<'a> fmt::Display for ErrnoFile<'a> {
                                 "ERESTARTSYS" => "Restart syscall",
                                 "ERESTARTNOINTR" => "Restart if no interrupt",
                                 _ => panic!(
-                                    "Could not find a description for {}",
-                                    name
+                                    "Could not find a description for {name}"
                                 ),
                             }
                         },
@@ -494,6 +492,7 @@ async fn main() -> Result<()> {
         let (arch, path) = source.generate(base_dir).await?;
 
         println!("Generated syscalls for {arch} at {path:?}");
+        println!();
     }
 
     let errno = base_dir.join("src/errno/generated.rs");

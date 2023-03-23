@@ -25,11 +25,13 @@
 //! ```
 //!
 //! ```
-//! # use syscalls::{syscall_map, Sysno, SysnoMap};
-//! let mut syscalls = syscall_map!(
-//!     Sysno::openat => 0,
-//!     Sysno::close => 42,
-//! );
+//! # use syscalls::{Sysno, SysnoMap};
+//! # use core::iter::FromIterator;
+//! let mut syscalls = SysnoMap::from_iter([
+//!     (Sysno::openat, 0),
+//!     (Sysno::close, 42),
+//! ]);
+//!
 //! assert!(!syscalls.is_empty());
 //! assert_eq!(syscalls.remove(Sysno::openat), Some(0));
 //! assert_eq!(syscalls.insert(Sysno::close, 4), Some(42));
@@ -45,30 +47,8 @@ use super::Sysno;
 use crate::set::SysnoSetIter;
 use crate::SysnoSet;
 use core::fmt;
+use core::iter::FromIterator;
 use core::mem::MaybeUninit;
-
-/// A macro to create and initialize a const syscall map => T.
-///
-/// # Examples
-///
-/// Create a map with some initialized sysno values:
-/// ```
-/// # use syscalls::{syscall_map, Sysno};
-/// let mut map = syscall_map!(
-///     Sysno::openat => 0,
-///     Sysno::close => 42,
-/// );
-/// ```
-#[macro_export]
-macro_rules! syscall_map {
-    ($($sysno:expr => $value:expr),* $(,)?) => {{
-        let mut map = $crate::SysnoMap::new();
-        $(
-            map.insert($sysno, $value);
-        )*
-        map
-    }};
-}
 
 type DataArray<T> = [MaybeUninit<T>; Sysno::table_size()];
 
@@ -294,6 +274,17 @@ impl<T> Extend<(Sysno, T)> for SysnoMap<T> {
     }
 }
 
+impl<T> FromIterator<(Sysno, T)> for SysnoMap<T> {
+    fn from_iter<I>(iter: I) -> Self
+    where
+        I: IntoIterator<Item = (Sysno, T)>,
+    {
+        let mut map = SysnoMap::new();
+        map.extend(iter);
+        map
+    }
+}
+
 impl<T> core::ops::Index<Sysno> for SysnoMap<T> {
     type Output = T;
 
@@ -354,10 +345,10 @@ mod tests {
     #[test]
     fn test_fn_macro() {
         type Handler = fn() -> i32;
-        let map = syscall_map!(
-            Sysno::openat => (|| 1) as Handler,
-            Sysno::close => (|| -1) as Handler,
-        );
+        let map = SysnoMap::from_iter([
+            (Sysno::openat, (|| 1) as Handler),
+            (Sysno::close, (|| -1) as Handler),
+        ]);
         assert_eq!(map.get(Sysno::openat).unwrap()(), 1);
         assert_eq!(map.get(Sysno::close).unwrap()(), -1);
     }
@@ -383,7 +374,7 @@ mod tests {
     #[cfg(feature = "std")]
     #[test]
     fn test_debug() {
-        let map = syscall_map!(Sysno::read => 42, Sysno::openat => 10);
+        let map = SysnoMap::from_iter([(Sysno::read, 42), (Sysno::openat, 10)]);
         let result = format!("{:?}", map);
         // The order of the debug output is not guaranteed, so we can't do an
         // exact match.
@@ -398,7 +389,7 @@ mod tests {
     #[cfg(feature = "std")]
     #[test]
     fn test_iter() {
-        let map = syscall_map!(Sysno::read => 42, Sysno::openat => 10);
+        let map = SysnoMap::from_iter([(Sysno::read, 42), (Sysno::openat, 10)]);
         assert_eq!(map.iter().collect::<Vec<_>>().len(), 2);
     }
 }

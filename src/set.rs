@@ -104,8 +104,10 @@ impl SysnoSet {
         self.data[idx] & mask != 0
     }
 
-    /// Returns true if the set is empty. This is an O(n) operation as
-    /// it must iterate over the entire bitset.
+    /// Returns true if the set is empty. Although this is an O(1) operation
+    /// (because the total number of possible syscalls is always constant), it
+    /// must go through the whole bit set to count the number of bits. Thus,
+    /// this may have a large, constant overhead.
     pub fn is_empty(&self) -> bool {
         self.data.iter().all(|&x| x == 0)
     }
@@ -117,27 +119,33 @@ impl SysnoSet {
         }
     }
 
-    /// Returns the number of syscalls in the set. This is an O(n) operation as
-    /// it must count the number of bits in the bitset.
+    /// Returns the number of syscalls in the set. Although this is an O(1)
+    /// operation (because the total number of syscalls is always constant), it
+    /// must go through the whole bit set to count the number of bits. Thus,
+    /// this may have a large, constant overhead.
     pub fn count(&self) -> usize {
         self.data
             .iter()
             .fold(0, |acc, x| acc + x.count_ones() as usize)
     }
 
-    /// Inserts the given syscall into the set. Returns true if the syscall was not already in the set.
+    /// Inserts the given syscall into the set. Returns true if the syscall was
+    /// not already in the set.
     pub fn insert(&mut self, sysno: Sysno) -> bool {
-        // The returned value computation will be optimized away by the compiler if not needed
+        // The returned value computation will be optimized away by the compiler
+        // if not needed.
         let (idx, mask) = Self::get_idx_mask(sysno);
         let old_value = self.data[idx] & mask;
         self.data[idx] |= mask;
         old_value == 0
     }
 
-    /// Removes the given syscall from the set. Returns true if the syscall was in the set.
+    /// Removes the given syscall from the set. Returns true if the syscall was
+    /// in the set.
     #[inline]
     pub fn remove(&mut self, sysno: Sysno) -> bool {
-        // The returned value computation will be optimized away by the compiler if not needed
+        // The returned value computation will be optimized away by the compiler
+        // if not needed.
         let (idx, mask) = Self::get_idx_mask(sysno);
         let old_value = self.data[idx] & mask;
         self.data[idx] &= !mask;

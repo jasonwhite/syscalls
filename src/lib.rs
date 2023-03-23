@@ -39,8 +39,8 @@ mod syscall;
 pub use arch::*;
 pub use args::SyscallArgs;
 pub use errno::{Errno, ErrnoSentinel};
-pub use map::SysnoMap;
-pub use set::SysnoSet;
+pub use map::*;
+pub use set::*;
 
 pub mod raw {
     //! Exposes raw syscalls that simply return a `usize` instead of a `Result`.

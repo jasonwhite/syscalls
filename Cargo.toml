@@ -1,6 +1,6 @@
 [package]
 name = "syscalls"
-version = "0.6.8"
+version = "0.6.9"
 authors = ["Jason White <rust@jasonwhite.io>", "Baojun Wang <wangbj@gmail.com>"]
 edition = "2018"
 license = "BSD-2-Clause"

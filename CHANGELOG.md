@@ -1,6 +1,6 @@
 # Changelog
 
-## v0.6.9: WIP
+## v0.6.9
 
  - Added `SysnoMap` for mapping syscall numbers to a type `T`.
 

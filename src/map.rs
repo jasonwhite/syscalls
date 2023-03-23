@@ -56,13 +56,13 @@ pub struct SysnoMap<T> {
 }
 
 /// Get internal data index based on sysno value
-#[inline(always)]
+#[inline]
 const fn get_idx(sysno: Sysno) -> usize {
     (sysno.id() as usize) - (Sysno::first().id() as usize)
 }
 
 impl<T> SysnoMap<T> {
-    /// Initialize an empty syscall map, must have hardcoded size `Sysno::table_size()`.
+    /// Initializes an empty syscall map.
     pub const fn new() -> Self {
         Self {
             is_set: SysnoSet::empty(),
@@ -87,7 +87,6 @@ impl<T> SysnoMap<T> {
     /// (because the total number of syscalls is always constant), it must
     /// always iterate over the whole map to determine if it is empty or not.
     /// Thus, this may have a large, constant overhead.
-    #[inline]
     pub fn is_empty(&self) -> bool {
         self.is_set.is_empty()
     }
@@ -96,7 +95,6 @@ impl<T> SysnoMap<T> {
     /// operation (because the total number of syscalls is always constant), it
     /// must always iterate over the whole map to determine how many items it
     /// has. Thus, this may have a large, constant overhead.
-    #[inline]
     pub fn count(&self) -> usize {
         self.is_set.count()
     }
@@ -132,7 +130,6 @@ impl<T> SysnoMap<T> {
 
     /// Returns a reference to the value corresponding to `sysno`. Returns
     /// `None` if the syscall is not in the map.
-    #[inline]
     pub fn get(&self, sysno: Sysno) -> Option<&T> {
         if self.is_set.contains(sysno) {
             Some(unsafe { self.data[get_idx(sysno)].assume_init_ref() })
@@ -143,7 +140,6 @@ impl<T> SysnoMap<T> {
 
     /// Returns a mutable reference to the value corresponding to `sysno`.
     /// Returns `None` if the syscall is not in the map.
-    #[inline]
     pub fn get_mut(&mut self, sysno: Sysno) -> Option<&mut T> {
         if self.is_set.contains(sysno) {
             Some(unsafe { self.data[get_idx(sysno)].assume_init_mut() })

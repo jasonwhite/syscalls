@@ -60,7 +60,7 @@ impl SysnoSet {
     const WORD_WIDTH: usize = usize::BITS as usize;
 
     /// Compute the index and mask for the given syscall as stored in the set data.
-    #[inline(always)]
+    #[inline]
     pub(crate) const fn get_idx_mask(sysno: Sysno) -> (usize, usize) {
         let bit = (sysno.id() as usize) - (Sysno::first().id() as usize);
         (bit / Self::WORD_WIDTH, 1 << (bit % Self::WORD_WIDTH))
@@ -142,7 +142,6 @@ impl SysnoSet {
 
     /// Removes the given syscall from the set. Returns true if the syscall was
     /// in the set.
-    #[inline]
     pub fn remove(&mut self, sysno: Sysno) -> bool {
         // The returned value computation will be optimized away by the compiler
         // if not needed.
@@ -250,7 +249,6 @@ impl core::ops::BitOrAssign<Sysno> for SysnoSet {
 }
 
 impl FromIterator<Sysno> for SysnoSet {
-    #[inline]
     fn from_iter<I: IntoIterator<Item = Sysno>>(iter: I) -> Self {
         let mut set = SysnoSet::empty();
         set.extend(iter);

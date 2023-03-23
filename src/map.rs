@@ -247,13 +247,7 @@ impl<'a, T> Iterator for SysnoMapValues<'a, T> {
 
 impl<T: fmt::Debug> fmt::Debug for SysnoMap<T> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        f.debug_map()
-            .entries(self.is_set.iter().map(|sysno| {
-                (sysno, unsafe {
-                    self.data[get_idx(sysno)].assume_init_ref()
-                })
-            }))
-            .finish()
+        f.debug_map().entries(self.iter()).finish()
     }
 }
 

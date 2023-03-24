@@ -1,11 +1,14 @@
 #![deny(clippy::all, clippy::pedantic)]
 #![allow(clippy::upper_case_acronyms)]
 
+use futures::future::try_join_all;
 use std::borrow::Cow;
 use std::fmt;
-use std::fs;
+use std::fs::File;
+use std::future::Future;
 use std::io::Write;
 use std::path::{Path, PathBuf};
+use std::pin::Pin;
 
 use color_eyre::eyre::{eyre, Result, WrapErr};
 use lazy_static::lazy_static;
@@ -266,24 +269,24 @@ impl<'a> Source<'a> {
     }
 
     /// Generates the source file.
-    async fn generate(&self, dir: &Path) -> Result<(&str, PathBuf)> {
-        let table = self.fetch_table().await.wrap_err_with(|| {
-            eyre!("Failed fetching table for {}", self.arch())
-        })?;
+    async fn generate(&self, dir: &Path) -> Result<()> {
+        let arch = self.arch();
+        let table = self
+            .fetch_table()
+            .await
+            .wrap_err_with(|| eyre!("Failed fetching table for {arch}"))?;
 
         // Generate `src/arch/{arch}.rs`
-        let syscalls = dir.join(format!("src/arch/{}.rs", self.arch()));
+        let path = dir.join(format!("src/arch/{arch}.rs"));
 
-        let mut file = fs::File::create(&syscalls)
-            .wrap_err_with(|| eyre!("Failed to create file {syscalls:?}"))?;
-        writeln!(
-            file,
-            "//! Syscalls for the `{}` architecture.\n",
-            self.arch()
-        )?;
+        let mut file = File::create(&path).wrap_err_with(|| {
+            eyre!("Failed to create file {}", path.display())
+        })?;
+        writeln!(file, "//! Syscalls for the `{arch}` architecture.\n")?;
         write!(file, "{}", SyscallFile(&table))?;
 
-        Ok((self.arch(), syscalls))
+        println!("Generated syscalls for {arch} at {}", path.display());
+        Ok(())
     }
 }
 
@@ -351,7 +354,7 @@ async fn fetch_path(path: &str) -> Result<String> {
     Ok(contents)
 }
 
-async fn generate_errno(dest: &Path) -> Result<()> {
+async fn generate_errno(path: PathBuf) -> Result<()> {
     let table = fetch_errno(&[
         "include/uapi/asm-generic/errno-base.h",
         "include/uapi/asm-generic/errno.h",
@@ -361,10 +364,11 @@ async fn generate_errno(dest: &Path) -> Result<()> {
     ])
     .await?;
 
-    let mut file = fs::File::create(dest)
-        .wrap_err_with(|| eyre!("Failed to create file {dest:?}"))?;
+    let mut file = File::create(&path)
+        .wrap_err_with(|| eyre!("Failed to create file {}", &path.display()))?;
     write!(file, "{}", ErrnoFile(&table))?;
 
+    println!("Generated errno table at {}", &path.display());
     Ok(())
 }
 
@@ -384,12 +388,11 @@ enum Errno {
 }
 
 async fn fetch_errno(paths: &[&str]) -> Result<Vec<Errno>> {
+    let futures: Vec<_> = paths.iter().map(|path| fetch_path(path)).collect();
+
     let mut errnos = Vec::new();
-
-    for path in paths {
-        let contents = fetch_path(path).await?;
-
-        parse_errno(&contents, &mut errnos)?;
+    for content in try_join_all(futures).await? {
+        parse_errno(&content, &mut errnos)?;
     }
 
     Ok(errnos)
@@ -464,11 +467,7 @@ impl<'a> fmt::Display for ErrnoFile<'a> {
 
                     writeln!(f, r#"        {name}({num}) = "{description}","#)?;
                 }
-                Errno::Alias {
-                    alias: _,
-                    name: _,
-                    description: _,
-                } => {
+                Errno::Alias { .. } => {
                     // Don't include aliases since it makes our macro more
                     // complicated. We can add these manually later.
                 }
@@ -488,16 +487,17 @@ async fn main() -> Result<()> {
 
     let base_dir = Path::new("..");
 
-    for source in SOURCES.iter() {
-        let (arch, path) = source.generate(base_dir).await?;
+    let mut futures: Vec<Pin<Box<dyn Future<Output = Result<()>>>>> =
+        Vec::new();
 
-        println!("Generated syscalls for {arch} at {path:?}");
-        println!();
+    for source in SOURCES.iter() {
+        futures.push(Box::pin(source.generate(base_dir)));
     }
 
     let errno = base_dir.join("src/errno/generated.rs");
-    generate_errno(&errno).await?;
-    println!("Generated errno table at {errno:?}");
+    futures.push(Box::pin(generate_errno(errno)));
+
+    try_join_all(futures).await?;
 
     Ok(())
 }

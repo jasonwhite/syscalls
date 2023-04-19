@@ -35,6 +35,7 @@ jobs:
           # supported by this project and so those architectures are commented
           # out.
           - arm-unknown-linux-gnueabi
+          - thumbv7neon-unknown-linux-gnueabihf
           - aarch64-unknown-linux-gnu
           - i686-unknown-linux-gnu
             #- sparc-unknown-linux-gnu

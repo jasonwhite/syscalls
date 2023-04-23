@@ -1,8 +1,10 @@
 # Changelog
 
-## v0.6.10: WIP
+## v0.6.10
 
- - Added `SysnoMap::init_all`
+ - Added `SysnoMap::init_all`.
+ - Added support for ARM thumb mode. Compilation would fail in this case.
+   Requires the use of `build.rs` (or using a nightly compiler).
 
 ## v0.6.9
 

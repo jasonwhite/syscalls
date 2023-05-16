@@ -64,11 +64,16 @@ yet stabilized for all architectures][asm_experimental_arch].
 |  `mips64`   |  ✅   |   ✅    |     No ❌     |
 |  `powerpc`  |  ✅   |   ✅    |     No ❌     |
 | `powerpc64` |  ✅   |   ✅    |     No ❌     |
+|  `riscv32`  |  ✅   |   ❌*   |     No ❌     |
+|  `riscv64`  |  ✅   |   ✅    |    Yes ✅     |
 |   `s390x`   |  ✅   |   ✅    |     No ❌     |
 |   `sparc`   |  ✅   |   ❌    |     N/A      |
 |  `sparc64`  |  ✅   |   ❌    |     N/A      |
 |    `x86`    |  ✅   |   ✅    |    Yes ✅     |
 |  `x86_64`   |  ✅   |   ✅    |    Yes ✅     |
+
+\* Rust does not support riscv32 Linux targets, but syscall functions are
+implemented.
 
 ## Updating the syscall list
 

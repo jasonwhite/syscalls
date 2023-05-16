@@ -24,8 +24,8 @@ std = []
 
 # Includes the syscall tables for all architectures.
 all = [
-    "aarch64", "arm", "mips", "mips64", "powerpc", "powerpc64", "s390x",
-    "sparc", "sparc64", "x86", "x86_64"
+    "aarch64", "arm", "mips", "mips64", "powerpc", "powerpc64", "riscv32",
+    "riscv64", "s390x", "sparc", "sparc64", "x86", "x86_64"
 ]
 
 # Enable syscall tables for individual architectures.
@@ -35,6 +35,8 @@ mips = []
 mips64 = []
 powerpc = []
 powerpc64 = []
+riscv32 = []
+riscv64 = []
 s390x = []
 sparc = []
 sparc64 = []

@@ -88,6 +88,23 @@ lazy_static! {
             path: "arch/s390/kernel/syscalls/syscall.tbl",
             abi: &[ABI::COMMON, ABI::B64],
         }),
+        // For riscv32 and riscv64, see aarch64's explanation.
+        Source::Header(Header {
+            arch: "riscv32",
+            headers: &[
+                "include/uapi/asm-generic/unistd.h",
+                // "arch/riscv/include/uapi/asm/unistd.h",
+            ],
+            blocklist: &["sync_file_range"],
+        }),
+        Source::Header(Header {
+            arch: "riscv64",
+            headers: &[
+                "include/uapi/asm-generic/unistd.h",
+                // "arch/riscv/include/uapi/asm/unistd.h",
+            ],
+            blocklist: &["sync_file_range"],
+        }),
     ];
 }
 

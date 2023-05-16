@@ -12,6 +12,10 @@ mod mips64;
 mod powerpc;
 #[cfg(target_arch = "powerpc64")]
 mod powerpc64;
+#[cfg(target_arch = "riscv32")]
+mod riscv32;
+#[cfg(target_arch = "riscv64")]
+mod riscv64;
 #[cfg(target_arch = "s390x")]
 mod s390x;
 #[cfg(target_arch = "sparc")]
@@ -43,6 +47,12 @@ pub use powerpc::*;
 
 #[cfg(target_arch = "powerpc64")]
 pub use powerpc64::*;
+
+#[cfg(target_arch = "riscv32")]
+pub use riscv32::*;
+
+#[cfg(target_arch = "riscv64")]
+pub use riscv64::*;
 
 #[cfg(target_arch = "s390x")]
 pub use s390x::*;

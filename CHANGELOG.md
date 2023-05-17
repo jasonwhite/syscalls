@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.6.11
+
+ - Added riscv32 and riscv64 support.
+
 ## v0.6.10
 
  - Added `SysnoMap::init_all`.

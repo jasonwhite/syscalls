@@ -38,6 +38,7 @@ jobs:
           - thumbv7neon-unknown-linux-gnueabihf
           - aarch64-unknown-linux-gnu
           - i686-unknown-linux-gnu
+          - riscv64gc-unknown-linux-gnu
             #- sparc-unknown-linux-gnu
             #- sparc64-unknown-linux-gnu
           - x86_64-unknown-linux-gnu
@@ -88,6 +89,7 @@ jobs:
           - mips64el-unknown-linux-gnuabi64
           - powerpc-unknown-linux-gnu
             #- powerpc64-unknown-linux-gnu
+          - riscv64gc-unknown-linux-gnu
           - s390x-unknown-linux-gnu
           - x86_64-unknown-linux-gnu
     steps:

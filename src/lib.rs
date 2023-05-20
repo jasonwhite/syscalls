@@ -20,7 +20,7 @@
         target_arch = "mips64",
         target_arch = "s390x",
         target_arch = "powerpc",
-        target_arch = "powerpc65",
+        target_arch = "powerpc64",
     ),
     feature(asm_experimental_arch)
 )]

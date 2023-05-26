@@ -1,5 +1,5 @@
 use crate::{fetch_path, ABI};
-use color_eyre::eyre::{eyre, Result, WrapErr};
+use color_eyre::eyre::{bail, eyre, Result, WrapErr};
 use lazy_static::lazy_static;
 use regex::Regex;
 use std::borrow::Cow;
@@ -101,9 +101,11 @@ impl<'a> Header<'a> {
         lazy_static! {
             // Pattern for matching the syscall definition.
             static ref RE_SYSCALLNR: Regex = Regex::new(r"^#define\s+__NR(?:3264)?_([a-z0-9_]+)\s+(\d+)").unwrap();
+            static ref RE_SYSCALLNR_ARCH: Regex = Regex::new(r"^#define\s+__NR(?:3264)?_([a-z0-9_]+)\s+\(__NR_arch_specific_syscall\s*\+\s*(\d+)\)").unwrap();
         }
 
         let mut table = Vec::new();
+        let mut arch_specific_syscall: Option<u32> = None;
 
         for header in self.headers {
             let contents = fetch_path(header).await?;
@@ -124,6 +126,11 @@ impl<'a> Header<'a> {
                     if name == "arch_specific_syscall" {
                         // This is a placeholder for a block of 16 syscalls
                         // that are reserved for future use.
+                        if arch_specific_syscall.is_none() {
+                            arch_specific_syscall = Some(id);
+                        } else {
+                            bail!("__NR_arch_specific_syscall is defined multiple times")
+                        }
                         continue;
                     }
 
@@ -136,6 +143,24 @@ impl<'a> Header<'a> {
                         name: name.into(),
                         entry_point: Some(format!("sys_{name}")),
                     });
+                } else if let Some(cap) = RE_SYSCALLNR_ARCH.captures(line) {
+                    if let Some(offset) = arch_specific_syscall {
+                        let name: &str = cap[1].into();
+                        let id: u32 = cap[2].parse()?;
+
+                        if self.blocklist.contains(&name) {
+                            continue;
+                        }
+
+                        table.push(TableEntry {
+                            id: id + offset,
+                            name: name.into(),
+                            entry_point: Some(format!("sys_{name}")),
+                        })
+                    } else {
+                        bail!("__NR_arch_specific_syscall definition not found before usage. \
+                            Try reordering `Header::headers`?");
+                    }
                 }
             }
         }

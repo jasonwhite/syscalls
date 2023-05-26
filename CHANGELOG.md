@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.6.12
+
+ - riscv: Added the `riscv_flush_icache` syscall
+ - powerpc64: Fixed a typo preventing the `asm_experimental_arch` feature from
+   being enabled.
+
 ## v0.6.11
 
  - Added riscv32 and riscv64 support.

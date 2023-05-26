@@ -93,7 +93,7 @@ lazy_static! {
             arch: "riscv32",
             headers: &[
                 "include/uapi/asm-generic/unistd.h",
-                // "arch/riscv/include/uapi/asm/unistd.h",
+                "arch/riscv/include/uapi/asm/unistd.h",
             ],
             blocklist: &["sync_file_range"],
         }),
@@ -101,7 +101,7 @@ lazy_static! {
             arch: "riscv64",
             headers: &[
                 "include/uapi/asm-generic/unistd.h",
-                // "arch/riscv/include/uapi/asm/unistd.h",
+                "arch/riscv/include/uapi/asm/unistd.h",
             ],
             blocklist: &["sync_file_range"],
         }),

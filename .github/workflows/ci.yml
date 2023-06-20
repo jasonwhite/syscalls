@@ -34,7 +34,11 @@ jobs:
           # NOTE: cargo-cross doesn't have images for all architectures
           # supported by this project and so those architectures are commented
           # out.
+          - arm-linux-androideabi
           - arm-unknown-linux-gnueabi
+          - armv7-linux-androideabi
+          - armv7-unknown-linux-gnueabi
+          - thumbv7neon-linux-androideabi
           - thumbv7neon-unknown-linux-gnueabihf
           - aarch64-unknown-linux-gnu
           - i686-unknown-linux-gnu
@@ -83,6 +87,12 @@ jobs:
       fail-fast: false
       matrix:
         target:
+          - arm-linux-androideabi
+          - arm-unknown-linux-gnueabi
+          - armv7-linux-androideabi
+          - armv7-unknown-linux-gnueabi
+          - thumbv7neon-linux-androideabi
+          - thumbv7neon-unknown-linux-gnueabihf
           - mips-unknown-linux-gnu
           - mips64-unknown-linux-gnuabi64
           - mipsel-unknown-linux-gnu

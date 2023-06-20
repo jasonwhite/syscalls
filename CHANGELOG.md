@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.6.13
+
+ - armv7: Added support for armv7-linux-androideabi targets.
+
 ## v0.6.12
 
  - riscv: Added the `riscv_flush_icache` syscall

@@ -734,12 +734,16 @@ syscall_enum! {
         landlock_add_rule = 445,
         /// See [landlock_restrict_self(2)](https://man7.org/linux/man-pages/man2/landlock_restrict_self.2.html) for more info on this syscall.
         landlock_restrict_self = 446,
+        /// See [memfd_secret(2)](https://man7.org/linux/man-pages/man2/memfd_secret.2.html) for more info on this syscall.
+        memfd_secret = 447,
         /// See [process_mrelease(2)](https://man7.org/linux/man-pages/man2/process_mrelease.2.html) for more info on this syscall.
         process_mrelease = 448,
         /// See [futex_waitv(2)](https://man7.org/linux/man-pages/man2/futex_waitv.2.html) for more info on this syscall.
         futex_waitv = 449,
         /// See [set_mempolicy_home_node(2)](https://man7.org/linux/man-pages/man2/set_mempolicy_home_node.2.html) for more info on this syscall.
         set_mempolicy_home_node = 450,
+        /// See [cachestat(2)](https://man7.org/linux/man-pages/man2/cachestat.2.html) for more info on this syscall.
+        cachestat = 451,
     }
-    LAST: set_mempolicy_home_node;
+    LAST: cachestat;
 }

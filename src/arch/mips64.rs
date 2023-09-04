@@ -710,6 +710,8 @@ syscall_enum! {
         process_mrelease = 5448,
         /// See [futex_waitv(2)](https://man7.org/linux/man-pages/man2/futex_waitv.2.html) for more info on this syscall.
         futex_waitv = 5449,
+        /// See [cachestat(2)](https://man7.org/linux/man-pages/man2/cachestat.2.html) for more info on this syscall.
+        cachestat = 5451,
     }
-    LAST: futex_waitv;
+    LAST: cachestat;
 }

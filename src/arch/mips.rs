@@ -852,6 +852,8 @@ syscall_enum! {
         futex_waitv = 4449,
         /// See [set_mempolicy_home_node(2)](https://man7.org/linux/man-pages/man2/set_mempolicy_home_node.2.html) for more info on this syscall.
         set_mempolicy_home_node = 4450,
+        /// See [cachestat(2)](https://man7.org/linux/man-pages/man2/cachestat.2.html) for more info on this syscall.
+        cachestat = 4451,
     }
-    LAST: set_mempolicy_home_node;
+    LAST: cachestat;
 }

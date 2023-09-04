@@ -93,10 +93,10 @@ jobs:
           - armv7-unknown-linux-gnueabi
           - thumbv7neon-linux-androideabi
           - thumbv7neon-unknown-linux-gnueabihf
-          - mips-unknown-linux-gnu
-          - mips64-unknown-linux-gnuabi64
-          - mipsel-unknown-linux-gnu
-          - mips64el-unknown-linux-gnuabi64
+            #- mips-unknown-linux-gnu
+            #- mips64-unknown-linux-gnuabi64
+            #- mipsel-unknown-linux-gnu
+            #- mips64el-unknown-linux-gnuabi64
           - powerpc-unknown-linux-gnu
             #- powerpc64-unknown-linux-gnu
           - riscv64gc-unknown-linux-gnu

@@ -10,7 +10,7 @@
 /// ```
 /// use syscalls::{Sysno, syscall};
 ///
-/// match unsafe { syscall!(Sysno::fork) } {
+/// match unsafe { syscall!(Sysno::clone) } {
 ///     Ok(0) => {
 ///         // Child process
 ///     }
@@ -18,7 +18,7 @@
 ///         // Parent process
 ///     }
 ///     Err(err) => {
-///         eprintln!("fork() failed: {}", err);
+///         eprintln!("clone() failed: {}", err);
 ///     }
 /// }
 /// ```

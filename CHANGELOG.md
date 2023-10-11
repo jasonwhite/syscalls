@@ -1,5 +1,19 @@
 # Changelog
 
+## v0.6.15
+
+ - Added `SysnoMap::into_iter`.
+ - Added `SysnoSet::into_iter`.
+ - Removed unnecessary build dependency on `cc`.
+ - aarch64: Fixed a doc test
+
+## v0.6.14
+
+ - Updated to syscalls from Linux v6.5.
+
+## v0.6.13
+
+
 ## v0.6.14
 
  - Updated to syscalls from Linux v6.5.

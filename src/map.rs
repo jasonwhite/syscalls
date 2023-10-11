@@ -77,7 +77,7 @@ impl<T> SysnoMap<T> {
 
     /// Clears the map, removing all syscalls.
     pub fn clear(&mut self) {
-        for sysno in self.is_set.iter() {
+        for sysno in &self.is_set {
             unsafe { self.data[get_idx(sysno)].assume_init_drop() }
         }
         self.is_set.clear();
@@ -281,6 +281,15 @@ impl<T> FromIterator<(Sysno, T)> for SysnoMap<T> {
     }
 }
 
+impl<'a, T> IntoIterator for &'a SysnoMap<T> {
+    type Item = (Sysno, &'a T);
+    type IntoIter = SysnoMapIter<'a, T>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        self.iter()
+    }
+}
+
 impl<T> core::ops::Index<Sysno> for SysnoMap<T> {
     type Output = T;
 
@@ -387,6 +396,12 @@ mod tests {
     fn test_iter() {
         let map = SysnoMap::from_iter([(Sysno::read, 42), (Sysno::openat, 10)]);
         assert_eq!(map.iter().collect::<Vec<_>>().len(), 2);
+    }
+
+    #[test]
+    fn test_into_iter() {
+        let map = SysnoMap::from_iter([(Sysno::read, 42), (Sysno::openat, 10)]);
+        assert_eq!((&map).into_iter().count(), 2);
     }
 
     #[test]

@@ -264,6 +264,15 @@ impl Extend<Sysno> for SysnoSet {
     }
 }
 
+impl<'a> IntoIterator for &'a SysnoSet {
+    type Item = Sysno;
+    type IntoIter = SysnoSetIter<'a>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        self.iter()
+    }
+}
+
 /// Helper for iterating over the non-zero values of the words in the bitset.
 struct NonZeroUsizeIter<'a> {
     iter: core::slice::Iter<'a, usize>,
@@ -360,7 +369,7 @@ impl Serialize for SysnoSet {
         S: Serializer,
     {
         let mut seq = serializer.serialize_seq(Some(self.count()))?;
-        for sysno in self.iter() {
+        for sysno in self {
             seq.serialize_element(&sysno)?;
         }
         seq.end()
@@ -603,6 +612,14 @@ mod tests {
     #[test]
     fn test_iter_full() {
         assert_eq!(SysnoSet::all().iter().count(), Sysno::count());
+    }
+
+    #[test]
+    fn test_into_iter() {
+        let syscalls = &[Sysno::read, Sysno::openat, Sysno::close];
+        let set = SysnoSet::new(syscalls);
+
+        assert_eq!(set.into_iter().count(), 3);
     }
 
     #[cfg(feature = "std")]

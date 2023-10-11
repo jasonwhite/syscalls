@@ -13,13 +13,6 @@
 
 ## v0.6.13
 
-
-## v0.6.14
-
- - Updated to syscalls from Linux v6.5.
-
-## v0.6.13
-
  - armv7: Added support for armv7-linux-androideabi targets.
 
 ## v0.6.12

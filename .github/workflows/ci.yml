@@ -36,6 +36,7 @@ jobs:
           # out.
           - arm-linux-androideabi
           - arm-unknown-linux-gnueabi
+          - armv5te-unknown-linux-gnueabi
           - armv7-linux-androideabi
           - armv7-unknown-linux-gnueabi
           - thumbv7neon-linux-androideabi
@@ -89,6 +90,7 @@ jobs:
         target:
           - arm-linux-androideabi
           - arm-unknown-linux-gnueabi
+          - armv5te-unknown-linux-gnueabi
           - armv7-linux-androideabi
           - armv7-unknown-linux-gnueabi
           - thumbv7neon-linux-androideabi

@@ -193,11 +193,13 @@ pub unsafe fn syscall6(
     arg6: usize,
 ) -> usize {
     let mut ret: usize;
+
+    // NOTE: On ARMv4t, `movs` must be used instead of `mov`.
     asm!(
-        "mov {temp}, r7",
-        "mov r7, {n}",
+        "movs {temp}, r7",
+        "movs r7, {n}",
         "svc 0",
-        "mov r7, {temp}",
+        "movs r7, {temp}",
         n = in(reg) n as usize,
         temp = out(reg) _,
         inlateout("r0") arg1 => ret,
@@ -206,7 +208,7 @@ pub unsafe fn syscall6(
         in("r3") arg4,
         in("r4") arg5,
         in("r5") arg6,
-        options(nostack, preserves_flags)
+        options(nostack)
     );
     ret
 }

@@ -2,7 +2,6 @@ use super::Sysno;
 use crate::set::SysnoSetIter;
 use crate::SysnoSet;
 use core::fmt;
-use core::iter::FromIterator;
 use core::mem::MaybeUninit;
 
 type DataArray<T> = [MaybeUninit<T>; Sysno::table_size()];
@@ -34,7 +33,6 @@ type DataArray<T> = [MaybeUninit<T>; Sysno::table_size()];
 ///
 /// ```
 /// # use syscalls::{Sysno, SysnoMap};
-/// # use core::iter::FromIterator;
 /// let mut syscalls = SysnoMap::from_iter([
 ///     (Sysno::openat, 0),
 ///     (Sysno::close, 42),
@@ -59,6 +57,12 @@ pub struct SysnoMap<T> {
 #[inline]
 const fn get_idx(sysno: Sysno) -> usize {
     (sysno.id() as usize) - (Sysno::first().id() as usize)
+}
+
+impl<T> Default for SysnoMap<T> {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl<T> SysnoMap<T> {

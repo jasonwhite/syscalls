@@ -3,7 +3,6 @@
 use super::Sysno;
 
 use core::fmt;
-use core::iter::FromIterator;
 use core::num::NonZeroUsize;
 
 const fn bits_per<T>() -> usize {

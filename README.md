@@ -9,7 +9,7 @@ This is a low-level library for listing and invoking raw Linux system calls.
 ## Features
 
  - Provides a syscall enum for multiple architectures (see table below).
- - Provides methods for invoking raw syscalls.
+ - Provides inlinable syscall functions for multiple architectures (see table below).
  - Provides an `Errno` type for Rustic error handling.
  - Provides O(1) array-backed `SysnoSet` and `SysnoMap` types.
 
@@ -56,30 +56,32 @@ yet stabilized for all architectures][asm_experimental_arch].
 
 [asm_experimental_arch]: https://github.com/rust-lang/rust/issues/93335
 
-|    Arch     | Enum | Invoke | Stable Rust? |
-|:-----------:|:----:|:------:|:------------:|
-|    `arm`    |  ✅   |   ✅    |    Yes ✅     |
+|    Arch     | Enum  | Invoke  | Stable Rust?  |
+|:-----------:|:-----:|:-------:|:-------------:|
+|    `arm`\*  |  ✅   |   ✅    |    Yes ✅     |
 |  `aarch64`  |  ✅   |   ✅    |    Yes ✅     |
 |   `mips`    |  ✅   |   ✅    |     No ❌     |
 |  `mips64`   |  ✅   |   ✅    |     No ❌     |
 |  `powerpc`  |  ✅   |   ✅    |     No ❌     |
 | `powerpc64` |  ✅   |   ✅    |     No ❌     |
-|  `riscv32`  |  ✅   |   ❌*   |     No ❌     |
+|  `riscv32`  |  ✅   |   ❌†   |     No ❌     |
 |  `riscv64`  |  ✅   |   ✅    |    Yes ✅     |
 |   `s390x`   |  ✅   |   ✅    |     No ❌     |
-|   `sparc`   |  ✅   |   ❌    |     N/A      |
-|  `sparc64`  |  ✅   |   ❌    |     N/A      |
+|   `sparc`   |  ✅   |   ❌    |     N/A       |
+|  `sparc64`  |  ✅   |   ❌    |     N/A       |
 |    `x86`    |  ✅   |   ✅    |    Yes ✅     |
 |  `x86_64`   |  ✅   |   ✅    |    Yes ✅     |
 
-\* Rust does not support riscv32 Linux targets, but syscall functions are
-implemented.
+\* Includes ARM thumb mode support.
+
+† Rust does not support riscv32 Linux targets, but syscall functions are
+implemented if you're feeling adventurous.
 
 ## Updating the syscall list
 
 Updates are pulled from the `.tbl` files in the Linux source tree.
 
  1. Change the Linux version in `syscalls-gen/src/main.rs` to the latest
-    version. Only updated to the latest stable version (not release candidates).
+    version. Only update to the latest stable version (not release candidates).
  2. Run `cd syscalls-gen && cargo run`. This will regenerate the syscall tables
     in `src/arch/`.

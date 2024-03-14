@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.6.17
+
+ - Updated syscall lists to Linux 6.8.
+
 ## v0.6.16
 
  - Fixed build for ARMv4t and ARMv5te thumb mode.

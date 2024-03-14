@@ -712,6 +712,26 @@ syscall_enum! {
         futex_waitv = 5449,
         /// See [cachestat(2)](https://man7.org/linux/man-pages/man2/cachestat.2.html) for more info on this syscall.
         cachestat = 5451,
+        /// See [fchmodat2(2)](https://man7.org/linux/man-pages/man2/fchmodat2.2.html) for more info on this syscall.
+        fchmodat2 = 5452,
+        /// See [map_shadow_stack(2)](https://man7.org/linux/man-pages/man2/map_shadow_stack.2.html) for more info on this syscall.
+        map_shadow_stack = 5453,
+        /// See [futex_wake(2)](https://man7.org/linux/man-pages/man2/futex_wake.2.html) for more info on this syscall.
+        futex_wake = 5454,
+        /// See [futex_wait(2)](https://man7.org/linux/man-pages/man2/futex_wait.2.html) for more info on this syscall.
+        futex_wait = 5455,
+        /// See [futex_requeue(2)](https://man7.org/linux/man-pages/man2/futex_requeue.2.html) for more info on this syscall.
+        futex_requeue = 5456,
+        /// See [statmount(2)](https://man7.org/linux/man-pages/man2/statmount.2.html) for more info on this syscall.
+        statmount = 5457,
+        /// See [listmount(2)](https://man7.org/linux/man-pages/man2/listmount.2.html) for more info on this syscall.
+        listmount = 5458,
+        /// See [lsm_get_self_attr(2)](https://man7.org/linux/man-pages/man2/lsm_get_self_attr.2.html) for more info on this syscall.
+        lsm_get_self_attr = 5459,
+        /// See [lsm_set_self_attr(2)](https://man7.org/linux/man-pages/man2/lsm_set_self_attr.2.html) for more info on this syscall.
+        lsm_set_self_attr = 5460,
+        /// See [lsm_list_modules(2)](https://man7.org/linux/man-pages/man2/lsm_list_modules.2.html) for more info on this syscall.
+        lsm_list_modules = 5461,
     }
-    LAST: cachestat;
+    LAST: lsm_list_modules;
 }

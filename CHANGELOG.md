@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.6.16
+
+ - Fixed build for ARMv4t and ARMv5te thumb mode.
+
 ## v0.6.15
 
  - Added `SysnoMap::into_iter`.

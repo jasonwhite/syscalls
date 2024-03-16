@@ -1,12 +1,16 @@
 # Changelog
 
+## v0.6.18
+
+ - Fixed build for ARMv4t and ARMv5te thumb mode.
+
 ## v0.6.17
 
  - Updated syscall lists to Linux 6.8.
 
 ## v0.6.16
 
- - Fixed build for ARMv4t and ARMv5te thumb mode.
+ - ~~Fixed build for ARMv4t and ARMv5te thumb mode.~~ (Actually fixed in v0.6.18)
 
 ## v0.6.15
 

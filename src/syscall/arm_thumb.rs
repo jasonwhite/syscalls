@@ -26,14 +26,14 @@ use crate::arch::arm::Sysno;
 pub unsafe fn syscall0(n: Sysno) -> usize {
     let mut ret: usize;
     asm!(
-        "mov {temp}, r7",
-        "mov r7, {n}",
+        "movs {temp}, r7",
+        "movs r7, {n}",
         "svc 0",
-        "mov r7, {temp}",
+        "movs r7, {temp}",
         n = in(reg) n as usize,
         temp = out(reg) _,
         lateout("r0") ret,
-        options(nostack, preserves_flags)
+        options(nostack)
     );
     ret
 }
@@ -48,14 +48,14 @@ pub unsafe fn syscall0(n: Sysno) -> usize {
 pub unsafe fn syscall1(n: Sysno, arg1: usize) -> usize {
     let mut ret: usize;
     asm!(
-        "mov {temp}, r7",
-        "mov r7, {n}",
+        "movs {temp}, r7",
+        "movs r7, {n}",
         "svc 0",
-        "mov r7, {temp}",
+        "movs r7, {temp}",
         n = in(reg) n as usize,
         temp = out(reg) _,
         inlateout("r0") arg1 => ret,
-        options(nostack, preserves_flags)
+        options(nostack)
     );
     ret
 }
@@ -70,15 +70,15 @@ pub unsafe fn syscall1(n: Sysno, arg1: usize) -> usize {
 pub unsafe fn syscall2(n: Sysno, arg1: usize, arg2: usize) -> usize {
     let mut ret: usize;
     asm!(
-        "mov {temp}, r7",
-        "mov r7, {n}",
+        "movs {temp}, r7",
+        "movs r7, {n}",
         "svc 0",
-        "mov r7, {temp}",
+        "movs r7, {temp}",
         n = in(reg) n as usize,
         temp = out(reg) _,
         inlateout("r0") arg1 => ret,
         in("r1") arg2,
-        options(nostack, preserves_flags)
+        options(nostack)
     );
     ret
 }
@@ -98,16 +98,16 @@ pub unsafe fn syscall3(
 ) -> usize {
     let mut ret: usize;
     asm!(
-        "mov {temp}, r7",
-        "mov r7, {n}",
+        "movs {temp}, r7",
+        "movs r7, {n}",
         "svc 0",
-        "mov r7, {temp}",
+        "movs r7, {temp}",
         n = in(reg) n as usize,
         temp = out(reg) _,
         inlateout("r0") arg1 => ret,
         in("r1") arg2,
         in("r2") arg3,
-        options(nostack, preserves_flags)
+        options(nostack)
     );
     ret
 }
@@ -128,17 +128,17 @@ pub unsafe fn syscall4(
 ) -> usize {
     let mut ret: usize;
     asm!(
-        "mov {temp}, r7",
-        "mov r7, {n}",
+        "movs {temp}, r7",
+        "movs r7, {n}",
         "svc 0",
-        "mov r7, {temp}",
+        "movs r7, {temp}",
         n = in(reg) n as usize,
         temp = out(reg) _,
         inlateout("r0") arg1 => ret,
         in("r1") arg2,
         in("r2") arg3,
         in("r3") arg4,
-        options(nostack, preserves_flags)
+        options(nostack)
     );
     ret
 }
@@ -160,10 +160,10 @@ pub unsafe fn syscall5(
 ) -> usize {
     let mut ret: usize;
     asm!(
-        "mov {temp}, r7",
-        "mov r7, {n}",
+        "movs {temp}, r7",
+        "movs r7, {n}",
         "svc 0",
-        "mov r7, {temp}",
+        "movs r7, {temp}",
         n = in(reg) n as usize,
         temp = out(reg) _,
         inlateout("r0") arg1 => ret,
@@ -171,7 +171,7 @@ pub unsafe fn syscall5(
         in("r2") arg3,
         in("r3") arg4,
         in("r4") arg5,
-        options(nostack, preserves_flags)
+        options(nostack)
     );
     ret
 }

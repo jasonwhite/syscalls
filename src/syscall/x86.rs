@@ -13,8 +13,6 @@
 // option is specified.
 use core::arch::asm;
 
-use crate::arch::x86::Sysno;
-
 /// Issues a raw system call with 0 arguments.
 ///
 /// # Safety
@@ -22,11 +20,11 @@ use crate::arch::x86::Sysno;
 /// Running a system call is inherently unsafe. It is the caller's
 /// responsibility to ensure safety.
 #[inline]
-pub unsafe fn syscall0(n: Sysno) -> usize {
+pub unsafe fn syscall0(n: usize) -> usize {
     let mut ret: usize;
     asm!(
         "int 0x80",
-        inlateout("eax") n as usize => ret,
+        inlateout("eax") n => ret,
         options(nostack, preserves_flags)
     );
     ret
@@ -39,11 +37,11 @@ pub unsafe fn syscall0(n: Sysno) -> usize {
 /// Running a system call is inherently unsafe. It is the caller's
 /// responsibility to ensure safety.
 #[inline]
-pub unsafe fn syscall1(n: Sysno, arg1: usize) -> usize {
+pub unsafe fn syscall1(n: usize, arg1: usize) -> usize {
     let mut ret: usize;
     asm!(
         "int 0x80",
-        inlateout("eax") n as usize => ret,
+        inlateout("eax") n => ret,
         in("ebx") arg1,
         options(nostack, preserves_flags)
     );
@@ -57,11 +55,11 @@ pub unsafe fn syscall1(n: Sysno, arg1: usize) -> usize {
 /// Running a system call is inherently unsafe. It is the caller's
 /// responsibility to ensure safety.
 #[inline]
-pub unsafe fn syscall2(n: Sysno, arg1: usize, arg2: usize) -> usize {
+pub unsafe fn syscall2(n: usize, arg1: usize, arg2: usize) -> usize {
     let mut ret: usize;
     asm!(
         "int 0x80",
-        inlateout("eax") n as usize => ret,
+        inlateout("eax") n => ret,
         in("ebx") arg1,
         in("ecx") arg2,
         options(nostack, preserves_flags)
@@ -77,7 +75,7 @@ pub unsafe fn syscall2(n: Sysno, arg1: usize, arg2: usize) -> usize {
 /// responsibility to ensure safety.
 #[inline]
 pub unsafe fn syscall3(
-    n: Sysno,
+    n: usize,
     arg1: usize,
     arg2: usize,
     arg3: usize,
@@ -85,7 +83,7 @@ pub unsafe fn syscall3(
     let mut ret: usize;
     asm!(
         "int 0x80",
-        inlateout("eax") n as usize => ret,
+        inlateout("eax") n => ret,
         in("ebx") arg1,
         in("ecx") arg2,
         in("edx") arg3,
@@ -102,7 +100,7 @@ pub unsafe fn syscall3(
 /// responsibility to ensure safety.
 #[inline]
 pub unsafe fn syscall4(
-    n: Sysno,
+    n: usize,
     arg1: usize,
     arg2: usize,
     arg3: usize,
@@ -116,7 +114,7 @@ pub unsafe fn syscall4(
         // Using esi is not allowed, so we need to use another register to
         // save/restore esi. Thus, we can say that esi is not clobbered.
         arg4 = in(reg) arg4,
-        inlateout("eax") n as usize => ret,
+        inlateout("eax") n => ret,
         in("ebx") arg1,
         in("ecx") arg2,
         in("edx") arg3,
@@ -133,7 +131,7 @@ pub unsafe fn syscall4(
 /// responsibility to ensure safety.
 #[inline]
 pub unsafe fn syscall5(
-    n: Sysno,
+    n: usize,
     arg1: usize,
     arg2: usize,
     arg3: usize,
@@ -148,7 +146,7 @@ pub unsafe fn syscall5(
         // Using esi is not allowed, so we need to use another register to
         // save/restore esi. Thus, we can say that esi is not clobbered.
         arg4 = in(reg) arg4,
-        inlateout("eax") n as usize => ret,
+        inlateout("eax") n => ret,
         in("ebx") arg1,
         in("ecx") arg2,
         in("edx") arg3,
@@ -166,7 +164,7 @@ pub unsafe fn syscall5(
 /// responsibility to ensure safety.
 #[inline]
 pub unsafe fn syscall6(
-    n: Sysno,
+    n: usize,
     arg1: usize,
     arg2: usize,
     arg3: usize,
@@ -189,7 +187,7 @@ pub unsafe fn syscall6(
         "pop esi",
         "pop ebp",
         // Set eax to a pointer to our input array.
-        inout("eax") &[arg4, arg6, n as usize] => ret,
+        inout("eax") &[arg4, arg6, n] => ret,
         in("ebx") arg1,
         in("ecx") arg2,
         in("edx") arg3,

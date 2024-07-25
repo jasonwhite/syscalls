@@ -16,8 +16,6 @@
 // (cr0). This is then used to decide if the return value should be negated.
 use core::arch::asm;
 
-use crate::arch::powerpc64::Sysno;
-
 /// Issues a raw system call with 0 arguments.
 ///
 /// # Safety
@@ -25,14 +23,14 @@ use crate::arch::powerpc64::Sysno;
 /// Running a system call is inherently unsafe. It is the caller's
 /// responsibility to ensure safety.
 #[inline]
-pub unsafe fn syscall0(n: Sysno) -> usize {
+pub unsafe fn syscall0(n: usize) -> usize {
     let mut ret: usize;
     asm!(
         "sc",
         "bns 1f",
         "neg 3, 3",
         "1:",
-        inlateout("r0") n as usize => _,
+        inlateout("r0") n => _,
         lateout("r3") ret,
         lateout("r4") _,
         lateout("r5") _,
@@ -56,14 +54,14 @@ pub unsafe fn syscall0(n: Sysno) -> usize {
 /// Running a system call is inherently unsafe. It is the caller's
 /// responsibility to ensure safety.
 #[inline]
-pub unsafe fn syscall1(n: Sysno, arg1: usize) -> usize {
+pub unsafe fn syscall1(n: usize, arg1: usize) -> usize {
     let mut ret: usize;
     asm!(
         "sc",
         "bns 1f",
         "neg 3, 3",
         "1:",
-        inlateout("r0") n as usize => _,
+        inlateout("r0") n => _,
         inlateout("r3") arg1 => ret,
         lateout("r4") _,
         lateout("r5") _,
@@ -87,14 +85,14 @@ pub unsafe fn syscall1(n: Sysno, arg1: usize) -> usize {
 /// Running a system call is inherently unsafe. It is the caller's
 /// responsibility to ensure safety.
 #[inline]
-pub unsafe fn syscall2(n: Sysno, arg1: usize, arg2: usize) -> usize {
+pub unsafe fn syscall2(n: usize, arg1: usize, arg2: usize) -> usize {
     let mut ret: usize;
     asm!(
         "sc",
         "bns 1f",
         "neg 3, 3",
         "1:",
-        inlateout("r0") n as usize => _,
+        inlateout("r0") n => _,
         inlateout("r3") arg1 => ret,
         inlateout("r4") arg2 => _,
         lateout("r5") _,
@@ -119,7 +117,7 @@ pub unsafe fn syscall2(n: Sysno, arg1: usize, arg2: usize) -> usize {
 /// responsibility to ensure safety.
 #[inline]
 pub unsafe fn syscall3(
-    n: Sysno,
+    n: usize,
     arg1: usize,
     arg2: usize,
     arg3: usize,
@@ -130,7 +128,7 @@ pub unsafe fn syscall3(
         "bns 1f",
         "neg 3, 3",
         "1:",
-        inlateout("r0") n as usize => _,
+        inlateout("r0") n => _,
         inlateout("r3") arg1 => ret,
         inlateout("r4") arg2 => _,
         inlateout("r5") arg3 => _,
@@ -155,7 +153,7 @@ pub unsafe fn syscall3(
 /// responsibility to ensure safety.
 #[inline]
 pub unsafe fn syscall4(
-    n: Sysno,
+    n: usize,
     arg1: usize,
     arg2: usize,
     arg3: usize,
@@ -167,7 +165,7 @@ pub unsafe fn syscall4(
         "bns 1f",
         "neg 3, 3",
         "1:",
-        inlateout("r0") n as usize => _,
+        inlateout("r0") n => _,
         inlateout("r3") arg1 => ret,
         inlateout("r4") arg2 => _,
         inlateout("r5") arg3 => _,
@@ -192,7 +190,7 @@ pub unsafe fn syscall4(
 /// responsibility to ensure safety.
 #[inline]
 pub unsafe fn syscall5(
-    n: Sysno,
+    n: usize,
     arg1: usize,
     arg2: usize,
     arg3: usize,
@@ -205,7 +203,7 @@ pub unsafe fn syscall5(
         "bns 1f",
         "neg 3, 3",
         "1:",
-        inlateout("r0") n as usize => _,
+        inlateout("r0") n => _,
         inlateout("r3") arg1 => ret,
         inlateout("r4") arg2 => _,
         inlateout("r5") arg3 => _,
@@ -230,7 +228,7 @@ pub unsafe fn syscall5(
 /// responsibility to ensure safety.
 #[inline]
 pub unsafe fn syscall6(
-    n: Sysno,
+    n: usize,
     arg1: usize,
     arg2: usize,
     arg3: usize,
@@ -244,7 +242,7 @@ pub unsafe fn syscall6(
         "bns 1f",
         "neg 3, 3",
         "1:",
-        inlateout("r0") n as usize => _,
+        inlateout("r0") n => _,
         inlateout("r3") arg1 => ret,
         inlateout("r4") arg2 => _,
         inlateout("r5") arg3 => _,

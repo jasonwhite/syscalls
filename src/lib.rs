@@ -62,7 +62,7 @@ pub mod raw {
 /// responsibility to ensure safety.
 #[inline]
 pub unsafe fn syscall0(nr: Sysno) -> Result<usize, Errno> {
-    Errno::from_ret(raw::syscall0(nr))
+    Errno::from_ret(raw::syscall0(nr as usize))
 }
 
 /// Issues a system call with 1 argument.
@@ -73,7 +73,7 @@ pub unsafe fn syscall0(nr: Sysno) -> Result<usize, Errno> {
 /// responsibility to ensure safety.
 #[inline]
 pub unsafe fn syscall1(nr: Sysno, a1: usize) -> Result<usize, Errno> {
-    Errno::from_ret(raw::syscall1(nr, a1))
+    Errno::from_ret(raw::syscall1(nr as usize, a1))
 }
 
 /// Issues a system call with 2 arguments.
@@ -88,7 +88,7 @@ pub unsafe fn syscall2(
     a1: usize,
     a2: usize,
 ) -> Result<usize, Errno> {
-    Errno::from_ret(raw::syscall2(nr, a1, a2))
+    Errno::from_ret(raw::syscall2(nr as usize, a1, a2))
 }
 
 /// Issues a system call with 3 arguments.
@@ -104,7 +104,7 @@ pub unsafe fn syscall3(
     a2: usize,
     a3: usize,
 ) -> Result<usize, Errno> {
-    Errno::from_ret(raw::syscall3(nr, a1, a2, a3))
+    Errno::from_ret(raw::syscall3(nr as usize, a1, a2, a3))
 }
 
 /// Issues a system call with 4 arguments.
@@ -121,7 +121,7 @@ pub unsafe fn syscall4(
     a3: usize,
     a4: usize,
 ) -> Result<usize, Errno> {
-    Errno::from_ret(raw::syscall4(nr, a1, a2, a3, a4))
+    Errno::from_ret(raw::syscall4(nr as usize, a1, a2, a3, a4))
 }
 
 /// Issues a system call with 5 arguments.
@@ -139,7 +139,7 @@ pub unsafe fn syscall5(
     a4: usize,
     a5: usize,
 ) -> Result<usize, Errno> {
-    Errno::from_ret(raw::syscall5(nr, a1, a2, a3, a4, a5))
+    Errno::from_ret(raw::syscall5(nr as usize, a1, a2, a3, a4, a5))
 }
 
 /// Issues a system call with 6 arguments.
@@ -158,7 +158,7 @@ pub unsafe fn syscall6(
     a5: usize,
     a6: usize,
 ) -> Result<usize, Errno> {
-    Errno::from_ret(raw::syscall6(nr, a1, a2, a3, a4, a5, a6))
+    Errno::from_ret(raw::syscall6(nr as usize, a1, a2, a3, a4, a5, a6))
 }
 
 /// Does a raw syscall.

@@ -1,5 +1,13 @@
 # Changelog
 
+## v0.7.0 (WIP)
+
+⚠️ **Breaking Changes** ⚠️
+ - `syscalls::raw::*` now take a `usize` instead of `Sysno` for the syscall
+   number. This allows bypassing `Sysno` if you need to invoke a syscall that is
+   not in the `Sysno` enum. To migrate existing code, you can cast any `Sysno`
+   type to a `usize` (e.g., `Sysno::openat as usize`).
+
 ## v0.6.18
 
  - Fixed build for ARMv4t and ARMv5te thumb mode.

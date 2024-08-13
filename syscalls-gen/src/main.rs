@@ -105,6 +105,15 @@ lazy_static! {
             ],
             blocklist: &["sync_file_range"],
         }),
+        // For loongarch64, see aarch64's explanation.
+        Source::Header(Header {
+            arch: "loongarch64",
+            headers: &[
+                "include/uapi/asm-generic/unistd.h",
+                "arch/loongarch/include/uapi/asm/unistd.h",
+            ],
+            blocklist: &["sync_file_range"],
+        }),
     ];
 }
 

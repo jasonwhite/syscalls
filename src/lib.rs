@@ -30,7 +30,15 @@
 mod macros;
 
 mod arch;
+
+// Some arches have 7 syscall arguments instead of 6
+#[cfg(target_arch = "loongarch64")]
+#[path = "args7.rs"]
 mod args;
+#[cfg(not(target_arch = "loongarch64"))]
+#[path = "args6.rs"]
+mod args;
+
 mod errno;
 mod map;
 mod set;
@@ -52,6 +60,8 @@ pub mod raw {
     pub use super::syscall::syscall4;
     pub use super::syscall::syscall5;
     pub use super::syscall::syscall6;
+    #[cfg(target_arch = "loongarch64")]
+    pub use super::syscall::syscall7;
 }
 
 /// Issues a system call with 0 arguments.
@@ -161,6 +171,27 @@ pub unsafe fn syscall6(
     Errno::from_ret(raw::syscall6(nr as usize, a1, a2, a3, a4, a5, a6))
 }
 
+/// Issues a system call with 7 arguments.
+///
+/// # Safety
+///
+/// Running a system call is inherently unsafe. It is the caller's
+/// responsibility to ensure safety.
+#[cfg(target_arch = "loongarch64")]
+#[inline]
+pub unsafe fn syscall7(
+    nr: Sysno,
+    a1: usize,
+    a2: usize,
+    a3: usize,
+    a4: usize,
+    a5: usize,
+    a6: usize,
+    a7: usize,
+) -> Result<usize, Errno> {
+    Errno::from_ret(raw::syscall7(nr as usize, a1, a2, a3, a4, a5, a6, a7))
+}
+
 /// Does a raw syscall.
 ///
 /// # Arguments
@@ -176,9 +207,15 @@ pub unsafe fn syscall6(
 /// Running a system call is inherently unsafe. It is the caller's
 /// responsibility to ensure safety.
 pub unsafe fn syscall(nr: Sysno, args: &SyscallArgs) -> Result<usize, Errno> {
-    syscall6(
+    #[cfg(target_arch = "loongarch64")]
+    return syscall7(
         nr, args.arg0, args.arg1, args.arg2, args.arg3, args.arg4, args.arg5,
-    )
+        args.arg6,
+    ); // cfg requires ;
+    #[cfg(not(target_arch = "loongarch64"))]
+    return syscall6(
+        nr, args.arg0, args.arg1, args.arg2, args.arg3, args.arg4, args.arg5,
+    );
 }
 
 #[cfg(test)]

@@ -39,6 +39,7 @@ jobs:
           - armv5te-unknown-linux-gnueabi
           - armv7-linux-androideabi
           - armv7-unknown-linux-gnueabi
+          - loongarch64-unknown-linux-gnu
           - thumbv7neon-linux-androideabi
           - thumbv7neon-unknown-linux-gnueabihf
           - aarch64-unknown-linux-gnu
@@ -93,6 +94,7 @@ jobs:
           - armv5te-unknown-linux-gnueabi
           - armv7-linux-androideabi
           - armv7-unknown-linux-gnueabi
+          - loongarch64-unknown-linux-gnu
           - thumbv7neon-linux-androideabi
           - thumbv7neon-unknown-linux-gnueabihf
             #- mips-unknown-linux-gnu

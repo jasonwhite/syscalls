@@ -72,21 +72,6 @@ macro_rules! syscall {
             $a6 as usize,
         )
     };
-
-    ($nr:expr, $a1:expr, $a2:expr, $a3:expr, $a4:expr, $a5:expr, $a6:expr, $a7:expr) => {
-        #[cfg(not(target_arch = "loongarch64"))]
-        compile_error!("Syscall7 is not defined for your arch");
-        $crate::syscall7(
-            $nr,
-            $a1 as usize,
-            $a2 as usize,
-            $a3 as usize,
-            $a4 as usize,
-            $a5 as usize,
-            $a6 as usize,
-            $a7 as usize,
-        )
-    };
 }
 
 /// Performs a raw syscall and returns a `usize`. Use [`syscall`] if you wish to
@@ -149,19 +134,6 @@ macro_rules! raw_syscall {
 
     ($nr:expr, $a1:expr, $a2:expr, $a3:expr, $a4:expr, $a5:expr, $a6:expr) => {
         $crate::raw::syscall6(
-            $nr as usize,
-            $a1 as usize,
-            $a2 as usize,
-            $a3 as usize,
-            $a4 as usize,
-            $a5 as usize,
-            $a6 as usize,
-        )
-    };
-    ($nr:expr, $a1:expr, $a2:expr, $a3:expr, $a4:expr, $a5:expr, $a6:expr, $a7:expr) => {
-        #[cfg(not(target_arch = "loongarch64"))]
-        compile_error!("Syscall7 is not defined for your arch");
-        $crate::raw::syscall7(
             $nr as usize,
             $a1 as usize,
             $a2 as usize,

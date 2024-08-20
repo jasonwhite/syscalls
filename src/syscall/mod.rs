@@ -4,6 +4,8 @@ mod aarch64;
 mod arm;
 #[cfg(all(target_arch = "arm", target_feature = "thumb-mode"))]
 mod arm_thumb;
+#[cfg(target_arch = "loongarch64")]
+mod loongarch64;
 #[cfg(target_arch = "mips")]
 mod mips;
 #[cfg(target_arch = "mips64")]
@@ -35,6 +37,9 @@ pub use arm::*;
 
 #[cfg(all(target_arch = "arm", target_feature = "thumb-mode"))]
 pub use arm_thumb::*;
+
+#[cfg(target_arch = "loongarch64")]
+pub use loongarch64::*;
 
 #[cfg(target_arch = "mips")]
 pub use mips::*;

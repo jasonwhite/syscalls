@@ -172,8 +172,8 @@ syscall_enum! {
         fsync = 82,
         /// See [fdatasync(2)](https://man7.org/linux/man-pages/man2/fdatasync.2.html) for more info on this syscall.
         fdatasync = 83,
-        /// See [sync_file_range2(2)](https://man7.org/linux/man-pages/man2/sync_file_range2.2.html) for more info on this syscall.
-        sync_file_range2 = 84,
+        /// See [sync_file_range(2)](https://man7.org/linux/man-pages/man2/sync_file_range.2.html) for more info on this syscall.
+        sync_file_range = 84,
         /// See [timerfd_create(2)](https://man7.org/linux/man-pages/man2/timerfd_create.2.html) for more info on this syscall.
         timerfd_create = 85,
         /// See [timerfd_settime(2)](https://man7.org/linux/man-pages/man2/timerfd_settime.2.html) for more info on this syscall.

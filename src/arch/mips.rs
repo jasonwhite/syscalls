@@ -874,6 +874,8 @@ syscall_enum! {
         lsm_set_self_attr = 4460,
         /// See [lsm_list_modules(2)](https://man7.org/linux/man-pages/man2/lsm_list_modules.2.html) for more info on this syscall.
         lsm_list_modules = 4461,
+        /// See [mseal(2)](https://man7.org/linux/man-pages/man2/mseal.2.html) for more info on this syscall.
+        mseal = 4462,
     }
-    LAST: lsm_list_modules;
+    LAST: mseal;
 }

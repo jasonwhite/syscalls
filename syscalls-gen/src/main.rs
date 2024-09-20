@@ -47,10 +47,9 @@ lazy_static! {
                 //"arch/arm64/include/asm/unistd.h",
             ],
             blocklist: &[
-                // This syscall was renamed to `sync_file_range2` on aarch64.
-                // Thus, only `sync_file_range2` should appear in the syscall
-                // table.
-                "sync_file_range",
+                // NOTE: On aarch64 platforms, `sync_file_range2` only provides
+                // compatibility for aarch32.
+                "sync_file_range2",
             ],
         }),
         Source::Table(Table {
@@ -88,14 +87,18 @@ lazy_static! {
             path: "arch/s390/kernel/syscalls/syscall.tbl",
             abi: &[ABI::COMMON, ABI::B64],
         }),
-        // For riscv32 and riscv64, see aarch64's explanation.
         Source::Header(Header {
             arch: "riscv32",
             headers: &[
                 "include/uapi/asm-generic/unistd.h",
                 "arch/riscv/include/uapi/asm/unistd.h",
             ],
-            blocklist: &["sync_file_range"],
+            blocklist: &[
+                // It doesn't have defines `__NR_sync_file_range2` or
+                // `__ARCH_WANT_SYNC_FILE_RANGE2` in
+                // `arch/riscv/include/uapi/asm/unistd.h` header file
+                "sync_file_range2",
+            ],
         }),
         Source::Header(Header {
             arch: "riscv64",
@@ -103,16 +106,21 @@ lazy_static! {
                 "include/uapi/asm-generic/unistd.h",
                 "arch/riscv/include/uapi/asm/unistd.h",
             ],
-            blocklist: &["sync_file_range"],
+            blocklist: &[
+                // For riscv64, see riscv32's explanation.
+                "sync_file_range2",
+            ],
         }),
-        // For loongarch64, see aarch64's explanation.
         Source::Header(Header {
             arch: "loongarch64",
             headers: &[
                 "include/uapi/asm-generic/unistd.h",
                 "arch/loongarch/include/uapi/asm/unistd.h",
             ],
-            blocklist: &["sync_file_range"],
+            blocklist: &[
+                // For loongarch64, see riscv32's explanation.
+                "sync_file_range2",
+            ],
         }),
     ];
 }

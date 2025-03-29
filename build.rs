@@ -10,9 +10,9 @@ fn main() {
     //
     // "armv7-linux-androideabi" is a special case that has thumb-mode enabled,
     // but does not start with the "thumb" prefix.
-    if env::var("TARGET").map_or(false, |t| {
-        t.starts_with("thumb") || t == "armv7-linux-androideabi"
-    }) {
+    if env::var("TARGET")
+        .is_ok_and(|t| t.starts_with("thumb") || t == "armv7-linux-androideabi")
+    {
         println!("cargo:rustc-cfg=target_feature=\"thumb-mode\"");
     }
 }

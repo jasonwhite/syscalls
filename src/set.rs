@@ -284,7 +284,7 @@ impl<'a> NonZeroUsizeIter<'a> {
     }
 }
 
-impl<'a> Iterator for NonZeroUsizeIter<'a> {
+impl Iterator for NonZeroUsizeIter<'_> {
     type Item = NonZeroUsize;
 
     fn next(&mut self) -> Option<Self::Item> {
@@ -319,7 +319,7 @@ impl<'a> SysnoSetIter<'a> {
     }
 }
 
-impl<'a> Iterator for SysnoSetIter<'a> {
+impl Iterator for SysnoSetIter<'_> {
     type Item = Sysno;
 
     fn next(&mut self) -> Option<Self::Item> {

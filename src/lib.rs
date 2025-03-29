@@ -24,7 +24,6 @@
     ),
     feature(asm_experimental_arch)
 )]
-#![cfg_attr(doc_cfg, feature(doc_cfg))]
 
 #[macro_use]
 mod macros;

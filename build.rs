@@ -13,6 +13,6 @@ fn main() {
     if env::var("TARGET")
         .is_ok_and(|t| t.starts_with("thumb") || t == "armv7-linux-androideabi")
     {
-        println!("cargo:rustc-cfg=target_feature=\"thumb-mode\"");
+        println!("cargo:rustc-cfg=feature=\"thumb-mode\"");
     }
 }

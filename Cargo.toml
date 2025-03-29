@@ -50,6 +50,10 @@ with-serde = ["serde", "serde_repr"]
 # Enables Serialize/Deserialize impls.
 serde = ["dep:serde", "serde_repr"]
 
+# Generates instructions that are compatible with thumb-mode. This is set
+# automatically by `build.rs` if the target supports thumb-mode.
+thumb-mode = []
+
 [dependencies]
 serde = { version = "1.0", default-features = false, features = ["derive"], optional = true }
 serde_repr = { version = "0.1", optional = true }

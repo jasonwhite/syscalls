@@ -1,12 +1,19 @@
 # Changelog
 
-## v0.7.0 (WIP)
+## v0.7.0 **Major Version Bump**
+
+ - Updated syscall lists to Linux 6.16.
+ - arm: Fixed thumb-mode build (again). It is now activated by the "thumb-mode"
+   crate feature, which is set automatically by `build.rs`.
+ - loongarch64 is now supported (#53).
+ - Various clippy lint fixes.
 
 ⚠️ **Breaking Changes** ⚠️
  - `syscalls::raw::*` now take a `usize` instead of `Sysno` for the syscall
    number. This allows bypassing `Sysno` if you need to invoke a syscall that is
    not in the `Sysno` enum. To migrate existing code, you can cast any `Sysno`
-   type to a `usize` (e.g., `Sysno::openat as usize`).
+   type to a `usize` (e.g., `Sysno::openat as usize`). (#50)
+ - `sync_file_range2` was renamed to `sync_file_range` (#55)
 
 ## v0.6.18
 

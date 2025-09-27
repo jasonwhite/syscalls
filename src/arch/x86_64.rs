@@ -674,6 +674,8 @@ syscall_enum! {
         io_pgetevents = 333,
         /// See [rseq(2)](https://man7.org/linux/man-pages/man2/rseq.2.html) for more info on this syscall.
         rseq = 334,
+        /// See [uretprobe(2)](https://man7.org/linux/man-pages/man2/uretprobe.2.html) for more info on this syscall.
+        uretprobe = 335,
         /// See [pidfd_send_signal(2)](https://man7.org/linux/man-pages/man2/pidfd_send_signal.2.html) for more info on this syscall.
         pidfd_send_signal = 424,
         /// See [io_uring_setup(2)](https://man7.org/linux/man-pages/man2/io_uring_setup.2.html) for more info on this syscall.
@@ -752,6 +754,16 @@ syscall_enum! {
         lsm_list_modules = 461,
         /// See [mseal(2)](https://man7.org/linux/man-pages/man2/mseal.2.html) for more info on this syscall.
         mseal = 462,
+        /// See [setxattrat(2)](https://man7.org/linux/man-pages/man2/setxattrat.2.html) for more info on this syscall.
+        setxattrat = 463,
+        /// See [getxattrat(2)](https://man7.org/linux/man-pages/man2/getxattrat.2.html) for more info on this syscall.
+        getxattrat = 464,
+        /// See [listxattrat(2)](https://man7.org/linux/man-pages/man2/listxattrat.2.html) for more info on this syscall.
+        listxattrat = 465,
+        /// See [removexattrat(2)](https://man7.org/linux/man-pages/man2/removexattrat.2.html) for more info on this syscall.
+        removexattrat = 466,
+        /// See [open_tree_attr(2)](https://man7.org/linux/man-pages/man2/open_tree_attr.2.html) for more info on this syscall.
+        open_tree_attr = 467,
     }
-    LAST: mseal;
+    LAST: open_tree_attr;
 }

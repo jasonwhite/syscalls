@@ -17,7 +17,7 @@ mod tables;
 static LINUX_REPO: &str = "https://raw.githubusercontent.com/torvalds/linux";
 
 /// Linux version to pull the syscall tables from.
-static LINUX_VERSION: &str = "v6.10";
+static LINUX_VERSION: &str = "v6.16";
 
 lazy_static! {
     /// List of syscall tables for each architecture.

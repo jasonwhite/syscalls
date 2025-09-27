@@ -492,10 +492,6 @@ syscall_enum! {
         accept4 = 242,
         /// See [recvmmsg(2)](https://man7.org/linux/man-pages/man2/recvmmsg.2.html) for more info on this syscall.
         recvmmsg = 243,
-        /// See [riscv_hwprobe(2)](https://man7.org/linux/man-pages/man2/riscv_hwprobe.2.html) for more info on this syscall.
-        riscv_hwprobe = 258,
-        /// See [riscv_flush_icache(2)](https://man7.org/linux/man-pages/man2/riscv_flush_icache.2.html) for more info on this syscall.
-        riscv_flush_icache = 259,
         /// See [wait4(2)](https://man7.org/linux/man-pages/man2/wait4.2.html) for more info on this syscall.
         wait4 = 260,
         /// See [prlimit64(2)](https://man7.org/linux/man-pages/man2/prlimit64.2.html) for more info on this syscall.
@@ -684,6 +680,16 @@ syscall_enum! {
         lsm_list_modules = 461,
         /// See [mseal(2)](https://man7.org/linux/man-pages/man2/mseal.2.html) for more info on this syscall.
         mseal = 462,
+        /// See [setxattrat(2)](https://man7.org/linux/man-pages/man2/setxattrat.2.html) for more info on this syscall.
+        setxattrat = 463,
+        /// See [getxattrat(2)](https://man7.org/linux/man-pages/man2/getxattrat.2.html) for more info on this syscall.
+        getxattrat = 464,
+        /// See [listxattrat(2)](https://man7.org/linux/man-pages/man2/listxattrat.2.html) for more info on this syscall.
+        listxattrat = 465,
+        /// See [removexattrat(2)](https://man7.org/linux/man-pages/man2/removexattrat.2.html) for more info on this syscall.
+        removexattrat = 466,
+        /// See [open_tree_attr(2)](https://man7.org/linux/man-pages/man2/open_tree_attr.2.html) for more info on this syscall.
+        open_tree_attr = 467,
     }
-    LAST: mseal;
+    LAST: open_tree_attr;
 }

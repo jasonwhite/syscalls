@@ -734,6 +734,16 @@ syscall_enum! {
         lsm_list_modules = 5461,
         /// See [mseal(2)](https://man7.org/linux/man-pages/man2/mseal.2.html) for more info on this syscall.
         mseal = 5462,
+        /// See [setxattrat(2)](https://man7.org/linux/man-pages/man2/setxattrat.2.html) for more info on this syscall.
+        setxattrat = 5463,
+        /// See [getxattrat(2)](https://man7.org/linux/man-pages/man2/getxattrat.2.html) for more info on this syscall.
+        getxattrat = 5464,
+        /// See [listxattrat(2)](https://man7.org/linux/man-pages/man2/listxattrat.2.html) for more info on this syscall.
+        listxattrat = 5465,
+        /// See [removexattrat(2)](https://man7.org/linux/man-pages/man2/removexattrat.2.html) for more info on this syscall.
+        removexattrat = 5466,
+        /// See [open_tree_attr(2)](https://man7.org/linux/man-pages/man2/open_tree_attr.2.html) for more info on this syscall.
+        open_tree_attr = 5467,
     }
-    LAST: mseal;
+    LAST: open_tree_attr;
 }

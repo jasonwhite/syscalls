@@ -22,14 +22,14 @@ The features that are enabled by default include `std` and `serde`.
 By default, `std` support is enabled. If you wish to compile in a `no_std`
 environment, use:
 ```
-syscalls = { version = "0.6", default-features = false }
+syscalls = { version = "0.7", default-features = false }
 ```
 
 ### `serde`
 
 Various types can be serialized with Serde. This can be enabled with:
 ```
-syscalls = { version = "0.6", features = ["serde"] }
+syscalls = { version = "0.7", features = ["serde"] }
 ```
 
 ### `full`
@@ -60,6 +60,7 @@ yet stabilized for all architectures][asm_experimental_arch].
 |:-----------:|:-----:|:-------:|:-------------:|
 |    `arm`\*  |  ✅   |   ✅    |    Yes ✅     |
 |  `aarch64`  |  ✅   |   ✅    |    Yes ✅     |
+|`loongarch64`|  ✅   |   ✅    |     No ❌     |
 |   `mips`    |  ✅   |   ✅    |     No ❌     |
 |  `mips64`   |  ✅   |   ✅    |     No ❌     |
 |  `powerpc`  |  ✅   |   ✅    |     No ❌     |

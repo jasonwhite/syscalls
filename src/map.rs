@@ -153,7 +153,7 @@ impl<T> SysnoMap<T> {
     }
 
     /// Returns an iterator that iterates over the syscalls contained in the map.
-    pub fn iter(&self) -> SysnoMapIter<T> {
+    pub fn iter(&self) -> SysnoMapIter<'_, T> {
         SysnoMapIter {
             iter: self.is_set.iter(),
             data: &self.data,
@@ -162,7 +162,7 @@ impl<T> SysnoMap<T> {
 
     /// Returns an iterator that iterates over all enabled values contained in
     /// the map.
-    pub fn values(&self) -> SysnoMapValues<T> {
+    pub fn values(&self) -> SysnoMapValues<'_, T> {
         SysnoMapValues(self.is_set.iter(), &self.data)
     }
 }

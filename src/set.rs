@@ -17,7 +17,7 @@ const fn words<T>(bits: usize) -> usize {
         return 0;
     }
 
-    bits / width + ((bits % width != 0) as usize)
+    bits / width + (!bits.is_multiple_of(width) as usize)
 }
 
 /// A set of syscalls.
@@ -207,7 +207,7 @@ impl SysnoSet {
     }
 
     /// Returns an iterator that iterates over the syscalls contained in the set.
-    pub fn iter(&self) -> SysnoSetIter {
+    pub fn iter(&self) -> SysnoSetIter<'_> {
         SysnoSetIter::new(self.data.iter())
     }
 }

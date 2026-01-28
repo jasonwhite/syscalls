@@ -492,6 +492,10 @@ syscall_enum! {
         accept4 = 242,
         /// See [recvmmsg(2)](https://man7.org/linux/man-pages/man2/recvmmsg.2.html) for more info on this syscall.
         recvmmsg = 243,
+        /// See [riscv_hwprobe(2)](https://man7.org/linux/man-pages/man2/riscv_hwprobe.2.html) for more info on this syscall.
+        riscv_hwprobe = 258,
+        /// See [riscv_flush_icache(2)](https://man7.org/linux/man-pages/man2/riscv_flush_icache.2.html) for more info on this syscall.
+        riscv_flush_icache = 259,
         /// See [wait4(2)](https://man7.org/linux/man-pages/man2/wait4.2.html) for more info on this syscall.
         wait4 = 260,
         /// See [prlimit64(2)](https://man7.org/linux/man-pages/man2/prlimit64.2.html) for more info on this syscall.

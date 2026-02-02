@@ -1,5 +1,12 @@
 # Changelog
 
+## v0.8.1
+
+ - Updated to Linux v6.18, which includes:
+   - `file_getattr`
+   - `file_setattr`
+   - `uprobe` (x86-64)
+
 ## v0.8.0 **Major Version Bump**
 
  - riscv: Added `riscv_hwprobe` and `riscv_flush_icache`

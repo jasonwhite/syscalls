@@ -676,6 +676,8 @@ syscall_enum! {
         rseq = 334,
         /// See [uretprobe(2)](https://man7.org/linux/man-pages/man2/uretprobe.2.html) for more info on this syscall.
         uretprobe = 335,
+        /// See [uprobe(2)](https://man7.org/linux/man-pages/man2/uprobe.2.html) for more info on this syscall.
+        uprobe = 336,
         /// See [pidfd_send_signal(2)](https://man7.org/linux/man-pages/man2/pidfd_send_signal.2.html) for more info on this syscall.
         pidfd_send_signal = 424,
         /// See [io_uring_setup(2)](https://man7.org/linux/man-pages/man2/io_uring_setup.2.html) for more info on this syscall.
@@ -764,6 +766,10 @@ syscall_enum! {
         removexattrat = 466,
         /// See [open_tree_attr(2)](https://man7.org/linux/man-pages/man2/open_tree_attr.2.html) for more info on this syscall.
         open_tree_attr = 467,
+        /// See [file_getattr(2)](https://man7.org/linux/man-pages/man2/file_getattr.2.html) for more info on this syscall.
+        file_getattr = 468,
+        /// See [file_setattr(2)](https://man7.org/linux/man-pages/man2/file_setattr.2.html) for more info on this syscall.
+        file_setattr = 469,
     }
-    LAST: open_tree_attr;
+    LAST: file_setattr;
 }

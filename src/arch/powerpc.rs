@@ -900,6 +900,10 @@ syscall_enum! {
         removexattrat = 466,
         /// See [open_tree_attr(2)](https://man7.org/linux/man-pages/man2/open_tree_attr.2.html) for more info on this syscall.
         open_tree_attr = 467,
+        /// See [file_getattr(2)](https://man7.org/linux/man-pages/man2/file_getattr.2.html) for more info on this syscall.
+        file_getattr = 468,
+        /// See [file_setattr(2)](https://man7.org/linux/man-pages/man2/file_setattr.2.html) for more info on this syscall.
+        file_setattr = 469,
     }
-    LAST: open_tree_attr;
+    LAST: file_setattr;
 }

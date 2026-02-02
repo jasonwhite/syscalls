@@ -87,29 +87,15 @@ lazy_static! {
             path: "arch/s390/kernel/syscalls/syscall.tbl",
             abi: &[ABI::COMMON, ABI::B64],
         }),
-        Source::Header(Header {
+        Source::Table(Table {
             arch: "riscv32",
-            headers: &[
-                "include/uapi/asm-generic/unistd.h",
-                "arch/riscv/include/uapi/asm/unistd.h",
-            ],
-            blocklist: &[
-                // It doesn't have defines `__NR_sync_file_range2` or
-                // `__ARCH_WANT_SYNC_FILE_RANGE2` in
-                // `arch/riscv/include/uapi/asm/unistd.h` header file
-                "sync_file_range2",
-            ],
+            path: "scripts/syscall.tbl",
+            abi: &[ABI::COMMON, ABI::RISCV, ABI::B32, ABI::MEMFD_SECRET, ABI::RLIMIT],
         }),
-        Source::Header(Header {
+        Source::Table(Table {
             arch: "riscv64",
-            headers: &[
-                "include/uapi/asm-generic/unistd.h",
-                "arch/riscv/include/uapi/asm/unistd.h",
-            ],
-            blocklist: &[
-                // For riscv64, see riscv32's explanation.
-                "sync_file_range2",
-            ],
+            path: "scripts/syscall.tbl",
+            abi: &[ABI::COMMON, ABI::RISCV, ABI::B64, ABI::MEMFD_SECRET, ABI::RLIMIT],
         }),
         Source::Header(Header {
             arch: "loongarch64",
@@ -136,6 +122,9 @@ impl<'a> ABI<'a> {
     // to find syscall offsets.)
     pub const COMMON: Self = Self::new("common", 0);
     pub const I386: Self = Self::new("i386", 0);
+    pub const RISCV: Self = Self::new("riscv", 0);
+    pub const MEMFD_SECRET: Self = Self::new("memfd_secret", 0);
+    pub const RLIMIT: Self = Self::new("rlimit", 0);
     pub const NOSPU: Self = Self::new("nospu", 0);
     pub const B32: Self = Self::new("32", 0);
     pub const B64: Self = Self::new("64", 0);

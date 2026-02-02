@@ -35,7 +35,7 @@ pub struct TableEntry {
 }
 
 impl TableEntry {
-    fn ident(&self) -> Cow<str> {
+    fn ident(&self) -> Cow<'_, str> {
         if self.name.as_str() == "break" {
             Cow::Owned(format!("r#{}", self.name))
         } else {

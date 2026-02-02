@@ -12,8 +12,6 @@ syscall_enum! {
         io_submit = 2,
         /// See [io_cancel(2)](https://man7.org/linux/man-pages/man2/io_cancel.2.html) for more info on this syscall.
         io_cancel = 3,
-        /// See [io_getevents(2)](https://man7.org/linux/man-pages/man2/io_getevents.2.html) for more info on this syscall.
-        io_getevents = 4,
         /// See [setxattr(2)](https://man7.org/linux/man-pages/man2/setxattr.2.html) for more info on this syscall.
         setxattr = 5,
         /// See [lsetxattr(2)](https://man7.org/linux/man-pages/man2/lsetxattr.2.html) for more info on this syscall.
@@ -54,8 +52,8 @@ syscall_enum! {
         dup = 23,
         /// See [dup3(2)](https://man7.org/linux/man-pages/man2/dup3.2.html) for more info on this syscall.
         dup3 = 24,
-        /// See [fcntl(2)](https://man7.org/linux/man-pages/man2/fcntl.2.html) for more info on this syscall.
-        fcntl = 25,
+        /// See [fcntl64(2)](https://man7.org/linux/man-pages/man2/fcntl64.2.html) for more info on this syscall.
+        fcntl64 = 25,
         /// See [inotify_init1(2)](https://man7.org/linux/man-pages/man2/inotify_init1.2.html) for more info on this syscall.
         inotify_init1 = 26,
         /// See [inotify_add_watch(2)](https://man7.org/linux/man-pages/man2/inotify_add_watch.2.html) for more info on this syscall.
@@ -80,8 +78,6 @@ syscall_enum! {
         symlinkat = 36,
         /// See [linkat(2)](https://man7.org/linux/man-pages/man2/linkat.2.html) for more info on this syscall.
         linkat = 37,
-        /// See [renameat(2)](https://man7.org/linux/man-pages/man2/renameat.2.html) for more info on this syscall.
-        renameat = 38,
         /// See [umount2(2)](https://man7.org/linux/man-pages/man2/umount2.2.html) for more info on this syscall.
         umount2 = 39,
         /// See [mount(2)](https://man7.org/linux/man-pages/man2/mount.2.html) for more info on this syscall.
@@ -90,14 +86,14 @@ syscall_enum! {
         pivot_root = 41,
         /// See [nfsservctl(2)](https://man7.org/linux/man-pages/man2/nfsservctl.2.html) for more info on this syscall.
         nfsservctl = 42,
-        /// See [statfs(2)](https://man7.org/linux/man-pages/man2/statfs.2.html) for more info on this syscall.
-        statfs = 43,
-        /// See [fstatfs(2)](https://man7.org/linux/man-pages/man2/fstatfs.2.html) for more info on this syscall.
-        fstatfs = 44,
-        /// See [truncate(2)](https://man7.org/linux/man-pages/man2/truncate.2.html) for more info on this syscall.
-        truncate = 45,
-        /// See [ftruncate(2)](https://man7.org/linux/man-pages/man2/ftruncate.2.html) for more info on this syscall.
-        ftruncate = 46,
+        /// See [statfs64(2)](https://man7.org/linux/man-pages/man2/statfs64.2.html) for more info on this syscall.
+        statfs64 = 43,
+        /// See [fstatfs64(2)](https://man7.org/linux/man-pages/man2/fstatfs64.2.html) for more info on this syscall.
+        fstatfs64 = 44,
+        /// See [truncate64(2)](https://man7.org/linux/man-pages/man2/truncate64.2.html) for more info on this syscall.
+        truncate64 = 45,
+        /// See [ftruncate64(2)](https://man7.org/linux/man-pages/man2/ftruncate64.2.html) for more info on this syscall.
+        ftruncate64 = 46,
         /// See [fallocate(2)](https://man7.org/linux/man-pages/man2/fallocate.2.html) for more info on this syscall.
         fallocate = 47,
         /// See [faccessat(2)](https://man7.org/linux/man-pages/man2/faccessat.2.html) for more info on this syscall.
@@ -128,8 +124,8 @@ syscall_enum! {
         quotactl = 60,
         /// See [getdents64(2)](https://man7.org/linux/man-pages/man2/getdents64.2.html) for more info on this syscall.
         getdents64 = 61,
-        /// See [lseek(2)](https://man7.org/linux/man-pages/man2/lseek.2.html) for more info on this syscall.
-        lseek = 62,
+        /// See [llseek(2)](https://man7.org/linux/man-pages/man2/llseek.2.html) for more info on this syscall.
+        llseek = 62,
         /// See [read(2)](https://man7.org/linux/man-pages/man2/read.2.html) for more info on this syscall.
         read = 63,
         /// See [write(2)](https://man7.org/linux/man-pages/man2/write.2.html) for more info on this syscall.
@@ -146,12 +142,8 @@ syscall_enum! {
         preadv = 69,
         /// See [pwritev(2)](https://man7.org/linux/man-pages/man2/pwritev.2.html) for more info on this syscall.
         pwritev = 70,
-        /// See [sendfile(2)](https://man7.org/linux/man-pages/man2/sendfile.2.html) for more info on this syscall.
-        sendfile = 71,
-        /// See [pselect6(2)](https://man7.org/linux/man-pages/man2/pselect6.2.html) for more info on this syscall.
-        pselect6 = 72,
-        /// See [ppoll(2)](https://man7.org/linux/man-pages/man2/ppoll.2.html) for more info on this syscall.
-        ppoll = 73,
+        /// See [sendfile64(2)](https://man7.org/linux/man-pages/man2/sendfile64.2.html) for more info on this syscall.
+        sendfile64 = 71,
         /// See [signalfd4(2)](https://man7.org/linux/man-pages/man2/signalfd4.2.html) for more info on this syscall.
         signalfd4 = 74,
         /// See [vmsplice(2)](https://man7.org/linux/man-pages/man2/vmsplice.2.html) for more info on this syscall.
@@ -162,10 +154,6 @@ syscall_enum! {
         tee = 77,
         /// See [readlinkat(2)](https://man7.org/linux/man-pages/man2/readlinkat.2.html) for more info on this syscall.
         readlinkat = 78,
-        /// See [fstatat(2)](https://man7.org/linux/man-pages/man2/fstatat.2.html) for more info on this syscall.
-        fstatat = 79,
-        /// See [fstat(2)](https://man7.org/linux/man-pages/man2/fstat.2.html) for more info on this syscall.
-        fstat = 80,
         /// See [sync(2)](https://man7.org/linux/man-pages/man2/sync.2.html) for more info on this syscall.
         sync = 81,
         /// See [fsync(2)](https://man7.org/linux/man-pages/man2/fsync.2.html) for more info on this syscall.
@@ -176,12 +164,6 @@ syscall_enum! {
         sync_file_range = 84,
         /// See [timerfd_create(2)](https://man7.org/linux/man-pages/man2/timerfd_create.2.html) for more info on this syscall.
         timerfd_create = 85,
-        /// See [timerfd_settime(2)](https://man7.org/linux/man-pages/man2/timerfd_settime.2.html) for more info on this syscall.
-        timerfd_settime = 86,
-        /// See [timerfd_gettime(2)](https://man7.org/linux/man-pages/man2/timerfd_gettime.2.html) for more info on this syscall.
-        timerfd_gettime = 87,
-        /// See [utimensat(2)](https://man7.org/linux/man-pages/man2/utimensat.2.html) for more info on this syscall.
-        utimensat = 88,
         /// See [acct(2)](https://man7.org/linux/man-pages/man2/acct.2.html) for more info on this syscall.
         acct = 89,
         /// See [capget(2)](https://man7.org/linux/man-pages/man2/capget.2.html) for more info on this syscall.
@@ -200,14 +182,10 @@ syscall_enum! {
         set_tid_address = 96,
         /// See [unshare(2)](https://man7.org/linux/man-pages/man2/unshare.2.html) for more info on this syscall.
         unshare = 97,
-        /// See [futex(2)](https://man7.org/linux/man-pages/man2/futex.2.html) for more info on this syscall.
-        futex = 98,
         /// See [set_robust_list(2)](https://man7.org/linux/man-pages/man2/set_robust_list.2.html) for more info on this syscall.
         set_robust_list = 99,
         /// See [get_robust_list(2)](https://man7.org/linux/man-pages/man2/get_robust_list.2.html) for more info on this syscall.
         get_robust_list = 100,
-        /// See [nanosleep(2)](https://man7.org/linux/man-pages/man2/nanosleep.2.html) for more info on this syscall.
-        nanosleep = 101,
         /// See [getitimer(2)](https://man7.org/linux/man-pages/man2/getitimer.2.html) for more info on this syscall.
         getitimer = 102,
         /// See [setitimer(2)](https://man7.org/linux/man-pages/man2/setitimer.2.html) for more info on this syscall.
@@ -220,22 +198,10 @@ syscall_enum! {
         delete_module = 106,
         /// See [timer_create(2)](https://man7.org/linux/man-pages/man2/timer_create.2.html) for more info on this syscall.
         timer_create = 107,
-        /// See [timer_gettime(2)](https://man7.org/linux/man-pages/man2/timer_gettime.2.html) for more info on this syscall.
-        timer_gettime = 108,
         /// See [timer_getoverrun(2)](https://man7.org/linux/man-pages/man2/timer_getoverrun.2.html) for more info on this syscall.
         timer_getoverrun = 109,
-        /// See [timer_settime(2)](https://man7.org/linux/man-pages/man2/timer_settime.2.html) for more info on this syscall.
-        timer_settime = 110,
         /// See [timer_delete(2)](https://man7.org/linux/man-pages/man2/timer_delete.2.html) for more info on this syscall.
         timer_delete = 111,
-        /// See [clock_settime(2)](https://man7.org/linux/man-pages/man2/clock_settime.2.html) for more info on this syscall.
-        clock_settime = 112,
-        /// See [clock_gettime(2)](https://man7.org/linux/man-pages/man2/clock_gettime.2.html) for more info on this syscall.
-        clock_gettime = 113,
-        /// See [clock_getres(2)](https://man7.org/linux/man-pages/man2/clock_getres.2.html) for more info on this syscall.
-        clock_getres = 114,
-        /// See [clock_nanosleep(2)](https://man7.org/linux/man-pages/man2/clock_nanosleep.2.html) for more info on this syscall.
-        clock_nanosleep = 115,
         /// See [syslog(2)](https://man7.org/linux/man-pages/man2/syslog.2.html) for more info on this syscall.
         syslog = 116,
         /// See [ptrace(2)](https://man7.org/linux/man-pages/man2/ptrace.2.html) for more info on this syscall.
@@ -258,8 +224,6 @@ syscall_enum! {
         sched_get_priority_max = 125,
         /// See [sched_get_priority_min(2)](https://man7.org/linux/man-pages/man2/sched_get_priority_min.2.html) for more info on this syscall.
         sched_get_priority_min = 126,
-        /// See [sched_rr_get_interval(2)](https://man7.org/linux/man-pages/man2/sched_rr_get_interval.2.html) for more info on this syscall.
-        sched_rr_get_interval = 127,
         /// See [restart_syscall(2)](https://man7.org/linux/man-pages/man2/restart_syscall.2.html) for more info on this syscall.
         restart_syscall = 128,
         /// See [kill(2)](https://man7.org/linux/man-pages/man2/kill.2.html) for more info on this syscall.
@@ -278,8 +242,6 @@ syscall_enum! {
         rt_sigprocmask = 135,
         /// See [rt_sigpending(2)](https://man7.org/linux/man-pages/man2/rt_sigpending.2.html) for more info on this syscall.
         rt_sigpending = 136,
-        /// See [rt_sigtimedwait(2)](https://man7.org/linux/man-pages/man2/rt_sigtimedwait.2.html) for more info on this syscall.
-        rt_sigtimedwait = 137,
         /// See [rt_sigqueueinfo(2)](https://man7.org/linux/man-pages/man2/rt_sigqueueinfo.2.html) for more info on this syscall.
         rt_sigqueueinfo = 138,
         /// See [rt_sigreturn(2)](https://man7.org/linux/man-pages/man2/rt_sigreturn.2.html) for more info on this syscall.
@@ -342,12 +304,6 @@ syscall_enum! {
         prctl = 167,
         /// See [getcpu(2)](https://man7.org/linux/man-pages/man2/getcpu.2.html) for more info on this syscall.
         getcpu = 168,
-        /// See [gettimeofday(2)](https://man7.org/linux/man-pages/man2/gettimeofday.2.html) for more info on this syscall.
-        gettimeofday = 169,
-        /// See [settimeofday(2)](https://man7.org/linux/man-pages/man2/settimeofday.2.html) for more info on this syscall.
-        settimeofday = 170,
-        /// See [adjtimex(2)](https://man7.org/linux/man-pages/man2/adjtimex.2.html) for more info on this syscall.
-        adjtimex = 171,
         /// See [getpid(2)](https://man7.org/linux/man-pages/man2/getpid.2.html) for more info on this syscall.
         getpid = 172,
         /// See [getppid(2)](https://man7.org/linux/man-pages/man2/getppid.2.html) for more info on this syscall.
@@ -368,10 +324,6 @@ syscall_enum! {
         mq_open = 180,
         /// See [mq_unlink(2)](https://man7.org/linux/man-pages/man2/mq_unlink.2.html) for more info on this syscall.
         mq_unlink = 181,
-        /// See [mq_timedsend(2)](https://man7.org/linux/man-pages/man2/mq_timedsend.2.html) for more info on this syscall.
-        mq_timedsend = 182,
-        /// See [mq_timedreceive(2)](https://man7.org/linux/man-pages/man2/mq_timedreceive.2.html) for more info on this syscall.
-        mq_timedreceive = 183,
         /// See [mq_notify(2)](https://man7.org/linux/man-pages/man2/mq_notify.2.html) for more info on this syscall.
         mq_notify = 184,
         /// See [mq_getsetattr(2)](https://man7.org/linux/man-pages/man2/mq_getsetattr.2.html) for more info on this syscall.
@@ -388,8 +340,6 @@ syscall_enum! {
         semget = 190,
         /// See [semctl(2)](https://man7.org/linux/man-pages/man2/semctl.2.html) for more info on this syscall.
         semctl = 191,
-        /// See [semtimedop(2)](https://man7.org/linux/man-pages/man2/semtimedop.2.html) for more info on this syscall.
-        semtimedop = 192,
         /// See [semop(2)](https://man7.org/linux/man-pages/man2/semop.2.html) for more info on this syscall.
         semop = 193,
         /// See [shmget(2)](https://man7.org/linux/man-pages/man2/shmget.2.html) for more info on this syscall.
@@ -448,10 +398,10 @@ syscall_enum! {
         clone = 220,
         /// See [execve(2)](https://man7.org/linux/man-pages/man2/execve.2.html) for more info on this syscall.
         execve = 221,
-        /// See [mmap(2)](https://man7.org/linux/man-pages/man2/mmap.2.html) for more info on this syscall.
-        mmap = 222,
-        /// See [fadvise64(2)](https://man7.org/linux/man-pages/man2/fadvise64.2.html) for more info on this syscall.
-        fadvise64 = 223,
+        /// See [mmap2(2)](https://man7.org/linux/man-pages/man2/mmap2.2.html) for more info on this syscall.
+        mmap2 = 222,
+        /// See [fadvise64_64(2)](https://man7.org/linux/man-pages/man2/fadvise64_64.2.html) for more info on this syscall.
+        fadvise64_64 = 223,
         /// See [swapon(2)](https://man7.org/linux/man-pages/man2/swapon.2.html) for more info on this syscall.
         swapon = 224,
         /// See [swapoff(2)](https://man7.org/linux/man-pages/man2/swapoff.2.html) for more info on this syscall.
@@ -490,10 +440,10 @@ syscall_enum! {
         perf_event_open = 241,
         /// See [accept4(2)](https://man7.org/linux/man-pages/man2/accept4.2.html) for more info on this syscall.
         accept4 = 242,
-        /// See [recvmmsg(2)](https://man7.org/linux/man-pages/man2/recvmmsg.2.html) for more info on this syscall.
-        recvmmsg = 243,
-        /// See [wait4(2)](https://man7.org/linux/man-pages/man2/wait4.2.html) for more info on this syscall.
-        wait4 = 260,
+        /// See [riscv_hwprobe(2)](https://man7.org/linux/man-pages/man2/riscv_hwprobe.2.html) for more info on this syscall.
+        riscv_hwprobe = 258,
+        /// See [riscv_flush_icache(2)](https://man7.org/linux/man-pages/man2/riscv_flush_icache.2.html) for more info on this syscall.
+        riscv_flush_icache = 259,
         /// See [prlimit64(2)](https://man7.org/linux/man-pages/man2/prlimit64.2.html) for more info on this syscall.
         prlimit64 = 261,
         /// See [fanotify_init(2)](https://man7.org/linux/man-pages/man2/fanotify_init.2.html) for more info on this syscall.
@@ -504,8 +454,6 @@ syscall_enum! {
         name_to_handle_at = 264,
         /// See [open_by_handle_at(2)](https://man7.org/linux/man-pages/man2/open_by_handle_at.2.html) for more info on this syscall.
         open_by_handle_at = 265,
-        /// See [clock_adjtime(2)](https://man7.org/linux/man-pages/man2/clock_adjtime.2.html) for more info on this syscall.
-        clock_adjtime = 266,
         /// See [syncfs(2)](https://man7.org/linux/man-pages/man2/syncfs.2.html) for more info on this syscall.
         syncfs = 267,
         /// See [setns(2)](https://man7.org/linux/man-pages/man2/setns.2.html) for more info on this syscall.
@@ -556,8 +504,6 @@ syscall_enum! {
         pkey_free = 290,
         /// See [statx(2)](https://man7.org/linux/man-pages/man2/statx.2.html) for more info on this syscall.
         statx = 291,
-        /// See [io_pgetevents(2)](https://man7.org/linux/man-pages/man2/io_pgetevents.2.html) for more info on this syscall.
-        io_pgetevents = 292,
         /// See [rseq(2)](https://man7.org/linux/man-pages/man2/rseq.2.html) for more info on this syscall.
         rseq = 293,
         /// See [kexec_file_load(2)](https://man7.org/linux/man-pages/man2/kexec_file_load.2.html) for more info on this syscall.

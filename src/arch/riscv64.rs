@@ -80,8 +80,6 @@ syscall_enum! {
         symlinkat = 36,
         /// See [linkat(2)](https://man7.org/linux/man-pages/man2/linkat.2.html) for more info on this syscall.
         linkat = 37,
-        /// See [renameat(2)](https://man7.org/linux/man-pages/man2/renameat.2.html) for more info on this syscall.
-        renameat = 38,
         /// See [umount2(2)](https://man7.org/linux/man-pages/man2/umount2.2.html) for more info on this syscall.
         umount2 = 39,
         /// See [mount(2)](https://man7.org/linux/man-pages/man2/mount.2.html) for more info on this syscall.
@@ -162,8 +160,8 @@ syscall_enum! {
         tee = 77,
         /// See [readlinkat(2)](https://man7.org/linux/man-pages/man2/readlinkat.2.html) for more info on this syscall.
         readlinkat = 78,
-        /// See [fstatat(2)](https://man7.org/linux/man-pages/man2/fstatat.2.html) for more info on this syscall.
-        fstatat = 79,
+        /// See [newfstatat(2)](https://man7.org/linux/man-pages/man2/newfstatat.2.html) for more info on this syscall.
+        newfstatat = 79,
         /// See [fstat(2)](https://man7.org/linux/man-pages/man2/fstat.2.html) for more info on this syscall.
         fstat = 80,
         /// See [sync(2)](https://man7.org/linux/man-pages/man2/sync.2.html) for more info on this syscall.
@@ -492,6 +490,10 @@ syscall_enum! {
         accept4 = 242,
         /// See [recvmmsg(2)](https://man7.org/linux/man-pages/man2/recvmmsg.2.html) for more info on this syscall.
         recvmmsg = 243,
+        /// See [riscv_hwprobe(2)](https://man7.org/linux/man-pages/man2/riscv_hwprobe.2.html) for more info on this syscall.
+        riscv_hwprobe = 258,
+        /// See [riscv_flush_icache(2)](https://man7.org/linux/man-pages/man2/riscv_flush_icache.2.html) for more info on this syscall.
+        riscv_flush_icache = 259,
         /// See [wait4(2)](https://man7.org/linux/man-pages/man2/wait4.2.html) for more info on this syscall.
         wait4 = 260,
         /// See [prlimit64(2)](https://man7.org/linux/man-pages/man2/prlimit64.2.html) for more info on this syscall.
@@ -562,46 +564,6 @@ syscall_enum! {
         rseq = 293,
         /// See [kexec_file_load(2)](https://man7.org/linux/man-pages/man2/kexec_file_load.2.html) for more info on this syscall.
         kexec_file_load = 294,
-        /// See [clock_gettime64(2)](https://man7.org/linux/man-pages/man2/clock_gettime64.2.html) for more info on this syscall.
-        clock_gettime64 = 403,
-        /// See [clock_settime64(2)](https://man7.org/linux/man-pages/man2/clock_settime64.2.html) for more info on this syscall.
-        clock_settime64 = 404,
-        /// See [clock_adjtime64(2)](https://man7.org/linux/man-pages/man2/clock_adjtime64.2.html) for more info on this syscall.
-        clock_adjtime64 = 405,
-        /// See [clock_getres_time64(2)](https://man7.org/linux/man-pages/man2/clock_getres_time64.2.html) for more info on this syscall.
-        clock_getres_time64 = 406,
-        /// See [clock_nanosleep_time64(2)](https://man7.org/linux/man-pages/man2/clock_nanosleep_time64.2.html) for more info on this syscall.
-        clock_nanosleep_time64 = 407,
-        /// See [timer_gettime64(2)](https://man7.org/linux/man-pages/man2/timer_gettime64.2.html) for more info on this syscall.
-        timer_gettime64 = 408,
-        /// See [timer_settime64(2)](https://man7.org/linux/man-pages/man2/timer_settime64.2.html) for more info on this syscall.
-        timer_settime64 = 409,
-        /// See [timerfd_gettime64(2)](https://man7.org/linux/man-pages/man2/timerfd_gettime64.2.html) for more info on this syscall.
-        timerfd_gettime64 = 410,
-        /// See [timerfd_settime64(2)](https://man7.org/linux/man-pages/man2/timerfd_settime64.2.html) for more info on this syscall.
-        timerfd_settime64 = 411,
-        /// See [utimensat_time64(2)](https://man7.org/linux/man-pages/man2/utimensat_time64.2.html) for more info on this syscall.
-        utimensat_time64 = 412,
-        /// See [pselect6_time64(2)](https://man7.org/linux/man-pages/man2/pselect6_time64.2.html) for more info on this syscall.
-        pselect6_time64 = 413,
-        /// See [ppoll_time64(2)](https://man7.org/linux/man-pages/man2/ppoll_time64.2.html) for more info on this syscall.
-        ppoll_time64 = 414,
-        /// See [io_pgetevents_time64(2)](https://man7.org/linux/man-pages/man2/io_pgetevents_time64.2.html) for more info on this syscall.
-        io_pgetevents_time64 = 416,
-        /// See [recvmmsg_time64(2)](https://man7.org/linux/man-pages/man2/recvmmsg_time64.2.html) for more info on this syscall.
-        recvmmsg_time64 = 417,
-        /// See [mq_timedsend_time64(2)](https://man7.org/linux/man-pages/man2/mq_timedsend_time64.2.html) for more info on this syscall.
-        mq_timedsend_time64 = 418,
-        /// See [mq_timedreceive_time64(2)](https://man7.org/linux/man-pages/man2/mq_timedreceive_time64.2.html) for more info on this syscall.
-        mq_timedreceive_time64 = 419,
-        /// See [semtimedop_time64(2)](https://man7.org/linux/man-pages/man2/semtimedop_time64.2.html) for more info on this syscall.
-        semtimedop_time64 = 420,
-        /// See [rt_sigtimedwait_time64(2)](https://man7.org/linux/man-pages/man2/rt_sigtimedwait_time64.2.html) for more info on this syscall.
-        rt_sigtimedwait_time64 = 421,
-        /// See [futex_time64(2)](https://man7.org/linux/man-pages/man2/futex_time64.2.html) for more info on this syscall.
-        futex_time64 = 422,
-        /// See [sched_rr_get_interval_time64(2)](https://man7.org/linux/man-pages/man2/sched_rr_get_interval_time64.2.html) for more info on this syscall.
-        sched_rr_get_interval_time64 = 423,
         /// See [pidfd_send_signal(2)](https://man7.org/linux/man-pages/man2/pidfd_send_signal.2.html) for more info on this syscall.
         pidfd_send_signal = 424,
         /// See [io_uring_setup(2)](https://man7.org/linux/man-pages/man2/io_uring_setup.2.html) for more info on this syscall.

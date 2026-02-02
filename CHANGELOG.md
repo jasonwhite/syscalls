@@ -1,5 +1,49 @@
 # Changelog
 
+## v0.8.0 **Major Version Bump**
+
+ - riscv: Added `riscv_hwprobe` and `riscv_flush_icache`
+
+⚠️ **Breaking Changes** ⚠️
+ - riscv: Major corrections to riscv32 and riscv64 syscall tables.
+   - Some 32- or 64-bit specific syscalls have been renamed.
+   - Syscalls that do not exist on these architecture have been removed.
+ - riscv32:
+   - Removes `io_getevents`
+   - Renames `fcntl` -> `fcntl64`
+   - Removes `renameat` (use `renameat2`)
+   - Renames `statfs` -> `statfs64`
+   - Renames `fstatfs` -> `fstatfs64`
+   - Renames `truncate` -> `truncate64`
+   - Renames `ftruncate` -> `ftruncate64`
+   - Renames `lseek` -> `llseek`
+   - Renames `sendfile` -> `sendfile64`
+   - Removes `pselect6` (use `pselect6_time64`)
+   - Removes `fstatat64`
+   - Removes `fstat`
+   - Removes `timer_{set,get}time}` (use `timer_{set,get}64`)
+   - Removes `timerfd_{set,get}time}` (use `timerfd_{set,get}64`)
+   - Removes `clock_{set,get}time}` (use `clock_{set,get}64`)
+   - Removes `utimensat` (use `utimensat_time64`)
+   - Removes `futex` (use `futex_time64`)
+   - Removes `nanosleep` (use `clock_nanosleep_time64`)
+   - Removes `sched_rr_get_interval` (use `sched_rr_get_interval_time64`)
+   - Removes `rt_sigtimedwait` (use `rt_sigtimedwait_time64`)
+   - Removes `{get,set}timeofday`
+   - Removes `mq_timedsend` (use `mq_timedsend_time64`)
+   - Removes `mq_timedreceive` (use `mq_timedreceive_time64`)
+   - Removes `semtimedop` (use `semtimedop_time64`)
+   - Renames `mmap` -> `mmap2`
+   - Renames `fadvise64` -> `fadvise64_64`
+   - Removes `rescvmmsg` (use `recevmmsg_time64`)
+   - Removes `wait4`
+   - Removes `clock_adjtime` (use `clock_adjtime64`)
+   - Removes `io_pgetevents` (use `io_pgetevents_time64`)
+ - riscv64:
+   - Removes the time64 syscalls, which are 32-bit only.
+   - Removes `renameat` (use `renameat2`)
+   - Removes `fstatat` (use `newfstatat`)
+
 ## v0.7.0 **Major Version Bump**
 
  - Updated syscall lists to Linux 6.16.

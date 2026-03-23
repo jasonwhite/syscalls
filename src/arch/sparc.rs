@@ -880,6 +880,8 @@ syscall_enum! {
         file_getattr = 468,
         /// See [file_setattr(2)](https://man7.org/linux/man-pages/man2/file_setattr.2.html) for more info on this syscall.
         file_setattr = 469,
+        /// See [listns(2)](https://man7.org/linux/man-pages/man2/listns.2.html) for more info on this syscall.
+        listns = 470,
     }
-    LAST: file_setattr;
+    LAST: listns;
 }

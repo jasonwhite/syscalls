@@ -814,6 +814,8 @@ syscall_enum! {
         fspick = 433,
         /// See [pidfd_open(2)](https://man7.org/linux/man-pages/man2/pidfd_open.2.html) for more info on this syscall.
         pidfd_open = 434,
+        /// See [clone3(2)](https://man7.org/linux/man-pages/man2/clone3.2.html) for more info on this syscall.
+        clone3 = 435,
         /// See [close_range(2)](https://man7.org/linux/man-pages/man2/close_range.2.html) for more info on this syscall.
         close_range = 436,
         /// See [openat2(2)](https://man7.org/linux/man-pages/man2/openat2.2.html) for more info on this syscall.
@@ -882,6 +884,8 @@ syscall_enum! {
         file_setattr = 469,
         /// See [listns(2)](https://man7.org/linux/man-pages/man2/listns.2.html) for more info on this syscall.
         listns = 470,
+        /// See [rseq_slice_yield(2)](https://man7.org/linux/man-pages/man2/rseq_slice_yield.2.html) for more info on this syscall.
+        rseq_slice_yield = 471,
     }
-    LAST: listns;
+    LAST: rseq_slice_yield;
 }

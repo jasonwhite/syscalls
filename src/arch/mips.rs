@@ -892,6 +892,8 @@ syscall_enum! {
         file_setattr = 4469,
         /// See [listns(2)](https://man7.org/linux/man-pages/man2/listns.2.html) for more info on this syscall.
         listns = 4470,
+        /// See [rseq_slice_yield(2)](https://man7.org/linux/man-pages/man2/rseq_slice_yield.2.html) for more info on this syscall.
+        rseq_slice_yield = 4471,
     }
-    LAST: listns;
+    LAST: rseq_slice_yield;
 }
